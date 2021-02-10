@@ -1,21 +1,14 @@
 <template>
   <div class="container">
     <b-card
-      bg-variant="dark"
-      header="Bienvenido a Escuelas de escalada"
-      text-variant="white"
+      header="Escuelas de Escalada - Regístrate"
       class="text-center"
+        align="center"
     >
-      <b-card-text>Crea tu cuenta</b-card-text>
       <div class="row">
         <div class="col-lg-6 offset-lg-3 col-sm-10 offset-sm-1">
           <form
-            class="text-center border border-primary p-5"
-            style="
-              margin-top: 70px;
-              height: auto;
-              padding-top: 100px !important;
-            "
+            class="text-center p-5"
             @submit.prevent="registerUser"
           >
             <input
@@ -42,7 +35,7 @@
               v-model="register.password"
             />
             <center>
-              <button class="btn btn-primary btn-block w-75 my-4" type="submit">
+              <button class="btn btn-primary btn-block my-4" type="submit">
                 Registrar
               </button>
             </center>
@@ -73,11 +66,27 @@ export default {
         let response = await this.$http.post("/usuarios", this.register);
         if (response) {
           this.$router.push("/login");
+          this.$fire({
+            title: "Usuario registrado",
+            text: "Nuevo usuario creado correctamente, por favor haga login",
+            type: "success",
+            showConfirmButton: false,
+            timer: 2500,
+          }).then((r) => {
+            console.log(r.value);
+          });
         } else {
           console.log("Error", "Something Went Wrong", "error");
         }
       } catch (err) {
-        alert(err.response.data.data.error);
+        this.$fire({
+          title: "Error",
+          text: err.response.data.data.error,
+          type: "error",
+          timer: 5000,
+        }).then((r) => {
+          console.log(r.value);
+        });
         this.register.nombre = "";
         this.register.email = "";
         this.register.password = "";
