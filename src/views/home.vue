@@ -1,13 +1,15 @@
 <template>
   <div class="home">
     <NavBar />
-  </div>
+    <home />
+  </div> 
 </template>
 <script>
 import NavBar from "../components/auth/NavBar";
+import home from "../components/escuelas/home";
 export default {
   components: {
-    NavBar
+    NavBar, home
   }
 };
 </script>

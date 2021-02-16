@@ -60,7 +60,7 @@ export default {
         let response = await this.$http.post("/login", this.login);
         let token = response.data.data.token;
         localStorage.setItem("user", token);
-        this.$router.push("/me");
+        this.$router.push("/");
       } catch (err) {
         this.$alert(err.response.data.data.error);
         this.login.email = "";
