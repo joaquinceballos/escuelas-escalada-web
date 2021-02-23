@@ -1,52 +1,98 @@
 <template>
-  <div class="overflow-auto">
-    <b-pagination
-      v-model="currentPage"
-      :total-rows="rows"
-      :per-page="perPage"
-      aria-controls="my-table"
-      @page-click="rellenaPagina"
-    ></b-pagination>
-
-    <p class="mt-3">Current Page: {{ currentPage }}</p>
-
-    <b-table ref="table" id="my-table" :items="items" small></b-table>
+  <div id="home" class="container">
+    <h1 class="pb-2">
+      Listado provisional de escuelas
+    </h1>
+    <DataTableEscuelas :escuelas="escuelas" />
+    <div v-if="loading" class="justify-content-center">
+      <icons :icon="['fas', 'spinner']" class="fa-spinner" />
+    </div>
+    <div class="my-4">
+      <!-- Pagination -->
+      <ul class="pagination pagination-md justify-content-center text-center">
+        <li class="page-item" :class="page === 1 ? 'disabled' : ''">
+          <a class="page-link" @click="prevPage"> Previous </a>
+        </li>
+        <li class="page-link" style="background-color: inherit">
+          {{ page }} of {{ lastPage }}
+        </li>
+        <li class="page-item" :class="page === lastPage ? 'disabled' : ''">
+          <a class="page-link" @click="nextPage"> Next </a>
+        </li>
+      </ul>
+    </div>
+    <!--./Pagination -->
   </div>
 </template>
 
 <script>
+import DataTableEscuelas from "./DataTableEscuelas";
 export default {
+  components: {
+    DataTableEscuelas,
+  },
+
   data() {
-    this.rellenaPagina();
     return {
-      rows: 1,
-      perPage: 1,
-      currentPage: 1,
-      items: [],
+      escuelas: [],
+      page: 1,
+      loading: false,
+      lastPage: 1,
+      perPage: 20,
     };
   },
+
+  mounted() {
+    this.fetchData();
+  },
+
   methods: {
-    async rellenaPagina(evento) {
-      let pag = 0;
-      if (evento && evento.target && evento.target.textContent) {
-         pag = parseInt(evento.target.textContent) - 1;
-      }
+    fetchData() {
+      this.loading = true;
       let token = localStorage.getItem("user");
       const headers = { Authorization: "Bearer " + token };
       this.$http
-        .get("/escuelas?size=2&page=" + pag, {
+        .get("/escuelas?size=2&page=" + (this.page - 1), {
           headers,
         })
         .then((response) => {
-          this.items = response.data.data.contenido;
-          this.perPage = response.data.data.size;
-          this.rows = response.data.data.totalPaginas * this.perPage;
-          this.$root.$emit("bv::refresh::table", "my-table");
+          this.lastPage = response.data.data.totalPaginas;
+          this.escuelas = response.data.data.contenido;
+          this.loading = false;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((err) => {
+          console.log(err);
         });
+    },
+
+    prevPage() {
+      this.loading = true;
+      this.page--;
+      this.fetchData();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+
+    nextPage() {
+      this.loading = true;
+      this.page++;
+      this.fetchData();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     },
   },
 };
 </script>
+
+<style>
+a:hover {
+  cursor: pointer;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.fa-spinner {
+  animation: spinner 1s linear infinite;
+}
+</style>
