@@ -14,10 +14,10 @@
           >
             <input
               type="text"
-              id="email"
+              id="username"
               class="form-control mb-5"
               placeholder="Email"
-              v-model="login.email"
+              v-model="login.username"
             />
             <!-- Password -->
             <input
@@ -49,7 +49,7 @@ export default {
   data() {
     return {
       login: {
-        email: "",
+        username: "",
         password: "",
       },
     };
@@ -61,7 +61,7 @@ export default {
         let response = await this.$http.post("/login", this.login);
         let token = response.data.data.token;
         Vue.guardaToken(token);
-        this.$router.push("/");
+        this.$router.push("/");        
       } catch (err) {
         this.$alert(err.response.data.data.error);
         this.login.email = "";

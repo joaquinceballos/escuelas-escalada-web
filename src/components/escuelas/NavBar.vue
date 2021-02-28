@@ -48,7 +48,8 @@ export default {
       this.$router.push("/login");
     },
     showPerfil() {
-      this.$router.push("/perfil");
+      console.log(this.user.sub);
+      this.$router.push({ name: 'perfil', params: { usuario: this.user.sub } })
     },
     showHome() {
       this.$router.push("/");

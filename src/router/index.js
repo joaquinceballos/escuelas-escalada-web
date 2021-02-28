@@ -13,7 +13,8 @@ const routes = [{
         component: Home,
         meta: {
             requiresAuth: true
-        }
+        },
+        props: true
     },
     {
         path: "/login",
@@ -26,9 +27,13 @@ const routes = [{
         component: Register
     },
     {
-        path: "/perfil",
+        path: "/perfil/:usuario",
         name: "perfil",
-        component: Perfil
+        component: Perfil,
+        meta: {
+            requiresAuth: true
+        },
+        props: true
     }
 ];
 
