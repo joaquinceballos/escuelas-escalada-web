@@ -1,8 +1,6 @@
 <template>
   <div id="home" class="container">
-    <h1 class="pb-2">
-      Listado provisional de escuelas
-    </h1>
+    <h1 class="pb-2">Listado provisional de escuelas</h1>
     <DataTableEscuelas :escuelas="escuelas" />
     <div v-if="loading" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
@@ -27,6 +25,8 @@
 
 <script>
 import DataTableEscuelas from "./DataTableEscuelas";
+import Vue from "vue";
+
 export default {
   components: {
     DataTableEscuelas,
@@ -49,7 +49,7 @@ export default {
   methods: {
     fetchData() {
       this.loading = true;
-      let token = localStorage.getItem("user");
+      let token = Vue.getToken();
       const headers = { Authorization: "Bearer " + token };
       this.$http
         .get("/escuelas?size=2&page=" + (this.page - 1), {
@@ -61,7 +61,11 @@ export default {
           this.loading = false;
         })
         .catch((err) => {
-          console.log(err);
+          if (err.response.status == 403) {
+            Vue.borraToken();
+            this.$router.push("/login");
+          }
+          console.log(err.response);
         });
     },
 

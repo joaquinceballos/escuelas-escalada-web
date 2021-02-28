@@ -9,6 +9,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMountain, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import TokenPlugin from "./plugins/TokenPlugin.js";
 
 const base = axios.create({
     baseURL: "https://api-escuelas.ddns.net" // replace on production env
@@ -24,6 +25,7 @@ Vue.use(VueSimpleAlert);
 
 Vue.prototype.$http = base;
 
+Vue.use(TokenPlugin);
 
 library.add(faSpinner, faMountain);
 Vue.component('icons', FontAwesomeIcon);

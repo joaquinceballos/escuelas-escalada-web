@@ -14,6 +14,7 @@
 
 <script>
 import VueJwtDecode from "vue-jwt-decode";
+import Vue from "vue";
 
 export default {
   data() {
@@ -23,7 +24,7 @@ export default {
   },
   methods: {
     getUserDetails() {
-      let token = localStorage.getItem("user");
+      let token = Vue.getToken();
       try {
         let decoded = VueJwtDecode.decode(token);
         this.user = decoded;
@@ -33,7 +34,7 @@ export default {
       }
     },
     logUserOut() {
-      localStorage.removeItem("user");
+      Vue.borraToken();
       this.$router.push("/login");
     }
   },

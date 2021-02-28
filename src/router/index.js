@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
     }
     next();
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (localStorage.getItem("user") == null) {
+        if (Vue.getToken() == null) {
             next({
                 path: "/login"
             });
