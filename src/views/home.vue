@@ -5,7 +5,7 @@
   </div> 
 </template>
 <script>
-import NavBar from "../components/auth/NavBar";
+import NavBar from "../components/escuelas/NavBar";
 import home from "../components/escuelas/home";
 export default {
   components: {
