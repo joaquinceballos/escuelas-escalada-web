@@ -76,6 +76,79 @@ const messages = {
                 }
             }
         }
+    },
+    en: {
+        message: {
+
+            app: {
+                nombre: 'Escuelas de Escalada'
+            },
+
+            paginacion: {
+                previo: 'previous',
+                siguiente: 'next',
+                de: 'of'
+            },
+
+            navbar: {
+                busqueda: {
+                    placeholder: 'Search'
+                },
+                usuario: {
+                    perfil: 'Profile',
+                    logout: 'logout'
+                }
+            },
+
+            resultados: {
+                escuelas: {
+                    titulo: 'iEscuelas'
+                },
+                sectores: {
+                    titulo: 'iSectores'
+                },
+                vias: {
+                    titulo: 'iVías'
+                }
+            },
+
+            perfil: {
+                titulo: 'User details',
+                username: 'Username',
+                email: 'Email',
+                nombre: 'Name',
+                apellido1: 'Surname',
+                apellido2: 'Mother name',
+                pais: 'Country',
+                nacimiento: 'Birthday'
+            },
+
+            escuela: {
+                tabla: {
+                    nombre: 'Name',
+                    pais: 'Country',
+                    nsectores: '#iSectores',
+                    nvias: '#iVías'
+                }
+            },
+
+            sector: {
+                tabla: {
+                    nombre: 'Name',
+                    escuela: 'iEscuela',
+                    nvias: '#iVías'
+                }
+            },
+
+            via: {
+                tabla: {
+                    nombre: 'Name',
+                    escuela: 'iEscuela',
+                    grado: 'Degree',
+                    longitud: 'Length'
+                }
+            }
+        }
     }
 };
 
