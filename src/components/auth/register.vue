@@ -13,10 +13,34 @@
           >
             <input
               type="text"
+              id="username"
+              class="form-control mb-5"
+              placeholder="username"
+              v-model="register.username"
+              required
+            />
+            <input
+              type="text"
               id="nombre"
               class="form-control mb-5"
               placeholder="Nombre"
               v-model="register.nombre"
+              required
+            />
+            <input
+              type="text"
+              id="apellido1"
+              class="form-control mb-5"
+              placeholder="Apellido 1"
+              v-model="register.apellido1"
+              required
+            />
+            <input
+              type="text"
+              id="apellido2"
+              class="form-control mb-5"
+              placeholder="Apellido 2"
+              v-model="register.apellido2"
               required
             />
             <input
@@ -57,6 +81,9 @@ export default {
         nombre: "",
         email: "",
         password: "",
+        apellido1: "",
+        apellido2: "",
+        username: ""
       },
     };
   },
