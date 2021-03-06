@@ -1,14 +1,14 @@
 <template>
   <div id="datatable-escuelas" class="container">
-    <h1 class="pb-2">Escuelas</h1>
+    <h1 class="pb-2">{{ $t("message.resultados.escuelas.titulo") }}</h1>
     <div class="border border-black rounded">
       <table class="table">
         <thead class="thead-dark">
           <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">País</th>
-            <th scope="col">#Sectores</th>
-            <th scope="col">#Vías</th>
+            <th scope="col">{{ $t("message.escuela.tabla.nombre") }}</th>
+            <th scope="col">{{ $t("message.escuela.tabla.pais") }}</th>
+            <th scope="col">{{ $t("message.escuela.tabla.nsectores") }}</th>
+            <th scope="col">{{ $t("message.escuela.tabla.nvias") }}</th>
           </tr>
         </thead>
         <tbody>
@@ -34,13 +34,17 @@
       <div class="my-4">
         <ul class="pagination pagination-md justify-content-center text-center">
           <li class="page-item" :class="page === 1 ? 'disabled' : ''">
-            <a class="page-link" @click="prevPage"> Previous </a>
+            <a class="page-link" @click="prevPage">
+              {{ $t("message.paginacion.previo") }}
+            </a>
           </li>
           <li class="page-link" style="background-color: inherit">
-            {{ page }} of {{ lastPage }}
+            {{ page }} {{ $t("message.paginacion.de") }} {{ lastPage }}
           </li>
           <li class="page-item" :class="page === lastPage ? 'disabled' : ''">
-            <a class="page-link" @click="nextPage"> Next </a>
+            <a class="page-link" @click="nextPage">
+              {{ $t("message.paginacion.siguiente") }}
+            </a>
           </li>
         </ul>
       </div>

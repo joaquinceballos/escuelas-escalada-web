@@ -1,6 +1,7 @@
 <template>
   <div id="home" class="container">
     <h1 class="pb-2">Nada por aquí...</h1>
+    <p>{{ $t("message.escuelas.nombre") }}</p>
   </div>
 </template>
 

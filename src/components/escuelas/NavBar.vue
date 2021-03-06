@@ -1,12 +1,13 @@
 <template>
   <div>
     <b-navbar id="navbar" toggleable="md" type="dark" variant="info">
-      <b-navbar-brand> Escuelas de escalada </b-navbar-brand>
+      <b-navbar-brand>{{ $t("message.app.nombre") }}</b-navbar-brand>
       <b-nav-form class="m-auto" @submit.prevent="buscador">
+        <div class="form"></div>
         <b-form-input
           size="md"
           class="mr-sm-2"
-          placeholder="Search"
+          v-bind:placeholder="$t('message.navbar.busqueda.placeholder')"
           id="texto"
           v-model="busqueda.texto"
         />
@@ -19,9 +20,9 @@
           <template slot="button-content">
             <icons :icon="['fas', 'user']" class="fa-user" />
           </template>
-          <b-dropdown-item @click="showPerfil">Perfil</b-dropdown-item>
+          <b-dropdown-item @click="showPerfil">{{ $t("message.navbar.usuario.perfil") }}</b-dropdown-item>
           <b-dropdown-divider />
-          <b-dropdown-item @click="logUserOut">Logout</b-dropdown-item>
+          <b-dropdown-item @click="logUserOut">{{ $t("message.navbar.usuario.logout") }}</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>

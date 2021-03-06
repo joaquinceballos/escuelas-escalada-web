@@ -1,36 +1,42 @@
 <template>
   <div class="perfil-usuario">
-    <h1>Datos del usuario</h1>
+    <h1>{{ $t("message.perfil.titulo") }}</h1>
     <div v-if="loading" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
     <div class="container">
       <dl class="row">
-        <dt class="col-sm-3 text-right">Nombre de usuario</dt>
+        <dt class="col-sm-3 text-right">{{ $t("message.perfil.username") }}</dt>
         <dd class="col-sm-9 text-left">{{ userDto.username }}</dd>
       </dl>
       <dl class="row">
-        <dt class="col-sm-3 text-right">Email</dt>
+        <dt class="col-sm-3 text-right">{{ $t("message.perfil.email") }}</dt>
         <dd class="col-sm-9 text-left">{{ userDto.email }}</dd>
       </dl>
       <dl class="row">
-        <dt class="col-sm-3 text-right">Nombre</dt>
+        <dt class="col-sm-3 text-right">{{ $t("message.perfil.nombre") }}</dt>
         <dd class="col-sm-9 text-left">{{ userDto.nombre }}</dd>
       </dl>
       <dl class="row">
-        <dt class="col-sm-3 text-right">Apellido 1</dt>
+        <dt class="col-sm-3 text-right">
+          {{ $t("message.perfil.apellido1") }}
+        </dt>
         <dd class="col-sm-9 text-left">{{ userDto.apellido1 }}</dd>
       </dl>
       <dl class="row">
-        <dt class="col-sm-3 text-right">Apellido2</dt>
+        <dt class="col-sm-3 text-right">
+          {{ $t("message.perfil.apellido2") }}
+        </dt>
         <dd class="col-sm-9 text-left">{{ userDto.apellido2 }}</dd>
       </dl>
       <dl class="row">
-        <dt class="col-sm-3 text-right">País</dt>
+        <dt class="col-sm-3 text-right">{{ $t("message.perfil.pais") }}</dt>
         <dd class="col-sm-9 text-left">{{ userDto.pais }}</dd>
       </dl>
       <dl class="row">
-        <dt class="col-sm-3 text-right">Fecha de nacimiento</dt>
+        <dt class="col-sm-3 text-right">
+          {{ $t("message.perfil.nacimiento") }}
+        </dt>
         <dd class="col-sm-9 text-left">{{ userDto.nacimiento }}</dd>
       </dl>
     </div>
