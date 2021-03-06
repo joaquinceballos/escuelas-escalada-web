@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <b-card
-      header="Escuelas de Escalada - Identifícate"
+      v-bind:header="$t('message.login.header')"
       class="text-center"
       align="center"
     >
@@ -16,7 +16,7 @@
               type="text"
               id="username"
               class="form-control mb-5"
-              placeholder="Email"
+              v-bind:placeholder="$t('message.login.username')"
               v-model="login.username"
             />
             <!-- Password -->
@@ -24,17 +24,18 @@
               type="password"
               id="password"
               class="form-control mb-5"
-              placeholder="Contraseña"
+              v-bind:placeholder="$t('message.login.password')"
               v-model="login.password"
             />
             <center>
               <button class="btn btn-primary btn-block my-4" type="submit">
-                Entra
+                {{ $t("message.login.entrar") }}
               </button>
             </center>
             <p>
-              ¿No tienes cuenta? Click
-              <router-link to="/register"> aquí </router-link> para registrarte
+              <router-link to="/register">
+                {{ $t("message.login.registrar") }}
+              </router-link>
             </p>
           </form>
         </div>
@@ -61,7 +62,7 @@ export default {
         let response = await this.$http.post("/login", this.login);
         let token = response.data.data.token;
         Vue.guardaToken(token);
-        this.$router.push("/");        
+        this.$router.push("/");
       } catch (err) {
         this.$alert(err.response.data.data.error);
         this.login.email = "";
