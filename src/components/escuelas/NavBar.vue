@@ -55,6 +55,7 @@ export default {
   },
   methods: {
     cambiaIdioma(idioma) {
+      localStorage.setItem("web-escuelas-idioma", idioma);
       this.$i18n.locale = idioma;
     },
     getUserDetails() {

@@ -11,6 +11,34 @@ const messages = {
                 nombre: 'Escuelas de Escalada'
             },
 
+            login: {
+                header: 'Escuelas de Escalada - Identifícate',
+                username: 'Nombre de usuario / email',
+                password: 'Contraseña',
+                entrar: 'Entrar',
+                registrar: '¿No tienes cuenta? Click aquí para registrarte'
+            },
+
+            register: {
+                header: 'Escuelas de Escalada - Regístrate',
+                username: 'Nombre de usuario',
+                nombre: 'Nombre',
+                apellido1: 'Apellido 1',
+                apellido2: 'Apellido 2',
+                email: 'Email',
+                password: 'Contraseña',
+                submit: 'Registrar',
+                login: '¿Ya tienes cuenta? Click aquí para entrar'
+            },
+
+            modal: {
+                error: 'Error',
+                registrado: {
+                    titulo: 'Usuario registrado',
+                    texto: 'Nuevo usuario creado correctamente, por favor haga login'
+                }
+            },
+
             paginacion: {
                 previo: 'previo',
                 siguiente: 'siguiente',
@@ -84,6 +112,34 @@ const messages = {
                 nombre: 'Escuelas de Escalada'
             },
 
+            login: {
+                header: 'Escuelas de Escalada - Log in',
+                username: 'Username / email',
+                password: 'Password',
+                entrar: 'Enter',
+                registrar: 'Not a member yet? Click to register'
+            },
+
+            modal: {
+                error: 'Error',
+                registrado: {
+                    titulo: 'User registered',
+                    texto: 'New user has been created, please login'
+                }
+            },
+
+            register: {
+                header: 'Escuelas de Escalada - Sign in',
+                username: 'Username',
+                nombre: 'Name',
+                apellido1: 'Surname',
+                apellido2: 'Mother name',
+                email: 'Email',
+                password: 'Password',
+                submit: 'Sign in',
+                login: 'already a member? Click here to log in'
+            },
+
             paginacion: {
                 previo: 'previous',
                 siguiente: 'next',
@@ -152,8 +208,15 @@ const messages = {
     }
 };
 
+let lang;
+if (localStorage.getItem("web-escuelas-idioma")) {
+    lang = localStorage.getItem("web-escuelas-idioma");
+} else {
+    lang = 'es';
+}
+
 const i18n = new VueI18n({
-    locale: 'es',
+    locale: lang,
     messages,
 });
 
