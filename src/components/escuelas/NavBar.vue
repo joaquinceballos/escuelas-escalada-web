@@ -1,9 +1,15 @@
 <template>
   <div>
     <b-navbar id="navbar" toggleable="md" type="dark" variant="info">
-      <b-navbar-brand @click="showHome"> Escuelas de escalada </b-navbar-brand>
-      <b-nav-form class="m-auto">
-        <b-form-input size="md" class="mr-sm-2" placeholder="Search" />
+      <b-navbar-brand> Escuelas de escalada </b-navbar-brand>
+      <b-nav-form class="m-auto" @submit.prevent="buscador">
+        <b-form-input
+          size="md"
+          class="mr-sm-2"
+          placeholder="Search"
+          id="texto"
+          v-model="busqueda.texto"
+        />
         <b-button size="md" class="my-2 my-sm-0" type="submit">
           <icons :icon="['fas', 'search']" class="fa-search" />
         </b-button>
@@ -13,9 +19,9 @@
           <template slot="button-content">
             <icons :icon="['fas', 'user']" class="fa-user" />
           </template>
-          <b-dropdown-item  @click="showPerfil" >Perfil</b-dropdown-item>
-          <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item  @click="logUserOut" >Logout</b-dropdown-item>
+          <b-dropdown-item @click="showPerfil">Perfil</b-dropdown-item>
+          <b-dropdown-divider />
+          <b-dropdown-item @click="logUserOut">Logout</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -30,6 +36,9 @@ export default {
   data() {
     return {
       user: {},
+      busqueda: {
+        texto: "",
+      },
     };
   },
   methods: {
@@ -39,7 +48,6 @@ export default {
         let decoded = VueJwtDecode.decode(token);
         this.user = decoded;
       } catch (error) {
-        // return error in production env
         console.log(error, "error from decoding token");
       }
     },
@@ -48,12 +56,26 @@ export default {
       this.$router.push("/login");
     },
     showPerfil() {
-      console.log(this.user.sub);
-      this.$router.push({ name: 'perfil', params: { usuario: this.user.sub } })
+      this.$router.push({ name: "perfil", params: { usuario: this.user.sub } });
     },
     showHome() {
       this.$router.push("/");
-    }
+    },
+    buscador() {
+      this.$router
+        .push({
+          name: "busqueda",
+          query: { texto: this.busqueda.texto },
+        })
+        .catch((error) => {
+          if (error.name != "NavigationDuplicated") {
+            throw error;
+          }
+          this.$router.push({
+            query: { texto: this.busqueda.texto },
+          });
+        });
+    },
   },
   created() {
     this.getUserDetails();

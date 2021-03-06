@@ -4,6 +4,7 @@ import Home from "../views/home.vue";
 import Login from "../views/login.vue";
 import Register from "../views/register.vue";
 import Perfil from "../views/perfil.vue"
+import Busqueda from "../views/busqueda.vue"
 
 Vue.use(VueRouter);
 
@@ -30,6 +31,15 @@ const routes = [{
         path: "/perfil/:usuario",
         name: "perfil",
         component: Perfil,
+        meta: {
+            requiresAuth: true
+        },
+        props: true
+    },
+    {
+        path: "/busqueda",
+        name: "busqueda",
+        component: Busqueda,
         meta: {
             requiresAuth: true
         },
