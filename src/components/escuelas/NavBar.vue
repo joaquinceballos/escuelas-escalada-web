@@ -18,11 +18,22 @@
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right>
           <template slot="button-content">
+            <icons :icon="['fas', 'language']" class="fa-language" />
+          </template>
+          <b-dropdown-item @click="cambiaIdioma('en')">en</b-dropdown-item>
+          <b-dropdown-item @click="cambiaIdioma('es')">es</b-dropdown-item>
+        </b-nav-item-dropdown>
+        <b-nav-item-dropdown right>
+          <template slot="button-content">
             <icons :icon="['fas', 'user']" class="fa-user" />
           </template>
-          <b-dropdown-item @click="showPerfil">{{ $t("message.navbar.usuario.perfil") }}</b-dropdown-item>
+          <b-dropdown-item @click="showPerfil">{{
+            $t("message.navbar.usuario.perfil")
+          }}</b-dropdown-item>
           <b-dropdown-divider />
-          <b-dropdown-item @click="logUserOut">{{ $t("message.navbar.usuario.logout") }}</b-dropdown-item>
+          <b-dropdown-item @click="logUserOut">{{
+            $t("message.navbar.usuario.logout")
+          }}</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
@@ -43,6 +54,9 @@ export default {
     };
   },
   methods: {
+    cambiaIdioma(idioma) {
+      this.$i18n.locale = idioma;
+    },
     getUserDetails() {
       let token = Vue.getToken();
       try {

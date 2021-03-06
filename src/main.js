@@ -9,7 +9,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faMountain, faSpinner, faSearch, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faMountain, faSpinner, faSearch, faUser, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import TokenPlugin from "./plugins/TokenPlugin.js";
 
 const base = axios.create({
@@ -28,7 +28,7 @@ Vue.prototype.$http = base;
 
 Vue.use(TokenPlugin);
 
-library.add(faSpinner, faMountain, faSearch, faUser);
+library.add(faSpinner, faMountain, faSearch, faUser, faLanguage);
 Vue.component('icons', FontAwesomeIcon);
 
 new Vue({
