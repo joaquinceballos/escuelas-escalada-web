@@ -1,0 +1,43 @@
+name: Create and publish a package
+on:
+  release:
+    types: [published]
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build container image
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: docker.pkg.github.com
+        repository: ${{ github.repository }}/web-image
+        tags: latest
+        tag_with_ref: true
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [build-and-push-image]
+    steps:    
+    - name: docker rebuild
+      uses: fifsky/ssh-action@master
+      with:
+        command: |
+          cd app/
+          echo docker login
+          sudo docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+          echo docker pull
+          sudo docker pull docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image:latest
+          echo docker stop container
+          sudo docker container stop contenedor-web-escuelas
+          echo docker remove container
+          sudo docker container rm contenedor-web-escuelas
+          echo docker run
+          sudo docker run -p 443:443 -v /home/ubuntu/app/server.conf:/etc/nginx/conf.d/server.conf -v /home/ubuntu/app/certs:/certs --name contenedor-web-escuelas -d docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image
+          echo fin
+        host: ${{ secrets.WEB_HOST }}
+        user: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        args: "-tt -vvv"         
