@@ -16,8 +16,6 @@ const base = axios.create({
     baseURL: "https://api-escuelas.ddns.net" // replace on production env
 });
 
-import store from "./store/index";
-
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
@@ -33,7 +31,6 @@ Vue.component('icons', FontAwesomeIcon);
 
 new Vue({
     i18n,
-    store,
     router,
     render: h => h(App)
 }).$mount("#app");
