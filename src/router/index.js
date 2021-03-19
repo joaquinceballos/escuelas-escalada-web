@@ -5,6 +5,7 @@ import Login from "../views/login.vue";
 import Register from "../views/register.vue";
 import Perfil from "../views/perfil.vue"
 import Busqueda from "../views/busqueda.vue"
+import DetalleEscuela from "../views/detalleEscuela.vue"
 
 Vue.use(VueRouter);
 
@@ -37,9 +38,18 @@ const routes = [{
         props: true
     },
     {
-        path: "/busqueda",
+        path: "/busqueda/",
         name: "busqueda",
         component: Busqueda,
+        meta: {
+            requiresAuth: true
+        },
+        props: true
+    },
+    {
+        path: "/escuela/:id",
+        name: "escuela",
+        component: DetalleEscuela,
         meta: {
             requiresAuth: true
         },

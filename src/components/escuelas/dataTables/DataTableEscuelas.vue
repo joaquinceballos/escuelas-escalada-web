@@ -2,32 +2,12 @@
   <div id="datatable-escuelas" class="container">
     <h1 class="pb-2">{{ $t("message.resultados.escuelas.titulo") }}</h1>
     <div class="border border-black rounded">
-      <table class="table">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">{{ $t("message.escuela.tabla.nombre") }}</th>
-            <th scope="col">{{ $t("message.escuela.tabla.pais") }}</th>
-            <th scope="col">{{ $t("message.escuela.tabla.nsectores") }}</th>
-            <th scope="col">{{ $t("message.escuela.tabla.nvias") }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="escuela in escuelas" :key="escuela.id">
-            <td>
-              {{ escuela.nombre }}
-            </td>
-            <td>
-              {{ escuela.paisIso }}
-            </td>
-            <td>
-              {{ escuela.sectores.length }}
-            </td>
-            <td>
-              {{ getTotalVias(escuela) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <b-table
+        hover
+        :fields="fields"
+        :items="items"
+        @row-clicked="detalleEscuela"
+      ></b-table>
       <div v-if="loading" class="justify-content-center">
         <icons :icon="['fas', 'spinner']" class="fa-spinner" />
       </div>
@@ -58,7 +38,25 @@ export default {
 
   data() {
     return {
-      escuelas: [],
+      fields: [
+        {
+          key: "nombre",
+          label: this.$i18n.t('message.escuela.tabla.nombre'),
+        },
+        {
+          key: "pais",
+          label: this.$i18n.t("message.escuela.tabla.pais"),
+        },
+        {
+          key: "nSectores",
+          label: this.$i18n.t("message.escuela.tabla.nsectores"),
+        },
+        {
+          key: "nVias",
+          label: this.$i18n.t("message.escuela.tabla.nvias"),
+        },
+      ],
+      items: [],
       loading: false,
       page: 1,
       lastPage: 1,
@@ -101,7 +99,12 @@ export default {
         )
         .then((response) => {
           this.lastPage = response.data.data.totalPaginas;
-          this.escuelas = response.data.data.contenido;
+          let escuelas = response.data.data.contenido;
+          this.items = response.data.data.contenido;
+          for (let i = 0; i < escuelas.length; i++) {
+            this.items[i].nSectores = this.items[i].sectores.length;
+            this.items[i].nVias = this.getTotalVias(escuelas[i]);
+          }
           this.loading = false;
         })
         .catch((err) => {
@@ -123,6 +126,17 @@ export default {
       this.loading = true;
       this.page++;
       this.fetchData();
+    },
+
+    detalleEscuela(escuela) {
+      this.$router
+        .push({
+          name: "escuela",
+          params: { id: escuela.id },
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
