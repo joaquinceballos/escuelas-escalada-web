@@ -7,10 +7,23 @@
     <hr />
     <p>{{ sectorDto.informacion }}</p>
     <hr />
+    <carousel :perPage="1" :navigationEnabled="true">
+      <slide v-for="c in croquis" :key="c.id">
+        <Croquis class="border rounded" :croquis="c" :alto="500" />
+      </slide>
+    </carousel>
   </div>
 </template><script>
 import Vue from "vue";
+import Croquis from "./Croquis";
+import { Carousel, Slide } from "vue-carousel";
+
 export default {
+  components: {
+    Croquis,
+    Carousel,
+    Slide,
+  },
   props: {
     idEscuela: {
       type: Number,
@@ -26,6 +39,7 @@ export default {
 
   data() {
     return {
+      croquis: [],
       loading: false,
       sectorDto: {
         id: 0,
@@ -48,6 +62,8 @@ export default {
         })
         .then((response) => {
           this.sectorDto = response.data.data;
+          // cargamos los croquis
+          this.cargaCroquis();
           this.loading = false;
         })
         .catch((err) => {
@@ -62,6 +78,30 @@ export default {
             });
           }
           console.log(err.response);
+        });
+    },
+
+    cargaCroquis() {
+      let token = Vue.getToken();
+      const headers = { Authorization: "Bearer " + token };
+      this.$http
+        .get(
+          "/escuelas/" +
+            this.idEscuela +
+            "/sectores/" +
+            this.idSector +
+            "/croquis/",
+          { headers }
+        )
+        .then((response) => {
+          let croquis = response.data.data;
+          for (let i = 0; i < croquis.length; i++) {
+            croquis[i].idEscuela = this.idEscuela;
+          }
+          this.croquis = croquis;
+        })
+        .catch((err) => {
+          console.log(err);
         });
     },
   },
