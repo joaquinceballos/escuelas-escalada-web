@@ -1,21 +1,21 @@
 <template>
   <div id="home" class="container">
-    <DataTableEscuelas ref="resultadosEscuelas" />
-    <DataTableSectores class="mt-5" ref="resultadosSectores" />
-    <DataTableVias class="mt-5" ref="resultadosVias" />
+    <BusquedaEscuelas ref="resultadosEscuelas" />
+    <BusquedaSectores class="mt-5" ref="resultadosSectores" />
+    <BusquedaVias class="mt-5" ref="resultadosVias" />
   </div>
 </template>
 
 <script>
-import DataTableEscuelas from "./dataTables/DataTableEscuelas";
-import DataTableSectores from "./dataTables/DataTableSectores";
-import DataTableVias from "./dataTables/DataTableVias";
+import BusquedaEscuelas from "./BusquedaEscuelas";
+import BusquedaSectores from "./BusquedaSectores";
+import BusquedaVias from "./BusquedaVias";
 
 export default {
   components: {
-    DataTableEscuelas,
-    DataTableSectores,
-    DataTableVias,
+    BusquedaEscuelas,
+    BusquedaSectores,
+    BusquedaVias,
   },
 
   props: {

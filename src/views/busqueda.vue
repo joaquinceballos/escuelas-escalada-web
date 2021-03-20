@@ -6,7 +6,7 @@
 </template>
 <script>
 import NavBar from "../components/escuelas/NavBar";
-import busqueda from "../components/escuelas/Busqueda";
+import busqueda from "../components/escuelas/buscador/Busqueda";
 export default {
   components: {
     NavBar,
