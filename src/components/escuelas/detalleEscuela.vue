@@ -83,6 +83,14 @@ export default {
           this.escuelaDto = response.data.data;
           this.setMarcadores();
           this.centrarMapa();
+
+          // paso la id de la escuela a los sectores ya que lo necesitarán para acceder al detalle de sector desde la tabla
+          for (let i = 0; i < this.escuelaDto.sectores.length; i++) {
+            this.escuelaDto.sectores[i].escuela = {
+              id: this.escuelaDto.id,
+            };
+          }
+          
           this.$refs.tablaSectores.setItems(this.escuelaDto.sectores);
           this.loading = false;
         })

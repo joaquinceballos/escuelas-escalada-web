@@ -1,19 +1,22 @@
 <template>
   <div class="detalleEscuela">
     <NavBar />
-    <detalleEscuela v-bind:id="id" />
+    <DetalleSector v-bind:idEscuela="idEscuela" v-bind:idSector="idSector" />
   </div>
 </template>
 <script>
 import NavBar from "../components/escuelas/NavBar";
-import detalleEscuela from "../components/escuelas/DetalleEscuela";
+import DetalleSector from "../components/escuelas/DetalleSector";
 export default {
   components: {
     NavBar,
-    detalleEscuela,
+    DetalleSector,
   },
   props: {
-    id: {
+    idEscuela: {
+      type: Number,
+    },
+    idSector: {
       type: Number,
     },
   },

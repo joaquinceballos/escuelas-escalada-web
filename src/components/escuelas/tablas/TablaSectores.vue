@@ -34,8 +34,8 @@ export default {
       {
         key: "nombre",
         label: this.$i18n.t("message.sector.tabla.nombre"),
-        tdClass:"text-left",
-        thClass:"text-left",
+        tdClass: "text-left",
+        thClass: "text-left",
       },
       {
         key: "nVias",
@@ -50,13 +50,20 @@ export default {
       });
     }
     // alineo la última columna a la derecha
-    this.fields[this.fields.length - 1].tdClass="text-right";
-    this.fields[this.fields.length - 1].thClass="text-right";
+    this.fields[this.fields.length - 1].tdClass = "text-right";
+    this.fields[this.fields.length - 1].thClass = "text-right";
   },
 
   methods: {
     detalleSector(sector) {
-      console.log("detalle del sector: ", sector);
+      this.$router
+        .push({
+          name: "sector",
+          params: { idEscuela: sector.escuela.id, idSector: sector.id },
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     setItems(items) {
