@@ -11,26 +11,39 @@ export default {
   data() {
     return {
       items: [],
-      fields: [
-        {
-          key: "nombre",
-          label: this.$i18n.t("message.sector.tabla.nombre"),
-        },
-        {
-          key: "escuela.nombre",
-          label: this.$i18n.t("message.sector.tabla.escuela"),
-        },
-        {
-          key: "nVias",
-          label: this.$i18n.t("message.sector.tabla.nvias"),
-        }
-      ],
+      fields: [],
     };
+  },
+
+  props: {
+    columnaEscuela: {
+      type: Boolean,
+    },
+  },
+
+  mounted() {
+    this.fields = [
+      {
+        key: "nombre",
+        label: this.$i18n.t("message.sector.tabla.nombre"),
+      },
+      {
+        key: "nVias",
+        label: this.$i18n.t("message.sector.tabla.nvias"),
+      },
+    ];
+    if (this.columnaEscuela) {
+      this.fields.push({
+        key: "escuela.nombre",
+        visible: false,
+        label: this.$i18n.t("message.sector.tabla.escuela"),
+      });
+    }
   },
 
   methods: {
     detalleSector(sector) {
-      console.log('detalle del sector: ', sector);
+      console.log("detalle del sector: ", sector);
     },
 
     setItems(items) {

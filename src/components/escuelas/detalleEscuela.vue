@@ -17,15 +17,22 @@
         />
       </gmaps-map>
     </div>
+    <TablaSectores ref="tablaSectores"/>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
 import { gmapsMap, gmapsMarker } from "x5-gmaps";
+import TablaSectores from "./tablas/TablaSectores";
 const centroid = require("polygon-centroid");
 
 export default {
+  components: {
+    gmapsMap,
+    gmapsMarker,
+    TablaSectores,
+  },
   props: {
     id: {
       type: Number,
@@ -66,6 +73,7 @@ export default {
           this.escuelaDto = response.data.data;
           this.setMarcadores();
           this.centrarMapa();
+          this.$refs.tablaSectores.setItems(this.escuelaDto.sectores);
           this.loading = false;
         })
         .catch((err) => {
@@ -122,7 +130,6 @@ export default {
       }
     },
   },
-  components: { gmapsMap, gmapsMarker },
 };
 </script>
 

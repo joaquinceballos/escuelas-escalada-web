@@ -2,7 +2,7 @@
   <div id="datatable-sectores" class="container">
     <h1 class="pb-2">{{ $t("message.resultados.sectores.titulo") }}</h1>
     <div class="border border-black rounded">
-      <TablaSectores ref="tablaSectores" />
+      <TablaSectores ref="tablaSectores" :columnaEscuela="true"/>
       <Pagination ref="pagination" :perPage="3" @cambio="fetchData" />
     </div>
   </div>
