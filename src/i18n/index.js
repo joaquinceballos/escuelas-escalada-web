@@ -102,6 +102,12 @@ const messages = {
                     grado: 'Grado',
                     longitud: 'Longitud'
                 }
+            },
+
+            detalle: {
+                escuela: {
+                    sectores: "Sectores de la escuela"
+                }
             }
         }
     },

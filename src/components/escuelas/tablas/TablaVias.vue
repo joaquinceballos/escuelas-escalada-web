@@ -15,6 +15,8 @@ export default {
         {
           key: "nombre",
           label: this.$i18n.t("message.via.tabla.nombre"),
+          tdClass: "text-left",
+          thClass: "text-left",
         },
         {
           key: "sector.escuela.nombre",
@@ -27,6 +29,8 @@ export default {
         {
           key: "longitud",
           label: this.$i18n.t("message.via.tabla.longitud"),
+          tdClass: "text-right",
+          thClass: "text-right",
         }
       ],
     };

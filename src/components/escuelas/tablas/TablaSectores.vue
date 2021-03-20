@@ -3,6 +3,8 @@
     hover
     :fields="fields"
     :items="items"
+    :borderless="borderless"
+    :small="small"
     @row-clicked="detalleSector"
   ></b-table>
 </template>
@@ -19,6 +21,12 @@ export default {
     columnaEscuela: {
       type: Boolean,
     },
+    borderless: {
+      type: Boolean,
+    },
+    small: {
+      type: Boolean,
+    },
   },
 
   mounted() {
@@ -26,6 +34,8 @@ export default {
       {
         key: "nombre",
         label: this.$i18n.t("message.sector.tabla.nombre"),
+        tdClass:"text-left",
+        thClass:"text-left",
       },
       {
         key: "nVias",
@@ -39,6 +49,9 @@ export default {
         label: this.$i18n.t("message.sector.tabla.escuela"),
       });
     }
+    // alineo la última columna a la derecha
+    this.fields[this.fields.length - 1].tdClass="text-right";
+    this.fields[this.fields.length - 1].thClass="text-right";
   },
 
   methods: {

@@ -4,8 +4,10 @@
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
     <h1 class="pb-2">{{ escuelaDto.nombre }}</h1>
+    <hr />
     <p>{{ escuelaDto.informacion }}</p>
-    <div style="height: 40vh">
+    <hr />
+    <div class="my-4" style="height: 40vh">
       <gmaps-map
         :options="mapOptions"
         v-if="marcadores && marcadores.length > 0"
@@ -17,7 +19,15 @@
         />
       </gmaps-map>
     </div>
-    <TablaSectores ref="tablaSectores"/>
+    <h2 v-show="escuelaDto.sectores.length > 0">
+      {{ $t("message.detalle.escuela.sectores") }}
+    </h2>
+    <TablaSectores
+      v-show="escuelaDto.sectores.length > 0"
+      ref="tablaSectores"
+      :borderless="true"
+      :small="true"
+    />
   </div>
 </template>
 
