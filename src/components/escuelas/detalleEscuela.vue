@@ -5,11 +5,26 @@
     </div>
     <h1 class="pb-2">{{ escuelaDto.nombre }}</h1>
     <p>{{ escuelaDto.informacion }}</p>
+    <div style="height: 40vh">
+      <gmaps-map
+        :options="mapOptions"
+        v-if="marcadores && marcadores.length > 0"
+      >
+        <gmaps-marker
+          v-for="(item, i) in marcadores"
+          :key="i"
+          :options="item.options"
+        />
+      </gmaps-map>
+    </div>
   </div>
 </template>
 
 <script>
 import Vue from "vue";
+import { gmapsMap, gmapsMarker } from "x5-gmaps";
+const centroid = require("polygon-centroid");
+
 export default {
   props: {
     id: {
@@ -29,6 +44,10 @@ export default {
         sectores: [],
       },
       loading: false,
+      marcadores: [],
+      mapOptions: {
+        zoom: 15,
+      },
     };
   },
   mounted() {
@@ -45,6 +64,8 @@ export default {
         })
         .then((response) => {
           this.escuelaDto = response.data.data;
+          this.setMarcadores();
+          this.centrarMapa();
           this.loading = false;
         })
         .catch((err) => {
@@ -61,7 +82,47 @@ export default {
           console.log(err.response);
         });
     },
+
+    setMarcadores() {
+      for (let i = 0; i < this.escuelaDto.sectores.length; i++) {
+        let sector = this.escuelaDto.sectores[i];
+        if (
+          sector.latitud !== undefined &&
+          sector.latitud !== null &&
+          sector.longitud !== undefined &&
+          sector.longitud !== null
+        ) {
+          this.marcadores.push({
+            options: {
+              title: sector.nombre,
+              position: {
+                lat: sector.latitud,
+                lng: sector.longitud,
+              },
+            },
+          });
+        }
+      }
+    },
+
+    centrarMapa() {
+      let puntos = [];
+      for (let i = 0; i < this.marcadores.length; i++) {
+        puntos.push({
+          x: this.marcadores[i].options.position.lat,
+          y: this.marcadores[i].options.position.lng,
+        });
+      }
+      if (puntos.length > 0) {
+        let centroMapa = centroid(puntos);
+        this.mapOptions.center = {
+          lat: centroMapa.x,
+          lng: centroMapa.y,
+        };
+      }
+    },
   },
+  components: { gmapsMap, gmapsMarker },
 };
 </script>
 

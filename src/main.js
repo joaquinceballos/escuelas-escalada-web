@@ -11,6 +11,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMountain, faSpinner, faSearch, faUser, faLanguage } from '@fortawesome/free-solid-svg-icons';
 import TokenPlugin from "./plugins/TokenPlugin.js";
+import x5GMaps from 'x5-gmaps';
+
 
 const base = axios.create({
     baseURL: "https://api-escuelas.ddns.net" // replace on production env
@@ -25,6 +27,8 @@ Vue.use(VueSimpleAlert);
 Vue.prototype.$http = base;
 
 Vue.use(TokenPlugin);
+
+Vue.use(x5GMaps, 'AIzaSyD60DFgSQ0wPBr78Jp3wtcWGBEiDQNZoME')
 
 library.add(faSpinner, faMountain, faSearch, faUser, faLanguage);
 Vue.component('icons', FontAwesomeIcon);
