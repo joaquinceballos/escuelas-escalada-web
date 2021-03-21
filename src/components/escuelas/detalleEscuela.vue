@@ -7,6 +7,34 @@
     <hr />
     <p>{{ escuelaDto.informacion }}</p>
     <hr />
+    <div v-if="escuelaDto.cierresTemporada.length > 0">
+      <b-card
+        :title="$t('message.escuela.detalle.cierresTemporada.titulo')"
+        tag="article"
+        bg-variant="info"
+        class="mb-2 text-light"
+      >
+        <b-card-text class="text-light"
+          ><icons
+            :icon="['fas', 'exclamation-circle']"
+            class="fa-exclamation-circle"
+          />
+          {{ $t("message.escuela.detalle.cierresTemporada.texto") }}
+        </b-card-text>
+        <b-button v-b-toggle.collapse-1 variant="info">
+          <icons :icon="['fas', 'chevron-down']" class="fa-chevron-down" />
+        </b-button>
+      </b-card>
+      <b-collapse id="collapse-1" class="mt-2">
+        <Calendar
+          :language="$t('message.idioma.codigo')"
+          :data-source="cierres"
+          render-style="background"
+          @mouse-on-day="muestraCierre"
+        />
+      </b-collapse>
+      <hr />
+    </div>
     <div class="my-4" style="height: 40vh">
       <gmaps-map
         :options="mapOptions"
@@ -20,7 +48,7 @@
       </gmaps-map>
     </div>
     <h2 v-show="escuelaDto.sectores.length > 0">
-      {{ $t("message.detalle.escuela.sectores") }}
+      {{ $t("message.escuela.detalle.sectores") }}
     </h2>
     <TablaSectores
       v-show="escuelaDto.sectores.length > 0"
@@ -35,6 +63,9 @@
 import Vue from "vue";
 import { gmapsMap, gmapsMarker } from "x5-gmaps";
 import TablaSectores from "./tablas/TablaSectores";
+import Calendar from "v-year-calendar";
+//import { FaIni } from 'bootstrap-vue';
+import "v-year-calendar/locales/v-year-calendar.es";
 const centroid = require("polygon-centroid");
 
 export default {
@@ -42,6 +73,7 @@ export default {
     gmapsMap,
     gmapsMarker,
     TablaSectores,
+    Calendar,
   },
   props: {
     id: {
@@ -65,6 +97,7 @@ export default {
       mapOptions: {
         zoom: 15,
       },
+      cierres: [],
     };
   },
   mounted() {
@@ -90,7 +123,26 @@ export default {
               id: this.escuelaDto.id,
             };
           }
-          
+
+          // si tiene cierres de temporada los pinto en el calendario
+          if (this.escuelaDto.cierresTemporada.length > 0) {
+            for (let i = 0; i < this.escuelaDto.cierresTemporada.length; i++) {
+              let cierre = this.escuelaDto.cierresTemporada[i];
+              this.cierres.push({
+                id: cierre.id,
+                color: "magenta",
+                name: this.$t(
+                  "message.escuela.detalle.cierresTemporada.tipo." +
+                    cierre.motivoCierre +
+                    ".texto"
+                ), //buscar texto para la clave del motivo
+                location: this.escuelaDto.nombre,
+                startDate: new Date(cierre.inicio),
+                endDate: new Date(cierre.fin),
+              });
+            }
+          }
+
           this.$refs.tablaSectores.setItems(this.escuelaDto.sectores);
           this.loading = false;
         })
@@ -145,6 +197,13 @@ export default {
           lat: centroMapa.x,
           lng: centroMapa.y,
         };
+      }
+    },
+
+    muestraCierre(dia) {
+      // provisional, no hace nada de momento, se podría usar para mostar información del cierre, el evento ya tiene fechas y moitivo
+      if (dia == null) {
+        console.log(dia);
       }
     },
   },
