@@ -75,4 +75,8 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.b-table > tbody > tr {
+  cursor: pointer;
+}
+</style>
