@@ -11,6 +11,10 @@ const messages = {
                 nombre: 'Escuelas de Escalada'
             },
 
+            idioma: {
+                codigo: 'es'
+            },
+
             login: {
                 header: 'Escuelas de Escalada - Identifícate',
                 username: 'Nombre de usuario / email',
@@ -84,6 +88,21 @@ const messages = {
                     pais: 'País',
                     nsectores: '#Sectores',
                     nvias: '#Vías'
+                },
+
+                detalle: {
+                    sectores: "Sectores de la escuela",
+                    cierresTemporada: {
+                        titulo: "Cirres de temporada",
+                        texto: "Esta escuela está regulada con cierres temporales para proteger la de cría de aves que nidifican en cortados rocosos. Para conocer las fechas afectadas consulte la información",
+                        botoninfo: "Más información",
+                        tipo: {
+                            CRIA_AVES: {
+                                texto: "Cría estacional de aves nidificantes"
+                            }
+                        }
+                    }
+
                 }
             },
 
@@ -110,6 +129,10 @@ const messages = {
 
             app: {
                 nombre: 'Escuelas de Escalada'
+            },
+
+            idioma: {
+                codigo: 'en'
             },
 
             login: {
