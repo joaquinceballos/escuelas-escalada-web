@@ -9,7 +9,7 @@
     <hr />
     <carousel :perPage="1" :navigationEnabled="true">
       <slide v-for="c in croquis" :key="c.id">
-        <Croquis :croquis="c" :alto="500" />
+        <Croquis :croquis="c" :alto="700" />
       </slide>
     </carousel>
   </div>

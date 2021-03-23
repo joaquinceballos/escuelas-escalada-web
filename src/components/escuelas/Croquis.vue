@@ -16,7 +16,6 @@ export default {
   data() {
     return {
       sketch: {},
-      canvas: {},
       imagen: "",
       loading: false,
     };
@@ -80,7 +79,8 @@ export default {
         let img;
 
         const GROSOR_VIA = 3;
-        const COLOR_VIA = s.color(0, 255, 0);
+        const COLOR_VIA = s.color(105, 189, 210);
+        const BLANCO = s.color(255, 255, 255);
 
         let viasGrabadas = [];
 
@@ -88,11 +88,21 @@ export default {
         const CENTRIPETAL = 1;
 
         s.setup = () => {
-          cargaImagen(this.imagen);
-          c = s.createCanvas(width, height);
-          cargaViasGrabadas();
-          pintaTodo();
-          s.noLoop();
+          if (this.imagen !== undefined && this.imagen !== null) {
+            try {
+              img = s.createImg(this.imagen, "", "", function () {
+                img.hide();
+                // factor de ajuste, ajustamos el ancho del canvas
+                width = img.width * (height / img.height);
+                c = s.createCanvas(width, height);
+                cargaViasGrabadas();
+                pintaTodo();
+                s.noLoop();
+              });
+            } catch (e) {
+              console.error(e);
+            }
+          }
         };
 
         s.mouseClicked = (mouseEvent) => {
@@ -112,20 +122,12 @@ export default {
           return mouseEvent.target == c.canvas;
         };
 
-        let cargaImagen = (data) => {
-          if (data !== undefined && data !== null) {
-            img = s.createImg(data, "");
-            img.hide();
-            // factor de ajuste, ajustamos el ancho del canvas
-            width = img.width * (height / img.height);
-          }
-        };
-
         let pintaTodo = () => {
           // pintamos la imagen
           s.image(img, 0, 0, width, height);
           // por cada vía grabada en el croquis, pintamos su curva
           for (let i = 0; i < viasGrabadas.length; i++) {
+            pintaCurva(viasGrabadas[i], BLANCO, GROSOR_VIA * 1.75);
             pintaCurva(viasGrabadas[i], COLOR_VIA, GROSOR_VIA);
           }
         };
@@ -294,7 +296,7 @@ export default {
           return C12;
         };
       };
-      this.canvas = new p5(this.sketch, "canvas-" + this.croquis.id);
+      new p5(this.sketch, "canvas-" + this.croquis.id);
     },
   },
 
