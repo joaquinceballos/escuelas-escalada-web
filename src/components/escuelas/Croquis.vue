@@ -79,7 +79,7 @@ export default {
         let img;
 
         const GROSOR_VIA = 3;
-        const COLOR_VIA = s.color(105, 189, 210);
+        const COLOR_VIA = s.color(255, 50, 240);
         const BLANCO = s.color(255, 255, 255);
 
         let viasGrabadas = [];
