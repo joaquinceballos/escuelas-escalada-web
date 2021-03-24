@@ -94,7 +94,7 @@ const messages = {
                     sectores: "Sectores de la escuela",
                     cierresTemporada: {
                         titulo: "Cirres de temporada",
-                        texto: "Esta escuela está regulada con cierres temporales para proteger la de cría de aves que nidifican en cortados rocosos. Para conocer las fechas afectadas consulte la información",
+                        texto: "Esta escuela está regulada con cierres temporales para proteger la de cría de aves. Para conocer las fechas afectadas despliegue el calendario",
                         botoninfo: "Más información",
                         tipo: {
                             CRIA_AVES: {
