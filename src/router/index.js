@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/home.vue";
-import Login from "../views/login.vue";
 import Register from "../views/register.vue";
 import Perfil from "../views/perfil.vue"
 import Busqueda from "../views/busqueda.vue"
@@ -18,11 +17,6 @@ const routes = [{
             requiresAuth: true
         },
         props: true
-    },
-    {
-        path: "/login",
-        name: "login",
-        component: Login
     },
     {
         path: "/register",

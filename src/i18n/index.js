@@ -21,7 +21,12 @@ const messages = {
                 password: 'Contraseña',
                 entrar: 'Entrar',
                 registrar: '¿No tienes cuenta? Click aquí para registrarte',
-                obligatorio: 'Campo obligatorio'
+                obligatorio: 'Campo obligatorio',
+                bienvenido: 'Bienvenido!',
+                ko: {
+                    header: 'Error',
+                    texto: 'No se ha podido acceder con el usuario y contraseña introducidos'
+                }
             },
 
             register: {
