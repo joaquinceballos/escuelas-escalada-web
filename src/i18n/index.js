@@ -20,7 +20,13 @@ const messages = {
                 username: 'Nombre de usuario / email',
                 password: 'Contraseña',
                 entrar: 'Entrar',
-                registrar: '¿No tienes cuenta? Click aquí para registrarte'
+                registrar: '¿No tienes cuenta? Click aquí para registrarte',
+                obligatorio: 'Campo obligatorio',
+                bienvenido: 'Bienvenido!',
+                ko: {
+                    header: 'Error',
+                    texto: 'No se ha podido acceder con el usuario y contraseña introducidos'
+                }
             },
 
             register: {
@@ -55,7 +61,8 @@ const messages = {
                 },
                 usuario: {
                     perfil: 'Perfil',
-                    logout: 'logout'
+                    logout: 'logout',
+                    login: 'login'
                 }
             },
 
@@ -175,7 +182,8 @@ const messages = {
                 },
                 usuario: {
                     perfil: 'Profile',
-                    logout: 'logout'
+                    logout: 'logout',
+                    login: 'login'
                 }
             },
 

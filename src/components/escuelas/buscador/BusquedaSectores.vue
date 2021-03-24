@@ -57,7 +57,7 @@ export default {
         .catch((err) => {
           if (err.response.status == 403) {
             Vue.borraToken();
-            this.$router.push("/login");
+            console.err(err);
           }
           console.log(err.response);
         });
