@@ -73,16 +73,25 @@ const router = new VueRouter({
     routes
 });
 
+const axios = require('axios');
+
 router.beforeEach((to, from, next) => {
     if (to.name === from.name) {
         return next();
     }
     next();
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (Vue.getToken() == null) {
-            next({
-                path: "/login"
-            });
+        if (!Vue.tokenValido()) {
+            // Si no hay un token válido nos logeamos con el usuario genérico
+            axios.post('https://api-escuelas.ddns.net/login', {
+                username: "web_guest",
+                password: "12345",
+            }).then((response) => {
+                Vue.guardaToken(response.data.data.token);
+                next({
+                    path: "/"
+                });
+            }).catch((error) => { console.log(error); });
         } else {
             next();
         }
