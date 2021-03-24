@@ -1,29 +1,50 @@
 <template>
   <div class="container">
     <b-card
-      header="Escuelas de Escalada - Regístrate"
+      v-bind:header="$t('message.register.header')"
       class="text-center"
-        align="center"
+      align="center"
     >
       <div class="row">
         <div class="col-lg-6 offset-lg-3 col-sm-10 offset-sm-1">
-          <form
-            class="text-center p-5"
-            @submit.prevent="registerUser"
-          >
+          <form class="text-center p-5" @submit.prevent="registerUser">
+            <input
+              type="text"
+              id="username"
+              class="form-control mb-5"
+              v-bind:placeholder="$t('message.register.username')"
+              v-model="register.username"
+              required
+            />
             <input
               type="text"
               id="nombre"
               class="form-control mb-5"
-              placeholder="Nombre"
+              v-bind:placeholder="$t('message.register.nombre')"
               v-model="register.nombre"
+              required
+            />
+            <input
+              type="text"
+              id="apellido1"
+              class="form-control mb-5"
+              v-bind:placeholder="$t('message.register.apellido1')"
+              v-model="register.apellido1"
+              required
+            />
+            <input
+              type="text"
+              id="apellido2"
+              class="form-control mb-5"
+              v-bind:placeholder="$t('message.register.apellido2')"
+              v-model="register.apellido2"
               required
             />
             <input
               type="email"
               id="email"
               class="form-control mb-5"
-              placeholder="Email"
+              v-bind:placeholder="$t('message.register.email')"
               v-model="register.email"
               required
             />
@@ -31,18 +52,17 @@
               type="password"
               id="password"
               class="form-control mb-5"
-              placeholder="Contraseña"
+              v-bind:placeholder="$t('message.register.password')"
               v-model="register.password"
             />
             <center>
               <button class="btn btn-primary btn-block my-4" type="submit">
-                Registrar
+                {{ $t("message.register.submit") }}
               </button>
             </center>
-            <p>
-              ¿Ya tienes cuenta? Click
-              <router-link to="/login">aquí</router-link> para entrar
-            </p>
+            <router-link to="/login">{{
+              $t("message.register.login")
+            }}</router-link>
           </form>
         </div>
       </div>
@@ -57,6 +77,9 @@ export default {
         nombre: "",
         email: "",
         password: "",
+        apellido1: "",
+        apellido2: "",
+        username: "",
       },
     };
   },
@@ -65,10 +88,12 @@ export default {
       try {
         let response = await this.$http.post("/usuarios", this.register);
         if (response) {
+          let titulo = this.$i18n.t("message.modal.registrado.titulo");
+          let texto = this.$i18n.t("message.modal.registrado.texto");
           this.$router.push("/login");
           this.$fire({
-            title: "Usuario registrado",
-            text: "Nuevo usuario creado correctamente, por favor haga login",
+            title: titulo,
+            text: texto,
             type: "success",
             showConfirmButton: false,
             timer: 2500,
@@ -79,8 +104,9 @@ export default {
           console.log("Error", "Something Went Wrong", "error");
         }
       } catch (err) {
+        let msgError = this.$i18n.t("message.modal.error");
         this.$fire({
-          title: "Error",
+          title: msgError,
           text: err.response.data.data.error,
           type: "error",
           timer: 5000,
