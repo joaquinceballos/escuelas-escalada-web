@@ -95,7 +95,7 @@ export default {
       loading: false,
       marcadores: [],
       mapOptions: {
-        zoom: 15,
+        zoom: 14,
       },
       cierres: [],
     };
