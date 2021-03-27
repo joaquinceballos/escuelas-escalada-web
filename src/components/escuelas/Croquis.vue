@@ -33,42 +33,54 @@ export default {
   methods: {
     fetchData() {
       this.loading = true;
-      let token = Vue.getToken();
-      const headers = { Authorization: "Bearer " + token };
-      this.$http
-        .get(
-          "/escuelas/" +
-            this.croquis.idEscuela +
-            "/sectores/" +
-            this.croquis.sector.id +
-            "/croquis/" +
-            this.croquis.id,
-          {
-            headers,
-          }
-        )
-        .then((response) => {
-          this.imagen =
-            "data:" +
-            response.data.data.formatoImagen +
-            ";base64," +
-            response.data.data.imagen;
-          this.cargaSketch();
-          this.loading = false;
-        })
-        .catch((err) => {
-          if (err.response.status == 403) {
-            this.$fire({
-              title: "No autorizado",
-              type: "error",
-              showConfirmButton: false,
-              timer: 2500,
-            }).then(() => {
-              this.$router.push("/");
-            });
-          }
-          console.log(err.response);
-        });
+      if (
+        this.croquis.imagen === undefined ||
+        this.croquis.imagen === null ||
+        this.croquis.imagen.length == 0
+      ) {
+        let token = Vue.getToken();
+        const headers = { Authorization: "Bearer " + token };
+        this.$http
+          .get(
+            "/escuelas/" +
+              this.croquis.idEscuela +
+              "/sectores/" +
+              this.croquis.sector.id +
+              "/croquis/" +
+              this.croquis.id,
+            {
+              headers,
+            }
+          )
+          .then((response) => {
+            this.imagen =
+              "data:" +
+              response.data.data.formatoImagen +
+              ";base64," +
+              response.data.data.imagen;
+            this.cargaSketch();
+          })
+          .catch((err) => {
+            if (err.response.status == 403) {
+              this.$fire({
+                title: "No autorizado",
+                type: "error",
+                showConfirmButton: false,
+                timer: 2500,
+              }).then(() => {
+                this.$router.push("/");
+              });
+            }
+            console.log(err.response);
+          });
+      } else {
+        this.imagen =
+          "data:" +
+          this.croquis.formatoImagen +
+          ";base64," +
+          this.croquis.imagen;
+        this.cargaSketch();
+      }
     },
 
     cargaSketch() {
@@ -104,10 +116,15 @@ export default {
             }
           }
         };
-
+        /*
         s.mouseClicked = (mouseEvent) => {
           if (mouseEventEnCanvas(mouseEvent)) {
-            console.log("click en " + this.croquis.nombre);
+          }
+        };
+*/
+        s.doubleClicked = (mouseEvent) => {
+          if (mouseEventEnCanvas(mouseEvent)) {
+            this.$emit("doble-click", this.croquis);
           }
         };
 
@@ -297,6 +314,7 @@ export default {
         };
       };
       new p5(this.sketch, "canvas-" + this.croquis.id);
+      this.loading = false;
     },
   },
 

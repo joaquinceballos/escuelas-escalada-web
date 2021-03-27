@@ -9,7 +9,7 @@
     <hr />
     <carousel :perPage="1" :navigationEnabled="true">
       <slide v-for="c in croquis" :key="c.id">
-        <Croquis :croquis="c" :alto="700" />
+        <Croquis :croquis="c" :alto="700" @doble-click="navegaCroquis" />
       </slide>
     </carousel>
   </div>
@@ -102,6 +102,22 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+        });
+    },
+
+    navegaCroquis(croquis) {
+      this.$router
+        .push({
+          name: "croquis",
+          params: {
+            idEscuela: croquis.idEscuela,
+            idSector: croquis.sector.id,
+            idCroquis: croquis.id,
+            croquis: croquis,
+          },
+        })
+        .catch((error) => {
+          console.log(error);
         });
     },
   },
