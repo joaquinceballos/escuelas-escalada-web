@@ -40,6 +40,7 @@ export default {
             {
               text: "Cargar imagen...",
               click: (e) => this.funcionesCroquis.cargarImagen(e),
+              disabled: this.imagenCargada,
             },
             {
               text: "Guardar cambios",
@@ -179,6 +180,7 @@ export default {
     return {
       sketch: {},
       imagen: "",
+      imagenCargada: false,
       loading: false,
       mostrarLeyenda: true,
       tipoLeyenda: "caja",
@@ -311,6 +313,7 @@ export default {
               response.data.data.formatoImagen +
               ";base64," +
               response.data.data.imagen;
+            this.imagenCargada = true;
             this.cargaSketch();
           })
           .catch((err) => {
