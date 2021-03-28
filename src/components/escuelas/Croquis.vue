@@ -15,7 +15,7 @@
         <icons :icon="['fas', 'spinner']" class="fa-spinner" />
       </div>
     </div>
-    <div :style="{ height: heightScrollBar + 'px'}">
+    <div :style="{ height: heightScrollBar + 'px' }">
       <perfect-scrollbar ref="scroll">
         <div
           v-bind:id="'canvas-' + croquis.id"
@@ -36,7 +36,7 @@ export default {
   },
 
   computed: {
-    heightScrollBar () {
+    heightScrollBar() {
       return this.alto;
     },
     my_menu() {
@@ -83,11 +83,6 @@ export default {
                   click: (e) => this.funcionesCroquis.mostrarLeyenda(e),
                 },
                 {
-                  disabled: !this.mostrarLeyenda || this.tipoLeyenda == "via",
-                  text: "Orientación",
-                  menu: this.orientacion[this.tipoLeyenda],
-                },
-                {
                   disabled: !this.mostrarLeyenda,
                   text: "tipo",
                   menu: this.mostrarLeyenda
@@ -95,20 +90,25 @@ export default {
                         {
                           text: "Caja",
                           click: (e) =>
-                            this.funcionesCroquis.tipoLeyenda(e, "caja"),
+                            this.funcionesCroquis.setTipoLeyenda(e, "caja"),
                         },
                         {
                           text: "Barra",
                           click: (e) =>
-                            this.funcionesCroquis.tipoLeyenda(e, "barra"),
+                            this.funcionesCroquis.setTipoLeyenda(e, "barra"),
                         },
                         {
                           text: "Vía",
                           click: (e) =>
-                            this.funcionesCroquis.tipoLeyenda(e, "via"),
+                            this.funcionesCroquis.setTipoLeyenda(e, "via"),
                         },
                       ]
                     : null,
+                },
+                {
+                  disabled: !this.mostrarLeyenda || this.tipoLeyenda == "via",
+                  text: "Orientación",
+                  menu: this.orientacion[this.tipoLeyenda],
                 },
               ],
             },
@@ -202,8 +202,8 @@ export default {
       imagen: "",
       imagenCargada: false,
       loading: false,
-      mostrarLeyenda: true,
-      tipoLeyenda: "caja",
+      mostrarLeyenda: false,
+      tipoLeyenda: "barra",
       // submenús de "Orientación" dependiendo del tipo de leyenda seleccionado
       orientacion: {
         caja: [
@@ -234,15 +234,15 @@ export default {
         ],
         barra: [
           {
-            text: "superior",
-            click: (e) => {
-              this.funcionesCroquis.orientacion(e, "sup");
-            },
-          },
-          {
             text: "inferior",
             click: (e) => {
               this.funcionesCroquis.orientacion(e, "inf");
+            },
+          },
+          {
+            text: "superior",
+            click: (e) => {
+              this.funcionesCroquis.orientacion(e, "sup");
             },
           },
         ],
@@ -264,8 +264,7 @@ export default {
           this.mostrarLeyenda = !this.mostrarLeyenda;
           console.error("implementación no enlazada", e);
         },
-        tipoLeyenda: (e, tipo) => {
-          this.tipoLeyenda = tipo;
+        setTipoLeyenda: (e, tipo) => {
           console.error("implementación no enlazada", e, tipo);
         },
         orientacion: (e, orientacion) => {
@@ -364,12 +363,17 @@ export default {
         let c;
         let img;
 
-        const GROSOR_VIA = 3;
-        const COLOR_VIA = s.color(255, 50, 240);
-        const BLANCO = s.color(255, 255, 255);
+        const GROSOR_VIA = 4;
+        //const COLOR_VIA = s.color(255, 50, 240);
+        const COLOR_VIA = s.color(0, 0, 0);
+        const BLANCO = s.color(255);
+        //const NEGRO = s.color(0);
 
         // de cada vía se guarda, la vía en sí, su trazo(puntos guardados) y su curva(puntos interpolados)
         let viasGrabadas = [];
+
+        //leyenda
+        let orientacionLeyenda;
 
         const UNIFORM = 0;
         const CENTRIPETAL = 1;
@@ -392,6 +396,9 @@ export default {
 
           // enlazo las funciones accesibles desde fuera
           this.funcionesCroquis.zoom = zoom;
+          this.funcionesCroquis.setTipoLeyenda = setTipoLeyenda;
+          this.funcionesCroquis.orientacion = orientacion;
+          this.funcionesCroquis.mostrarLeyenda = mostrarLeyenda;
         };
 
         s.windowResized = () => {
@@ -420,9 +427,30 @@ export default {
         let zoom = (e, z) => {
           factorZoom = z;
           reajusteDimensiones();
-          this.$refs.scroll.$el.scrollTop = 0
-          this.$refs.scroll.$el.scrollLeft = 0
-          console.log('pepe', this.$refs.scroll.$el);
+          this.$refs.scroll.$el.scrollTop = 0;
+          this.$refs.scroll.$el.scrollLeft = 0;
+        };
+
+        let setTipoLeyenda = (e, tipo) => {
+          this.tipoLeyenda = tipo;
+          // tenemos el tipo de leyenda, aplicaremos la orientación por defecto
+          if (this.orientacion[this.tipoLeyenda] != undefined) {
+            // tipo de leyenda 'caja' o 'barra' seleccionamos la orientación por defecto y ya se pintará todo desde ahí
+            this.orientacion[this.tipoLeyenda][0].click(e);
+          } else {
+            // tipo de leyenda 'vía' pintamos todo ya directamente
+            pintaTodo();
+          }
+        };
+
+        let orientacion = (e, tipo) => {
+          orientacionLeyenda = tipo;
+          pintaTodo();
+        };
+
+        let mostrarLeyenda = () => {
+          this.mostrarLeyenda = !this.mostrarLeyenda;
+          pintaTodo();
         };
 
         let reajusteDimensiones = () => {
@@ -439,7 +467,7 @@ export default {
             width = this.$refs.div_toolbar.getBoundingClientRect().width;
           }
           // dimensión y del scroll
-          this.alto = (img.height * (width / img.width)) * 1.01;
+          this.alto = img.height * (width / img.width) * 1.01;
           // ajuste zooom
           width *= factorZoom;
           // factor de ajuste, ajustamos el ancho del canvas
@@ -456,8 +484,219 @@ export default {
           s.image(img, 0, 0, width, height);
           // por cada vía grabada en el croquis, pintamos su curva
           for (let i = 0; i < viasGrabadas.length; i++) {
-            pintaCurva(viasGrabadas[i].curva, BLANCO, GROSOR_VIA * 1.75);
+            pintaCurva(viasGrabadas[i].curva, BLANCO, GROSOR_VIA * 2.25);
             pintaCurva(viasGrabadas[i].curva, COLOR_VIA, GROSOR_VIA);
+          }
+          if (this.mostrarLeyenda) {
+            pintaLeyenda();
+          }
+        };
+
+        let pintaLeyenda = () => {
+          if (this.tipoLeyenda == "via") {
+            pintaLeyendaVia();
+          } else if (this.tipoLeyenda == "barra") {
+            pintaLeyendaBarra();
+          } else if (this.tipoLeyenda == "caja") {
+            pintaLeyendaCaja();
+          } else {
+            console.error("tipo de leyenda no esperado");
+          }
+        };
+
+        let pintaLeyendaCaja = () => {
+
+          // pintamos los números de vía para referenciar
+          pintaNumerosVia();
+
+          // construimos la caja de texto
+          let lineas = [];
+          let x, y;
+          // primera linea para la cabecera
+          lineas.push(["vía", "|", "grado", "|", "longitud", "|", "chapas"]);
+          lineas.push(["", "", "", "", "", "", ""]);
+          for (let i = 0; i < viasGrabadas.length; i++) {
+            let via = viasGrabadas[i].via;
+            lineas.push([
+              "[" + (i + 1) + "] " + via.nombre,
+              "|",
+              via.grado ? via.grado : "",
+              "|",
+              via.longitud ? via.longitud : "",
+              "|",
+              via.numeroChapas ? via.numeroChapas : "",
+            ]);
+          }
+
+          // pintamos el rectángulo
+          s.textSize(12);
+          s.textFont("monospace");
+          let ancho = s.textWidth("  ");
+          for (let i = 0; i < lineas[0].length; i++) {
+            ancho += s.textWidth(" " + mayorPalabra(lineas, i));
+          }
+          let alto = lineas.length * (s.textSize() + s.textDescent());
+
+          // calculamos coordenadas de la caja
+          if (orientacionLeyenda == "supizq") {
+            x = 0;
+            y = 0;
+          } else if (orientacionLeyenda == "supder") {
+            x = width - ancho;
+            y = 0;
+          } else if (orientacionLeyenda == "infder") {
+            x = width - ancho;
+            y = height - alto;
+          } else if (orientacionLeyenda == "infizq") {
+            x = 0;
+            y = height - alto;
+          } else {
+            // orientación por defecto
+            x = 0;
+            y = 0;
+          }
+
+          s.fill(BLANCO);
+          s.stroke(COLOR_VIA);
+          s.strokeWeight(2);
+          s.rect(x, y, ancho, alto);
+
+          // pintamos las lineas
+          s.fill(COLOR_VIA);
+          s.noStroke();
+          for (let i = 0; i < lineas.length; i++) {
+            let textoLinea = "";
+            let relleno = i == 1 ? "-" : " ";
+            for (let j = 0; j < lineas[i].length; j++) {
+              let palabra = lineas[i][j] ? lineas[i][j].toString() : "";
+              if (j == 0) {
+                textoLinea += palabra.padEnd(
+                  (mayorPalabra(lineas, j) + " ").length,
+                  relleno
+                );
+              } else {
+                textoLinea += palabra.padStart(
+                  (mayorPalabra(lineas, j) + " ").length,
+                  relleno
+                );
+              }
+            }
+            s.text(
+              textoLinea,
+              x + 5,
+              y + (i + 1) * (s.textAscent() + s.textDescent())
+            );
+          }
+
+        };
+
+        let mayorPalabra = (lineas, columna) => {
+          let mayor = "";
+          for (let i = 0; i < lineas.length; i++) {
+            if (
+              lineas[i][columna] &&
+              lineas[i][columna].length > mayor.length
+            ) {
+              mayor = lineas[i][columna];
+            }
+          }
+          return mayor;
+        };
+
+        let pintaLeyendaBarra = () => {
+          let lineas = [""];
+
+          // construimos el texto
+          s.textFont("monospace");
+          s.textSize(15);
+          for (let i = 0; i < viasGrabadas.length; i++) {
+            let separador = i == 0 ? "" : "; ";
+            let anchoAcumulado = s.textWidth(lineas[lineas.length - 1] + separador);
+            let via = viasGrabadas[i].via;
+            // TODO i18n chapas y metros...
+            let textoVia =
+              "[" +
+              (i + 1) +
+              "] " +
+              via.nombre +
+              (via.grado ? ", " + via.grado : "") +
+              (via.longitud ? ", " + via.longitud + " m" : "") +
+              (via.numeroChapas ? ", " + via.numeroChapas + " chapas" : "");
+            if (
+              anchoAcumulado + separador.length + s.textWidth(textoVia) >
+              width
+            ) {
+              lineas.push(textoVia);
+            } else {
+              lineas[lineas.length - 1] =
+                lineas[lineas.length - 1] + separador + textoVia;
+            }
+          }
+          let altoLinea = s.textAscent() + s.textDescent();
+          let altoTotalBarra = altoLinea * lineas.length;
+
+          let y;
+          if (orientacionLeyenda == "sup") {
+            y = 0;
+          } else if (orientacionLeyenda == "inf") {
+            y = height - altoTotalBarra - s.textDescent() * 2;
+          } else {
+            // por defecto ...
+            y = height - altoTotalBarra - s.textDescent() * 2;
+          }
+
+          // pintamos las lineas sobre rectángulo blanco
+          s.fill(BLANCO);
+          s.stroke(COLOR_VIA);
+          s.strokeWeight(2);
+          s.rect(0, y, width, altoTotalBarra + s.textDescent() * 2);
+          s.noStroke();
+          s.fill(COLOR_VIA);
+          for (let i = 0; i < lineas.length; i++) {
+            s.text(lineas[i], 10, y + (i + 1) * altoLinea);
+          }
+
+          // pintamos los números de vía para referenciar
+          pintaNumerosVia();
+        };
+
+        let pintaNumerosVia = () => {
+          for (let i = 0; i < viasGrabadas.length; i++) {
+            let via = viasGrabadas[i];
+            let puntoInicial = traduce([via.puntos[0]])[0];
+
+            // círculo
+            s.fill(COLOR_VIA);
+            s.stroke(BLANCO);
+            s.strokeWeight(2);
+            s.circle(puntoInicial.x, puntoInicial.y, 30);
+
+            // texto
+            s.noStroke();
+            s.fill(BLANCO);
+            s.textSize(20);
+            s.text(
+              i + 1,
+              puntoInicial.x - s.textWidth(i + 1) / 2,
+              puntoInicial.y + s.textDescent()
+            );
+          }
+        };
+
+        let pintaLeyendaVia = () => {
+          for (let i = 0; i < viasGrabadas.length; i++) {
+            let via = viasGrabadas[i];
+            let puntoInicial = traduce([via.puntos[0]])[0];
+            s.textSize(25);
+            s.fill(COLOR_VIA);
+            s.strokeWeight(3);
+            s.stroke(BLANCO);
+            let anchoPalabra = s.textWidth(via.via.nombre);
+            s.text(
+              via.via.nombre,
+              puntoInicial.x - anchoPalabra / 2,
+              puntoInicial.y + s.textAscent()
+            );
           }
         };
 
