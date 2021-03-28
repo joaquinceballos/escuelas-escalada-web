@@ -15,11 +15,15 @@
         <icons :icon="['fas', 'spinner']" class="fa-spinner" />
       </div>
     </div>
-    <div
-      v-bind:id="'canvas-' + croquis.id"
-      class="div_canvas"
-      v-bind:reference="'ref-canvas-' + croquis.id"
-    ></div>
+    <div :style="{ height: heightScrollBar + 'px'}">
+      <perfect-scrollbar ref="scroll">
+        <div
+          v-bind:id="'canvas-' + croquis.id"
+          class="div_canvas"
+          v-bind:reference="'ref-canvas-' + croquis.id"
+        ></div>
+      </perfect-scrollbar>
+    </div>
   </div>
 </template>
 <script>
@@ -32,6 +36,9 @@ export default {
   },
 
   computed: {
+    heightScrollBar () {
+      return this.alto;
+    },
     my_menu() {
       return [
         {
@@ -122,19 +129,31 @@ export default {
                 {
                   text: "100%",
                   click: (e) => {
-                    this.funcionesCroquis.zoom(e, 100);
+                    this.funcionesCroquis.zoom(e, 1);
                   },
                 },
                 {
                   text: "150%",
                   click: (e) => {
-                    this.funcionesCroquis.zoom(e, 150);
+                    this.funcionesCroquis.zoom(e, 1.5);
                   },
                 },
                 {
                   text: "200%",
                   click: (e) => {
-                    this.funcionesCroquis.zoom(e, 200);
+                    this.funcionesCroquis.zoom(e, 2);
+                  },
+                },
+                {
+                  text: "300%",
+                  click: (e) => {
+                    this.funcionesCroquis.zoom(e, 3);
+                  },
+                },
+                {
+                  text: "500%",
+                  click: (e) => {
+                    this.funcionesCroquis.zoom(e, 5);
                   },
                 },
               ],
@@ -178,6 +197,7 @@ export default {
 
   data() {
     return {
+      alto: 10,
       sketch: {},
       imagen: "",
       imagenCargada: false,
@@ -274,9 +294,6 @@ export default {
   },
 
   props: {
-    alto: {
-      type: Number,
-    },
     croquis: {
       type: Object,
     },
@@ -343,6 +360,7 @@ export default {
       this.sketch = (s) => {
         let height = 0; // se calculará en función al alto y proporciones de la imagen
         let width;
+        let factorZoom = 1;
         let c;
         let img;
 
@@ -371,14 +389,15 @@ export default {
               console.error(e);
             }
           }
+
+          // enlazo las funciones accesibles desde fuera
+          this.funcionesCroquis.zoom = zoom;
         };
 
         s.windowResized = () => {
-          ajustaDimensionesCanvas();
-          s.resizeCanvas(width, height);
-          recalculaCurvasViasGuardadas();
-          pintaTodo();
+          reajusteDimensiones();
         };
+
         /*
         s.mouseClicked = (mouseEvent) => {
           if (mouseEventEnCanvas(mouseEvent)) {
@@ -397,12 +416,32 @@ export default {
           }
         };
 
+        //***** Funciones accesibles desde el DOM *****/
+        let zoom = (e, z) => {
+          factorZoom = z;
+          reajusteDimensiones();
+          this.$refs.scroll.$el.scrollTop = 0
+          this.$refs.scroll.$el.scrollLeft = 0
+          console.log('pepe', this.$refs.scroll.$el);
+        };
+
+        let reajusteDimensiones = () => {
+          ajustaDimensionesCanvas();
+          s.resizeCanvas(width, height);
+          recalculaCurvasViasGuardadas();
+          pintaTodo();
+        };
+
         let ajustaDimensionesCanvas = () => {
           if (this.$refs.div_toolbar == undefined) {
             width = this.$refs.contenedor_croquis.clientWidth;
           } else {
             width = this.$refs.div_toolbar.getBoundingClientRect().width;
           }
+          // dimensión y del scroll
+          this.alto = (img.height * (width / img.width)) * 1.01;
+          // ajuste zooom
+          width *= factorZoom;
           // factor de ajuste, ajustamos el ancho del canvas
           height = img.height * (width / img.width);
         };
@@ -622,6 +661,9 @@ export default {
   border-style: solid;
   border-width: 0px 1px 1px 1px;
   border-radius: 0px 0px 5px 5px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 .div_menu {
   border-style: solid;
@@ -632,5 +674,11 @@ export default {
   border-style: solid;
   border-width: 0px 1px 1px 1px;
   border-radius: 0px 0px 5px 5px;
+}
+.div_canvas {
+  display: inline-block;
+}
+.ps {
+  height: 100%;
 }
 </style>

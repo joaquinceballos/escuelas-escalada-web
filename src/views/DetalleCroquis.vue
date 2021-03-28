@@ -1,7 +1,7 @@
 <template>
   <div>
     <NavBar />
-    <Croquis :croquis="dataCroquis" :alto="700" v-if="dataCroquis.id" :detalle="true"/>
+    <Croquis :croquis="dataCroquis" v-if="dataCroquis.id" :detalle="true"/>
   </div>
 </template>
 <script>
