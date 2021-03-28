@@ -1,10 +1,23 @@
 <template>
-  <div>
-    <div v-if="loading" class="justify-content-center">
+  <div
+    :class="detalle ? 'container detalle' : 'container carrusel'"
+    ref="contenedor_croquis"
+  >
+    <div v-if="loading && !detalle" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
+    </div>
+    <h1 v-if="detalle">{{ croquis.nombre }}</h1>
+    <div class="div_menu" ref="div_toolbar" v-if="detalle">
+      <vue-file-toolbar-menu :content="my_menu" />
+    </div>
+    <div class="div_cargando" v-if="loading && detalle">
+      <div class="justify-content-center">
+        <icons :icon="['fas', 'spinner']" class="fa-spinner" />
+      </div>
     </div>
     <div
       v-bind:id="'canvas-' + croquis.id"
+      class="div_canvas"
       v-bind:reference="'ref-canvas-' + croquis.id"
     ></div>
   </div>
@@ -12,12 +25,249 @@
 <script>
 import p5 from "p5";
 import Vue from "vue";
+import VueFileToolbarMenu from "vue-file-toolbar-menu";
 export default {
+  components: {
+    VueFileToolbarMenu,
+  },
+
+  computed: {
+    my_menu() {
+      return [
+        {
+          text: "Croquis",
+          menu: [
+            {
+              text: "Cargar imagen...",
+              click: (e) => this.funcionesCroquis.cargarImagen(e),
+            },
+            {
+              text: "Guardar cambios",
+              click: (e) => this.funcionesCroquis.guardarCambios(e),
+            },
+            { is: "separator" },
+            {
+              text: "Exportar...",
+              click: (e) => this.funcionesCroquis.exportar(e),
+            },
+          ],
+        },
+        {
+          text: "Edición",
+          menu: [
+            {
+              text: "recargar",
+              click: (e) => this.funcionesCroquis.deshacerCambios(e),
+            },
+          ],
+        },
+        {
+          text: "Formato",
+          menu: [
+            {
+              text: "Leyenda",
+              menu: [
+                {
+                  text: "mostrar",
+                  icon: this.mostrarLeyenda
+                    ? "check_box"
+                    : "check_box_outline_blank",
+                  click: (e) => this.funcionesCroquis.mostrarLeyenda(e),
+                },
+                {
+                  disabled: !this.mostrarLeyenda || this.tipoLeyenda == "via",
+                  text: "Orientación",
+                  menu: this.orientacion[this.tipoLeyenda],
+                },
+                {
+                  disabled: !this.mostrarLeyenda,
+                  text: "tipo",
+                  menu: this.mostrarLeyenda
+                    ? [
+                        {
+                          text: "Caja",
+                          click: (e) =>
+                            this.funcionesCroquis.tipoLeyenda(e, "caja"),
+                        },
+                        {
+                          text: "Barra",
+                          click: (e) =>
+                            this.funcionesCroquis.tipoLeyenda(e, "barra"),
+                        },
+                        {
+                          text: "Vía",
+                          click: (e) =>
+                            this.funcionesCroquis.tipoLeyenda(e, "via"),
+                        },
+                      ]
+                    : null,
+                },
+              ],
+            },
+            {
+              text: "Color...",
+              click: (e) => {
+                this.funcionesCroquis.color(e);
+              },
+            },
+          ],
+        },
+        {
+          text: "Ver",
+          menu: [
+            {
+              text: "Zoom",
+              menu: [
+                {
+                  text: "100%",
+                  click: (e) => {
+                    this.funcionesCroquis.zoom(e, 100);
+                  },
+                },
+                {
+                  text: "150%",
+                  click: (e) => {
+                    this.funcionesCroquis.zoom(e, 150);
+                  },
+                },
+                {
+                  text: "200%",
+                  click: (e) => {
+                    this.funcionesCroquis.zoom(e, 200);
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        {
+          text: "Vías",
+          menu: [
+            {
+              text: "Seleccionar...",
+              click: (e) => this.funcionesCroquis.seleccionarVia(e),
+            },
+            {
+              text: "Añadir...",
+              click: (e) => this.funcionesCroquis.anadirVia(e),
+            },
+          ],
+        },
+        {
+          text: "Ayuda",
+          menu: [
+            {
+              text: "Manual",
+              click: (e) => {
+                this.funcionesCroquis.manual(e);
+              },
+            },
+            { is: "separator" },
+            {
+              text: "Acerca de...",
+              click: (e) => {
+                this.funcionesCroquis.acercaDe(e);
+              },
+            },
+          ],
+        },
+      ];
+    },
+  },
+
   data() {
     return {
       sketch: {},
       imagen: "",
       loading: false,
+      mostrarLeyenda: true,
+      tipoLeyenda: "caja",
+      // submenús de "Orientación" dependiendo del tipo de leyenda seleccionado
+      orientacion: {
+        caja: [
+          {
+            text: "sup. izquierda",
+            click: (e) => {
+              this.funcionesCroquis.orientacion(e, "supizq");
+            },
+          },
+          {
+            text: "sup. derecha",
+            click: (e) => {
+              this.funcionesCroquis.orientacion(e, "supder");
+            },
+          },
+          {
+            text: "inf. izquierda",
+            click: (e) => {
+              this.funcionesCroquis.orientacion(e, "infizq");
+            },
+          },
+          {
+            text: "inf. derecha",
+            click: (e) => {
+              this.funcionesCroquis.orientacion(e, "infder");
+            },
+          },
+        ],
+        barra: [
+          {
+            text: "superior",
+            click: (e) => {
+              this.funcionesCroquis.orientacion(e, "sup");
+            },
+          },
+          {
+            text: "inferior",
+            click: (e) => {
+              this.funcionesCroquis.orientacion(e, "inf");
+            },
+          },
+        ],
+      },
+      funcionesCroquis: {
+        cargarImagen: (e) => {
+          console.error("implementación no enlazada", e);
+        },
+        guardarCambios: (e) => {
+          console.error("implementación no enlazada", e);
+        },
+        deshacerCambios: (e) => {
+          console.error("implementación no enlazada", e);
+        },
+        exportar: (e) => {
+          console.error("implementación no enlazada", e);
+        },
+        mostrarLeyenda: (e) => {
+          this.mostrarLeyenda = !this.mostrarLeyenda;
+          console.error("implementación no enlazada", e);
+        },
+        tipoLeyenda: (e, tipo) => {
+          this.tipoLeyenda = tipo;
+          console.error("implementación no enlazada", e, tipo);
+        },
+        orientacion: (e, orientacion) => {
+          console.error("implementación no enlazada", e, orientacion);
+        },
+        color: (e) => {
+          console.error("implementación no enlazada", e);
+        },
+        zoom: (e, z) => {
+          console.error("implementación no enlazada", e, z);
+        },
+        seleccionarVia: (e) => {
+          console.error("implementación no enlazada", e);
+        },
+        anadirVia: (e) => {
+          console.error("implementación no enlazada", e);
+        },
+        manual: (e) => {
+          console.error("implementación no enlazada", e);
+        },
+        acercaDe: (e) => {
+          console.error("implementación no enlazada", e);
+        },
+      },
     };
   },
 
@@ -27,6 +277,9 @@ export default {
     },
     croquis: {
       type: Object,
+    },
+    detalle: {
+      type: Boolean,
     },
   },
 
@@ -85,8 +338,8 @@ export default {
 
     cargaSketch() {
       this.sketch = (s) => {
-        const height = this.alto;
-        let width = 0; // se calculará en función al alto y proporciones de la imagen
+        let height = 0; // se calculará en función al alto y proporciones de la imagen
+        let width;
         let c;
         let img;
 
@@ -94,6 +347,7 @@ export default {
         const COLOR_VIA = s.color(255, 50, 240);
         const BLANCO = s.color(255, 255, 255);
 
+        // de cada vía se guarda, la vía en sí, su trazo(puntos guardados) y su curva(puntos interpolados)
         let viasGrabadas = [];
 
         const UNIFORM = 0;
@@ -104,8 +358,7 @@ export default {
             try {
               img = s.createImg(this.imagen, "", "", function () {
                 img.hide();
-                // factor de ajuste, ajustamos el ancho del canvas
-                width = img.width * (height / img.height);
+                ajustaDimensionesCanvas();
                 c = s.createCanvas(width, height);
                 cargaViasGrabadas();
                 pintaTodo();
@@ -115,6 +368,13 @@ export default {
               console.error(e);
             }
           }
+        };
+
+        s.windowResized = () => {
+          ajustaDimensionesCanvas();
+          s.resizeCanvas(width, height);
+          recalculaCurvasViasGuardadas();
+          pintaTodo();
         };
         /*
         s.mouseClicked = (mouseEvent) => {
@@ -134,6 +394,16 @@ export default {
           }
         };
 
+        let ajustaDimensionesCanvas = () => {
+          if (this.$refs.div_toolbar == undefined) {
+            width = this.$refs.contenedor_croquis.clientWidth;
+          } else {
+            width = this.$refs.div_toolbar.getBoundingClientRect().width;
+          }
+          // factor de ajuste, ajustamos el ancho del canvas
+          height = img.height * (width / img.width);
+        };
+
         /** Comprueba y retorna si el evento de raton se ha producido contra el canvas */
         let mouseEventEnCanvas = (mouseEvent) => {
           return mouseEvent.target == c.canvas;
@@ -144,8 +414,8 @@ export default {
           s.image(img, 0, 0, width, height);
           // por cada vía grabada en el croquis, pintamos su curva
           for (let i = 0; i < viasGrabadas.length; i++) {
-            pintaCurva(viasGrabadas[i], BLANCO, GROSOR_VIA * 1.75);
-            pintaCurva(viasGrabadas[i], COLOR_VIA, GROSOR_VIA);
+            pintaCurva(viasGrabadas[i].curva, BLANCO, GROSOR_VIA * 1.75);
+            pintaCurva(viasGrabadas[i].curva, COLOR_VIA, GROSOR_VIA);
           }
         };
 
@@ -159,8 +429,22 @@ export default {
 
         let cargaViasGrabadas = () => {
           for (let i = 0; i < this.croquis.trazos.length; i++) {
-            let puntos = traduce(this.croquis.trazos[i].puntos);
-            viasGrabadas.push(interpolate_1(puntos, 100, 1));
+            let viaGrabada = {
+              via: this.croquis.trazos[i].via,
+              puntos: this.croquis.trazos[i].puntos,
+              curva: interpolate_1(this.croquis.trazos[i].puntos, 100, 1),
+            };
+            viasGrabadas.push(viaGrabada);
+          }
+        };
+
+        let recalculaCurvasViasGuardadas = () => {
+          for (let i = 0; i < viasGrabadas.length; i++) {
+            viasGrabadas[i].curva = interpolate_1(
+              viasGrabadas[i].puntos,
+              100,
+              1
+            );
           }
         };
 
@@ -175,13 +459,14 @@ export default {
           return puntosAbsolutos;
         };
 
-        let interpolate_1 = (coordinates, pointsPerSegment, curveType) => {
+        let interpolate_1 = (puntos, pointsPerSegment, curveType) => {
+          let coordinates = traduce(puntos);
           let vertices = [];
           for (let i = 0; i < coordinates.length; i++) {
             vertices.push({ x: coordinates[i].x, y: coordinates[i].y });
           }
           if (pointsPerSegment < 2) {
-            print("ERROR!! mínimo 2 puntos por segmento");
+            console.error("ERROR!! mínimo 2 puntos por segmento");
             return;
           }
 
@@ -323,4 +608,26 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.detalle {
+  max-width: 50% !important;
+}
+.carrusel {
+  max-width: 85% !important;
+}
+.detalle > div > canvas {
+  border-style: solid;
+  border-width: 0px 1px 1px 1px;
+  border-radius: 0px 0px 5px 5px;
+}
+.div_menu {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 5px 5px 0px 0px;
+}
+.div_cargando {
+  border-style: solid;
+  border-width: 0px 1px 1px 1px;
+  border-radius: 0px 0px 5px 5px;
+}
+</style>
