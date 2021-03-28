@@ -657,7 +657,7 @@ export default {
 .carrusel {
   max-width: 85% !important;
 }
-.detalle > div > canvas {
+.ps > div > canvas {
   border-style: solid;
   border-width: 0px 1px 1px 1px;
   border-radius: 0px 0px 5px 5px;
