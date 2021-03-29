@@ -47,7 +47,7 @@ export default {
             {
               text: "Cargar imagen...",
               click: (e) => this.funcionesCroquis.cargarImagen(e),
-              disabled: this.imagenCargada,
+              disabled: this.imagen != null && this.imagen.length > 0,
             },
             {
               text: "Guardar cambios",
@@ -73,44 +73,54 @@ export default {
           text: "Formato",
           menu: [
             {
+              disabled: this.editandoCanvas,
               text: "Leyenda",
-              menu: [
-                {
-                  text: "mostrar",
-                  icon: this.mostrarLeyenda
-                    ? "check_box"
-                    : "check_box_outline_blank",
-                  click: (e) => this.funcionesCroquis.mostrarLeyenda(e),
-                },
-                {
-                  disabled: !this.mostrarLeyenda,
-                  text: "tipo",
-                  menu: this.mostrarLeyenda
-                    ? [
-                        {
-                          text: "Caja",
-                          click: (e) =>
-                            this.funcionesCroquis.setTipoLeyenda(e, "caja"),
-                        },
-                        {
-                          text: "Barra",
-                          click: (e) =>
-                            this.funcionesCroquis.setTipoLeyenda(e, "barra"),
-                        },
-                        {
-                          text: "Vía",
-                          click: (e) =>
-                            this.funcionesCroquis.setTipoLeyenda(e, "via"),
-                        },
-                      ]
-                    : null,
-                },
-                {
-                  disabled: !this.mostrarLeyenda || this.tipoLeyenda == "via",
-                  text: "Orientación",
-                  menu: this.orientacion[this.tipoLeyenda],
-                },
-              ],
+              menu: this.editandoCanvas
+                ? null
+                : [
+                    {
+                      text: "mostrar",
+                      icon: this.mostrarLeyenda
+                        ? "check_box"
+                        : "check_box_outline_blank",
+                      click: (e) => this.funcionesCroquis.mostrarLeyenda(e),
+                    },
+                    {
+                      disabled: !this.mostrarLeyenda,
+                      text: "tipo",
+                      menu: this.mostrarLeyenda
+                        ? [
+                            {
+                              text: "Caja",
+                              click: (e) =>
+                                this.funcionesCroquis.setTipoLeyenda(e, "caja"),
+                            },
+                            {
+                              text: "Barra",
+                              click: (e) =>
+                                this.funcionesCroquis.setTipoLeyenda(
+                                  e,
+                                  "barra"
+                                ),
+                            },
+                            {
+                              text: "Vía",
+                              click: (e) =>
+                                this.funcionesCroquis.setTipoLeyenda(e, "via"),
+                            },
+                          ]
+                        : null,
+                    },
+                    {
+                      disabled:
+                        !this.mostrarLeyenda || this.tipoLeyenda == "via",
+                      text: "Orientación",
+                      menu:
+                        !this.mostrarLeyenda || this.tipoLeyenda == "via"
+                          ? null
+                          : this.orientacion[this.tipoLeyenda],
+                    },
+                  ],
             },
             {
               text: "Color...",
@@ -161,9 +171,10 @@ export default {
           ],
         },
         {
-          text: "Vías",
+          text: "Vía",
           menu: [
             {
+              disabled: !this.hayVias,
               text: "Seleccionar...",
               click: (e) => this.funcionesCroquis.seleccionarVia(e),
             },
@@ -200,9 +211,10 @@ export default {
       alto: 10,
       sketch: {},
       imagen: "",
-      imagenCargada: false,
       loading: false,
       mostrarLeyenda: false,
+      editandoCanvas: false,
+      hayVias: false,
       tipoLeyenda: "barra",
       // submenús de "Orientación" dependiendo del tipo de leyenda seleccionado
       orientacion: {
@@ -329,7 +341,6 @@ export default {
               response.data.data.formatoImagen +
               ";base64," +
               response.data.data.imagen;
-            this.imagenCargada = true;
             this.cargaSketch();
           })
           .catch((err) => {
@@ -367,6 +378,8 @@ export default {
         //const COLOR_VIA = s.color(255, 50, 240);
         const COLOR_VIA = s.color(0, 0, 0);
         const BLANCO = s.color(255);
+        const COLOR_SELECCIONABLE = s.color(255, 0, 255);
+        const COLOR_SELECCIONADA = s.color(0, 255, 255);
         //const NEGRO = s.color(0);
 
         // de cada vía se guarda, la vía en sí, su trazo(puntos guardados) y su curva(puntos interpolados)
@@ -374,6 +387,13 @@ export default {
 
         //leyenda
         let orientacionLeyenda;
+
+        //seleccionando vía para editar
+        let seleccionandoVia = false;
+        let arrastrando = false;
+
+        let viaSeleccionada;
+        let viaSeleccionable;
 
         const UNIFORM = 0;
         const CENTRIPETAL = 1;
@@ -399,24 +419,91 @@ export default {
           this.funcionesCroquis.setTipoLeyenda = setTipoLeyenda;
           this.funcionesCroquis.orientacion = orientacion;
           this.funcionesCroquis.mostrarLeyenda = mostrarLeyenda;
+          this.funcionesCroquis.seleccionarVia = seleccionarVia;
         };
 
         s.windowResized = () => {
           reajusteDimensiones();
         };
 
-        /*
         s.mouseClicked = (mouseEvent) => {
           if (mouseEventEnCanvas(mouseEvent)) {
+            if (seleccionandoVia) {
+              seleccionandoVia = false;
+              viaSeleccionable = null;
+              // si se clickó en una vía se selecciona ésta
+              let via = viaBajoPuntero(s.mouseX, s.mouseY);
+              if (via) {
+                viaSeleccionada = via;
+                this.editandoCanvas = true;
+              } else {
+                this.editandoCanvas = false;
+              }
+              pintaTodo();
+            }
           }
         };
-*/
+
         s.doubleClicked = (mouseEvent) => {
           if (mouseEventEnCanvas(mouseEvent)) {
             this.$emit("doble-click", this.croquis);
           }
         };
 
+        s.mouseMoved = (mouseEvent) => {
+          if (mouseEventEnCanvas(mouseEvent)) {
+            if (arrastrando) {
+              s.cursor("grabbing");
+            } else if (seleccionandoVia || punteroEnPunto(mouseEvent)) {
+              let via = viaBajoPuntero(s.mouseX, s.mouseY);
+              if (via) {
+                viaSeleccionable = via;
+              } else {
+                viaSeleccionable = null;
+              }
+              pintaTodo();
+              s.cursor("grab");
+            } else if (punteroEnCurva(mouseEvent)) {
+              s.cursor("row-resize");
+            } else {
+              s.cursor("default");
+            }
+          } else {
+            s.cursor("default");
+          }
+        };
+        // mover ->
+        let viaBajoPuntero = (x, y) => {
+          for (let i = 0; i < viasGrabadas.length; i++) {
+            if (indiceEnCurva(x, y, viasGrabadas[i]) >= 0) {
+              return viasGrabadas[i];
+            }
+          }
+          return null;
+        };
+
+        let indiceEnCurva = (x, y, via) => {
+          let curva = via.curva;
+          for (let i = 0; i < curva.length - 1; i++) {
+            let punto = curva[i];
+            if (
+              s.abs(punto.x - x) < GROSOR_VIA &&
+              s.abs(punto.y - y) < GROSOR_VIA
+            ) {
+              return i;
+            }
+          }
+          return -1;
+        };
+
+        let punteroEnPunto = (mouseEvent) => {
+          return false || mouseEvent == null;
+        };
+
+        let punteroEnCurva = (mouseEvent) => {
+          return false || mouseEvent == null;
+        };
+        // <- mover
         s.draw = () => {
           if (img) {
             pintaTodo();
@@ -453,6 +540,16 @@ export default {
           pintaTodo();
         };
 
+        let seleccionarVia = () => {
+          seleccionandoVia = true;
+          viaSeleccionada = null;
+          viaSeleccionable = null;
+          this.mostrarLeyenda = false;
+          pintaTodo();
+        };
+
+        //******************************** */
+
         let reajusteDimensiones = () => {
           ajustaDimensionesCanvas();
           s.resizeCanvas(width, height);
@@ -479,14 +576,58 @@ export default {
           return mouseEvent.target == c.canvas;
         };
 
+        let pintaPuntos = (via, color, diametro) => {
+          let puntos = traduce(via.puntos);
+          for (let i = 0; i < puntos.length; i++) {
+            s.noStroke();
+            s.fill(color);
+            s.circle(puntos[i].x, puntos[i].y, diametro);
+          }
+        };
+
         let pintaTodo = () => {
+          //cursores
+          if (seleccionandoVia) {
+            s.cursor("grab");
+          } else {
+            s.cursor("default");
+          }
           // pintamos la imagen
           s.image(img, 0, 0, width, height);
           // por cada vía grabada en el croquis, pintamos su curva
           for (let i = 0; i < viasGrabadas.length; i++) {
             pintaCurva(viasGrabadas[i].curva, BLANCO, GROSOR_VIA * 2.25);
-            pintaCurva(viasGrabadas[i].curva, COLOR_VIA, GROSOR_VIA);
+            let color;
+            if (
+              viaSeleccionada &&
+              viaSeleccionada.via.id &&
+              viaSeleccionada.via.id == viasGrabadas[i].via.id
+            ) {
+              // pintamos los puntos de fondo
+              pintaPuntos(viaSeleccionada, BLANCO, GROSOR_VIA * 5);
+              // el color de la curva será el de curva seleccionada
+              color = COLOR_SELECCIONADA;
+            } else if (
+              viaSeleccionable &&
+              viaSeleccionable.via.id &&
+              viaSeleccionable.via.id == viasGrabadas[i].via.id
+            ) {
+              // pintamos la curva en color seleccionable
+              color = COLOR_SELECCIONABLE;
+            } else {
+              color = COLOR_VIA;
+            }
+            pintaCurva(viasGrabadas[i].curva, color, GROSOR_VIA);
+            // de nuevo, en caso de ser la curva seleccionada pintamos los puntos de color
+            if (
+              viaSeleccionada &&
+              viaSeleccionada.via.id &&
+              viaSeleccionada.via.id == viasGrabadas[i].via.id
+            ) {
+              pintaPuntos(viaSeleccionada, color, GROSOR_VIA * 4);
+            }
           }
+          // pintamos la leyenda de las vías
           if (this.mostrarLeyenda) {
             pintaLeyenda();
           }
@@ -505,7 +646,6 @@ export default {
         };
 
         let pintaLeyendaCaja = () => {
-
           // pintamos los números de vía para referenciar
           pintaNumerosVia();
 
@@ -587,7 +727,6 @@ export default {
               y + (i + 1) * (s.textAscent() + s.textDescent())
             );
           }
-
         };
 
         let mayorPalabra = (lineas, columna) => {
@@ -611,7 +750,9 @@ export default {
           s.textSize(15);
           for (let i = 0; i < viasGrabadas.length; i++) {
             let separador = i == 0 ? "" : "; ";
-            let anchoAcumulado = s.textWidth(lineas[lineas.length - 1] + separador);
+            let anchoAcumulado = s.textWidth(
+              lineas[lineas.length - 1] + separador
+            );
             let via = viasGrabadas[i].via;
             // TODO i18n chapas y metros...
             let textoVia =
@@ -715,9 +856,16 @@ export default {
               puntos: this.croquis.trazos[i].puntos,
               curva: interpolate_1(this.croquis.trazos[i].puntos, 100, 1),
             };
-            viasGrabadas.push(viaGrabada);
+            addViaGrabada(viaGrabada);
           }
         };
+
+        let addViaGrabada = (via) => {
+          viasGrabadas.push(via);
+          this.hayVias = true;
+        };
+
+        // TODO método para borrar una vía que ponga la propiedad this.hayVias a false cuando la lista de vías esté vacía
 
         let recalculaCurvasViasGuardadas = () => {
           for (let i = 0; i < viasGrabadas.length; i++) {
