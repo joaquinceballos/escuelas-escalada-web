@@ -20,7 +20,7 @@
         <div
           v-bind:id="'canvas-' + croquis.id"
           class="div_canvas"
-          v-bind:reference="'ref-canvas-' + croquis.id"
+          :ref="'ref-canvas-' + croquis.id"
         ></div>
       </perfect-scrollbar>
     </div>
@@ -208,10 +208,10 @@ export default {
 
   data() {
     return {
-      alto: 10,
+      alto: 1,
       sketch: {},
-      imagen: "",
       loading: false,
+      imagen: "",
       mostrarLeyenda: false,
       editandoCanvas: false,
       hayVias: false,
@@ -266,8 +266,15 @@ export default {
         guardarCambios: (e) => {
           console.error("implementación no enlazada", e);
         },
-        deshacerCambios: (e) => {
-          console.error("implementación no enlazada", e);
+        deshacerCambios: () => {
+          // elimino imagen y canvas actual
+          let divCanvas = this.$refs["ref-canvas-" + this.croquis.id];
+          divCanvas.innerHTML = "";
+          this.mostrarLeyenda = false;
+          this.editandoCanvas = false;
+          this.hayVias = false;
+          this.tipoLeyenda = "barra";
+          this.fetchData();
         },
         exportar: (e) => {
           console.error("implementación no enlazada", e);
