@@ -1,12 +1,11 @@
 <template>
   <div
-    :class="detalle ? 'container detalle' : 'container carrusel'"
+    :class="detalle ? 'detalle' : 'carrusel container'"
     ref="contenedor_croquis"
   >
     <div v-if="loading && !detalle" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
-    <h1 v-if="detalle">{{ croquis.nombre }}</h1>
     <div class="div_menu" ref="div_toolbar" v-if="detalle">
       <vue-file-toolbar-menu :content="my_menu" />
     </div>
@@ -18,15 +17,16 @@
     <div :style="{ height: heightScrollBar + 'px' }">
       <perfect-scrollbar ref="scroll">
         <div
-          v-bind:id="'canvas-' + croquis.id"
+          v-bind:id="'canvas-' + croquis.id + detalle"
           class="div_canvas"
-          :ref="'ref-canvas-' + croquis.id"
+          :ref="'ref-canvas-' + croquis.id + detalle"
         ></div>
       </perfect-scrollbar>
     </div>
     <b-modal
-      id="modal-select-via"
-      ref="modal-select-via"
+      v-if="detalle"
+      v-bind:id="'modal-select-via' + croquis.id"
+      :ref="'modal-select-via' + croquis.id"
       title="Añade vía al croquis"
       @show="resetModalSelectVia"
       @hidden="resetModalSelectVia"
@@ -200,7 +200,8 @@ export default {
             },
             {
               text: "Añadir...",
-              click: () => this.$bvModal.show("modal-select-via"),
+              click: () =>
+                this.$bvModal.show("modal-select-via" + this.dataCroquis.id),
             },
           ],
         },
@@ -231,6 +232,7 @@ export default {
       optionsViasSector: [],
       nuevaVia: null,
       dataCroquis: {},
+      dataCroquisCopia: {},
       alto: 1,
       sketch: {},
       loading: false,
@@ -291,14 +293,7 @@ export default {
           console.error("implementación no enlazada", e);
         },
         deshacerCambios: () => {
-          // elimino imagen y canvas actual
-          let divCanvas = this.$refs["ref-canvas-" + this.dataCroquis.id];
-          divCanvas.innerHTML = "";
-          this.mostrarLeyenda = false;
-          this.editandoCanvas = false;
-          this.hayVias = false;
-          this.tipoLeyenda = "barra";
-          this.fetchData();
+          this.inicializar();
         },
         exportar: (e) => {
           console.error("implementación no enlazada", e);
@@ -336,9 +331,6 @@ export default {
   },
 
   props: {
-    idEscuela: {
-      type: [String, Number],
-    },
     croquis: {
       type: Object,
     },
@@ -348,6 +340,33 @@ export default {
   },
 
   methods: {
+    inicializar() {
+      // elimino imagen y canvas actual
+      let div_canvas = this.$refs[
+        "ref-canvas-" + this.dataCroquis.id + this.detalle
+      ];
+      if (div_canvas) {
+        div_canvas.innerHTML = "";
+      }
+
+      // inicializo campos
+      this.mostrarLeyenda = false;
+      this.editandoCanvas = false;
+      this.tipoLeyenda = "barra";
+      this.hayVias = false;
+      this.hayCambios = false;
+      this.loading = true;
+      //this.fetchData();
+      this.imagen =
+        "data:" + this.croquis.formatoImagen + ";base64," + this.croquis.imagen;
+
+      // clono el croquis para poder volver atrás cuando quiera deshacer los cambios
+      this.dataCroquis = JSON.parse(JSON.stringify(this.dataCroquisCopia));
+
+      // cargo el sketch
+      this.cargaSketch();
+    },
+
     resetModalSelectVia() {
       // relleno las opciones del modal de añadír vía
       let viasSector = this.dataCroquis.sector.vias;
@@ -370,54 +389,13 @@ export default {
       }
     },
 
-    fetchData() {
-      this.loading = true;
-
-      let token = Vue.getToken();
-      const headers = { Authorization: "Bearer " + token };
-      this.$http
-        .get(
-          "/escuelas/" +
-            this.idEscuela +
-            "/sectores/" +
-            this.dataCroquis.sector.id +
-            "/croquis/" +
-            this.dataCroquis.id,
-          {
-            headers,
-          }
-        )
-        .then((response) => {
-          this.imagen =
-            "data:" +
-            response.data.data.formatoImagen +
-            ";base64," +
-            response.data.data.imagen;
-          this.dataCroquis = response.data.data;
-          this.cargaSketch();
-        })
-        .catch((err) => {
-          if (err.response.status == 403) {
-            this.$fire({
-              title: "No autorizado",
-              type: "error",
-              showConfirmButton: false,
-              timer: 2500,
-            }).then(() => {
-              this.$router.push("/");
-            });
-          }
-          console.log(err.response);
-        });
-    },
-
     async actualizaViaCroquis(viaCroquis) {
       try {
         let token = Vue.getToken();
         const headers = { Authorization: "Bearer " + token };
         let response = this.$http.put(
           "/escuelas/" +
-            this.idEscuela +
+            this.dataCroquis.sector.escuela.id +
             "/sectores/" +
             this.dataCroquis.sector.id +
             "/croquis/" +
@@ -443,7 +421,7 @@ export default {
         const headers = { Authorization: "Bearer " + token };
         let response = this.$http.post(
           "/escuelas/" +
-            this.idEscuela +
+            this.dataCroquis.sector.escuela.id +
             "/sectores/" +
             this.dataCroquis.sector.id +
             "/croquis/" +
@@ -883,6 +861,10 @@ export default {
           viaSeleccionable = null;
           pintaTodo();
           // si hay error pues se informa de lo contrario y se recarga el croquis
+
+          // no hay errores, actualizo todo
+          this.dataCroquis.trazos = viasCroquis;
+          this.dataCroquisCopia = JSON.parse(JSON.stringify(this.dataCroquis));
         };
 
         let anadirVia = (via) => {
@@ -939,13 +921,13 @@ export default {
         let ajustaDimensionesCanvas = () => {
           if (!this.$refs.div_toolbar) {
             width = this.$refs.contenedor_croquis
-              ? this.$refs.contenedor_croquis.clientWidth
+              ? this.$refs.contenedor_croquis.getBoundingClientRect().width
               : 0;
           } else {
             width = this.$refs.div_toolbar.getBoundingClientRect().width;
           }
           // dimensión y del scroll
-          this.alto = img.height * (width / img.width) * 1.01;
+          this.alto = img.height * (width / img.width);
           // ajuste zooom
           width *= factorZoom;
           // factor de ajuste, ajustamos el ancho del canvas
@@ -1411,25 +1393,29 @@ export default {
           return C12;
         };
       };
-      new p5(this.sketch, "canvas-" + this.dataCroquis.id);
+      new p5(this.sketch, "canvas-" + this.dataCroquis.id + this.detalle);
       this.loading = false;
     },
   },
 
   mounted() {
-    this.dataCroquis = this.croquis;
-    this.fetchData();
+    this.$refs.scroll.ps.settings.scrollYMarginOffset = 20; //scroll Y se mostraba a la mínima
+    this.dataCroquis = JSON.parse(JSON.stringify(this.croquis));
+    this.dataCroquisCopia = JSON.parse(JSON.stringify(this.croquis));
+    this.inicializar();
   },
 };
 </script>
 <style>
 .detalle {
-  max-width: 50% !important;
+  max-width: 100% !important;
 }
 .carrusel {
   max-width: 85% !important;
+  padding-right: 0px !important;
+  padding-left: 0px !important;
 }
-.ps > div > canvas {
+.detalle > div > .ps > div > canvas {
   border-style: solid;
   border-width: 0px 1px 1px 1px;
   border-radius: 0px 0px 5px 5px;

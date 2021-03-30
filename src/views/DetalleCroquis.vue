@@ -1,12 +1,7 @@
 <template>
   <div>
     <NavBar />
-    <Croquis
-      :croquis="dataCroquis"
-      :idEscuela="idEscuela"
-      v-if="dataCroquis.id"
-      :detalle="true"
-    />
+    <Croquis :croquis="dataCroquis" v-if="dataCroquis.id" :detalle="true" />
   </div>
 </template>
 <script>
@@ -55,14 +50,12 @@ export default {
         )
         .then((response) => {
           this.dataCroquis = response.data.data;
-          this.dataCroquis.idEscuela = this.idEscuela;
         })
         .catch((error) => {
           console.log(error);
         });
     } else {
       this.dataCroquis = this.croquis;
-      this.dataCroquis.idEscuela = this.idEscuela;
     }
   },
 };
