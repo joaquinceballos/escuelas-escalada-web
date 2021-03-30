@@ -9,7 +9,7 @@
     <hr />
     <carousel :perPage="1" :navigationEnabled="true">
       <slide v-for="c in croquis" :key="c.id">
-        <Croquis :croquis="c" @doble-click="navegaCroquis" :detalle="false" />
+        <Croquis :croquis="c" :idEscuela="idEscuela" @doble-click="navegaCroquis" :detalle="false" />
       </slide>
     </carousel>
   </div>
@@ -26,10 +26,10 @@ export default {
   },
   props: {
     idEscuela: {
-      type: Number,
+      type: [Number, String],
     },
     idSector: {
-      type: Number,
+      type: [Number, String],
     },
   },
 
@@ -110,7 +110,7 @@ export default {
         .push({
           name: "croquis",
           params: {
-            idEscuela: croquis.idEscuela,
+            idEscuela: this.idEscuela,
             idSector: croquis.sector.id,
             idCroquis: croquis.id,
             croquis: croquis,

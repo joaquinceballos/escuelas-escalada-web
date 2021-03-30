@@ -1,7 +1,12 @@
 <template>
   <div>
     <NavBar />
-    <Croquis :croquis="dataCroquis" v-if="dataCroquis.id" :detalle="true"/>
+    <Croquis
+      :croquis="dataCroquis"
+      :idEscuela="idEscuela"
+      v-if="dataCroquis.id"
+      :detalle="true"
+    />
   </div>
 </template>
 <script>
@@ -20,13 +25,13 @@ export default {
   },
   props: {
     idEscuela: {
-      type: Number,
+      type: [String, Number],
     },
     idSector: {
-      type: Number,
+      type: [String, Number],
     },
     idCroquis: {
-      type: Number,
+      type: [String, Number],
     },
     croquis: {
       type: Object,
