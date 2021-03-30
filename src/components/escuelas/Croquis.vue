@@ -350,8 +350,8 @@ export default {
   methods: {
     resetModalSelectVia() {
       // relleno las opciones del modal de añadír vía
-      let viasSector = this.croquis.sector.vias;
-      let trazosCroquis = this.croquis.trazos;
+      let viasSector = this.dataCroquis.sector.vias;
+      let trazosCroquis = this.dataCroquis.trazos;
       let options = [];
       for (let i = 0; i < viasSector.length; i++) {
         let option = { value: viasSector[i], text: viasSector[i].nombre };
@@ -899,7 +899,7 @@ export default {
             nueva: true,
           };
           // se añade el trazo recién creado al croquis
-          this.croquis.trazos.push(viaCroquis);
+          this.dataCroquis.trazos.push(viaCroquis);
           addViaCroquis(viaCroquis);
           seleccionarViaParaEmpezarAEditar(viaCroquis);
           pintaTodo();
