@@ -15,18 +15,28 @@
       :autoplayTimeout="5000"
     >
       <slide v-for="c in croquis" :key="c.id">
-        <Croquis :croquis="c" @doble-click="modalCroquis" :detalle="false" />
+        <Croquis
+          :croquis="c"
+          @doble-click="modalCroquis"
+          :ref="'slide-croquis-' + c.id"
+          :detalle="false"
+        />
       </slide>
     </carousel>
     <b-modal
       id="modal-croquis"
       :size="tamanoModal"
       title="sin título, como yo"
-      :hideFooter=true
-      :hideHeader=true
-      :no-close-on-backdrop=true
+      :hideFooter="true"
+      :hideHeader="true"
+      :no-close-on-backdrop="true"
+      :no-close-on-esc="true"
     >
-      <Croquis :croquis="croquisDetalle" :detalle="true" />
+      <Croquis
+        :croquis="croquisDetalle"
+        :detalle="true"
+        @salir="recargarCroquis"
+      />
     </b-modal>
   </div>
 </template><script>
@@ -55,7 +65,7 @@ export default {
 
   data() {
     return {
-      tamanoModal:'xl', //TODO echarle un ojo a vue-mq (mola), tamaño xl para un pantalla de 15 pulgadas en demasiado, además se podría manejar tablets y móbiles...
+      tamanoModal: "xl", //TODO echarle un ojo a vue-mq (mola), tamaño xl para un pantalla de 15 pulgadas en demasiado, además se podría manejar tablets y móbiles...
       croquisDetalle: {},
       croquis: [],
       loading: false,
@@ -70,6 +80,12 @@ export default {
   },
 
   methods: {
+    
+    recargarCroquis(croquis) {
+      this.$refs["slide-croquis-" + croquis.id][0].setDataCroquis(croquis);
+      this.$bvModal.hide("modal-croquis");
+    },
+
     fetchData() {
       this.loading = true;
       let token = Vue.getToken();
@@ -147,7 +163,7 @@ export default {
 #modal-croquis > div {
   max-height: fit-content;
 }
-#modal-croquis___BV_modal_body_{
-    padding: 0px;
+#modal-croquis___BV_modal_body_ {
+  padding: 0px;
 }
 </style>

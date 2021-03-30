@@ -78,6 +78,11 @@ export default {
               text: "Exportar...",
               click: (e) => this.funcionesCroquis.exportar(e),
             },
+            { is: "separator" },
+            {
+              text: "Salir",
+              click: () => this.funcionesCroquis.salir(),
+            },
           ],
         },
         {
@@ -223,6 +228,14 @@ export default {
             },
           ],
         },
+        { is: "spacer" },
+        {
+          icon: "close",
+          title: "Salir",
+          click: () => {
+            this.funcionesCroquis.salir();
+          },
+        },
       ];
     },
   },
@@ -326,6 +339,20 @@ export default {
         acercaDe: (e) => {
           console.error("implementación no enlazada", e);
         },
+        salir: () => {
+          if (this.hayCambios) {
+            this.$confirm(
+              "Si cierra esta ventana no se guardarán sus últimos cambios. ¿Salir de todos modos?",
+              "Cambios no guardados",
+              "question",
+              { cancelButtonText: "Cancelar", confirmButtonText: "Ok" }
+            ).then(() => {
+              this.$emit("salir", this.dataCroquisCopia);
+            });
+          } else {
+            this.$emit("salir", this.dataCroquis);
+          }
+        },
       },
     };
   },
@@ -340,6 +367,12 @@ export default {
   },
 
   methods: {
+    setDataCroquis(dataCroquis) {
+      this.dataCroquisCopia = JSON.parse(JSON.stringify(dataCroquis));
+      this.dataCroquis = dataCroquis;
+      this.inicializar();
+    },
+
     inicializar() {
       // elimino imagen y canvas actual
       let div_canvas = this.$refs[
