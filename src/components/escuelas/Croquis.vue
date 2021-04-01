@@ -628,7 +628,7 @@ export default {
         const CENTRIPETAL = 1;
 
         // TODO provisional
-        let scrollWheelActivado = false;
+        let scrollWheelActivado = true;
 
         /** FUNCIONES p5js */
 
@@ -676,15 +676,11 @@ export default {
         s.mouseWheel = (mouseEvent) => {
           if (mouseEventEnCanvas(mouseEvent)) {
             if (mouseEvent.ctrlKey && scrollWheelActivado) {
-              let i = this.factoresZoom.indexOf(this.factorZoom);
-              let j;
-              let zoomIn = mouseEvent.wheelDeltaY > 0;
-              if (zoomIn) {
-                j = Math.min(i + 1, this.factoresZoom.length - 1);
+              if (mouseEvent.wheelDeltaY > 0) {
+                zoomIn(mouseEvent);
               } else {
-                j = Math.max(i - 1, 0);
+                zoomOut(mouseEvent);
               }
-              zoom(this.factoresZoom[j]);
               return false;
             }
           }
@@ -784,18 +780,6 @@ export default {
           } else {
             s.cursor("default");
           }
-        };
-
-        let zoomIn = () => {
-          let i = this.factoresZoom.indexOf(this.factorZoom);
-          let j = Math.min(i + 1, this.factoresZoom.length - 1);
-          zoom(this.factoresZoom[j]);
-        };
-
-        let zoomOut = () => {
-          let i = this.factoresZoom.indexOf(this.factorZoom);
-          let j = Math.max(i - 1, 0);
-          zoom(this.factoresZoom[j]);
         };
 
         let seleccionarViaParaEmpezarAEditar = (via) => {
@@ -987,7 +971,9 @@ export default {
           if (this.viaSeleccionada) {
             let x = s.mouseX;
             let y = s.mouseY;
-            let puntosAbsolutos = traduceAAbsolutos(this.viaSeleccionada.puntos);
+            let puntosAbsolutos = traduceAAbsolutos(
+              this.viaSeleccionada.puntos
+            );
             return indiceClickado(x, y, puntosAbsolutos) > -1;
           } else {
             return false;
@@ -1020,34 +1006,59 @@ export default {
          * @return boolean Si el puntero está sobre la via seleccionada
          */
         let punteroEnViaSeleccionada = () => {
-          return this.viaSeleccionada && this.viaSeleccionada == viaBajoPuntero();
+          return (
+            this.viaSeleccionada && this.viaSeleccionada == viaBajoPuntero()
+          );
         };
 
         //***** Funciones accesibles desde el DOM *****/
-        let zoom = (z) => {
+
+        let zoomIn = (e) => {
+          let i = this.factoresZoom.indexOf(this.factorZoom);
+          let j = Math.min(i + 1, this.factoresZoom.length - 1);
+          zoom(this.factoresZoom[j], e);
+        };
+
+        let zoomOut = (e) => {
+          let i = this.factoresZoom.indexOf(this.factorZoom);
+          let j = Math.max(i - 1, 0);
+          zoom(this.factoresZoom[j], e);
+        };
+
+        let zoom = (z, e) => {
           if (z === this.factorZoom) {
             return;
+          }
+
+          let mouseX0, mouseY0;
+
+          // si vento de un WheelEvent me quedo con las coodenadas de éste sobre la pantalla y
+          // calculo pa posición del ratón sobre el canvas de este modo ya que me da problemas
+          // con dos WheelEvent seguidos sin mover el ratón s.mouseX y s.mouseY no se actualizaron
+          // correctamente en estos casos
+          if (e) {
+            let rect = e.target.getBoundingClientRect();
+            mouseX0 = e.clientX - (rect.left + window.scrollX);
+            mouseY0 = e.clientY - (rect.top + window.scrollY);
+          } else {
+            mouseX0 = s.mouseX;
+            mouseY0 = s.mouseY;
           }
 
           // medidas del canvas actual
           let ancho0 = width;
           let alto0 = height;
 
-          let offsetX = s.mouseX - this.$refs.scroll.$el.scrollLeft;
-          let offsetY = s.mouseY - this.$refs.scroll.$el.scrollTop;
-
-          // medidas del contenedor
-          //let medidas = this.$refs.contenedor_croquis.getBoundingClientRect();
-          //let anchoContenedor = medidas.width;
-          //let altoContenedor = medidas.height;
+          let offsetX = mouseX0 - this.$refs.scroll.$el.scrollLeft;
+          let offsetY = mouseY0 - this.$refs.scroll.$el.scrollTop;
 
           // redimensionamos y pintamos todo
           this.factorZoom = z;
           reajusteDimensiones();
 
           // posicionamos el scroll de modo que la posición del ratón sobre el canvas0 sea el centro del canvas1
-          let mouseX1 = s.map(s.mouseX, 0, ancho0, 0, width);
-          let mouseY1 = s.map(s.mouseY, 0, alto0, 0, height);
+          let mouseX1 = s.map(mouseX0, 0, ancho0, 0, width);
+          let mouseY1 = s.map(mouseY0, 0, alto0, 0, height);
 
           // posicionamos el scroll de modo que el ratón siga apuntando al mismo sitio en el nuevo canvas
           this.$refs.scroll.$el.scrollLeft = mouseX1 - offsetX;
@@ -1327,7 +1338,8 @@ export default {
             getViasBorradas().length > 0;
           this.hayVias =
             this.dataCroquis.trazos.filter((t) => !t.borrada).length > 0;
-          this.editandoCanvas = this.viaSeleccionada != null || this.seleccionandoVia;
+          this.editandoCanvas =
+            this.viaSeleccionada != null || this.seleccionandoVia;
         };
 
         let pintaTodo = () => {
