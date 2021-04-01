@@ -291,13 +291,13 @@ export default {
           icon: "edit_road",
           title: "Editar trazo de vía",
           click: (e) => this.funcionesCroquis.seleccionarVia(e),
-          active: this.seleccionandoVia || this.viaSeleccionada,
+          active: this.seleccionandoVia || this.viaSeleccionada != null,
           disabled: !this.hayVias,
         },
         {
           icon: "delete",
           title: "Quitar trazo de vía",
-          disabled: !this.viaSeleccionada,
+          disabled: this.viaSeleccionada == null,
           click: () => this.funcionesCroquis.borrarViaSeleccionada(),
         },
       ];
@@ -319,7 +319,7 @@ export default {
       mostrarLeyenda: false,
       editandoCanvas: false,
       seleccionandoVia: false,
-      viaSeleccionada: false,
+      viaSeleccionada: null,
       hayVias: false,
       hayCambios: false,
       tipoLeyenda: "barra",
@@ -471,7 +471,7 @@ export default {
       // inicializo campos
       this.mostrarLeyenda = false;
       this.editandoCanvas = false;
-      this.viaSeleccionada = false;
+      this.viaSeleccionada = null;
       this.seleccionandoVia = false;
       this.tipoLeyenda = "barra";
       this.hayVias = false;
@@ -619,7 +619,6 @@ export default {
         //seleccionando vía para editar
         let arrastrando = false;
 
-        let viaSeleccionada;
         let viaSeleccionable;
 
         let puntoClickado = null;
@@ -704,7 +703,7 @@ export default {
               //arrastrando = true;
               puntoClickado.x = s.mouseX / width;
               puntoClickado.y = s.mouseY / height;
-              recalculaCurvaVia(viaSeleccionada);
+              recalculaCurvaVia(this.viaSeleccionada);
             }
           }
         };
@@ -720,9 +719,9 @@ export default {
                 let i = indiceClickado(
                   s.mouseX,
                   s.mouseY,
-                  traduceAAbsolutos(viaSeleccionada.puntos)
+                  traduceAAbsolutos(this.viaSeleccionada.puntos)
                 );
-                puntoClickado = viaSeleccionada.puntos[i];
+                puntoClickado = this.viaSeleccionada.puntos[i];
               } else if (punteroEnViaSeleccionada()) {
                 insertaPuntoEnViaSeleccionada();
               }
@@ -752,7 +751,7 @@ export default {
                 indiceMarcado = indiceClickado(
                   s.mouseX,
                   s.mouseY,
-                  traduceAAbsolutos(viaSeleccionada.puntos)
+                  traduceAAbsolutos(this.viaSeleccionada.puntos)
                 );
               } else if (punteroEnViaSeleccionada()) {
                 insertaPuntoEnViaSeleccionada();
@@ -800,34 +799,32 @@ export default {
         };
 
         let seleccionarViaParaEmpezarAEditar = (via) => {
-          viaSeleccionada = via;
-          this.viaSeleccionada = true;
-          //viaSeleccionada.modificada = true; // nos curamos en salud y decimos que se ha modificado por el mero hecho de haberse seleccionado...
-          indiceMarcado = viaSeleccionada.puntos.length - 1;
+          this.viaSeleccionada = via;
+          indiceMarcado = this.viaSeleccionada.puntos.length - 1;
           this.editandoCanvas = true;
           //this.hayCambios = true;
         };
 
         let borraPuntoClickado = () => {
-          if (!viaSeleccionada) {
+          if (!this.viaSeleccionada) {
             return;
           }
           let indiceBorrar = indiceClickado(
             s.mouseX,
             s.mouseY,
-            traduceAAbsolutos(viaSeleccionada.puntos)
+            traduceAAbsolutos(this.viaSeleccionada.puntos)
           );
-          if (indiceBorrar >= 0 && viaSeleccionada.puntos.length > 2) {
-            viaSeleccionada.puntos.splice(indiceBorrar, 1);
+          if (indiceBorrar >= 0 && this.viaSeleccionada.puntos.length > 2) {
+            this.viaSeleccionada.puntos.splice(indiceBorrar, 1);
             if (indiceBorrar <= indiceMarcado) {
               indiceMarcado--;
             }
-            recalculaCurvaVia(viaSeleccionada);
+            recalculaCurvaVia(this.viaSeleccionada);
           }
         };
 
         let addPunto = () => {
-          if (viaSeleccionada && indiceMarcado > -1) {
+          if (this.viaSeleccionada && indiceMarcado > -1) {
             let nuevoPunto = { x: s.mouseX / width, y: s.mouseY / height };
             indiceMarcado++;
             doAddPuntoEnViaSeleccionada(indiceMarcado /*+ 1*/, nuevoPunto);
@@ -839,14 +836,14 @@ export default {
           puntoClickado = nuevoPunto;
           //índice del punto clickado en la curva
           let indice =
-            indicePuntoAnterior(s.mouseX, s.mouseY, viaSeleccionada) + 1;
+            indicePuntoAnterior(s.mouseX, s.mouseY, this.viaSeleccionada) + 1;
           indiceMarcado = indice;
           doAddPuntoEnViaSeleccionada(indice, nuevoPunto);
         };
 
         let doAddPuntoEnViaSeleccionada = (indice, punto) => {
-          viaSeleccionada.puntos.splice(indice, 0, punto);
-          recalculaCurvaVia(viaSeleccionada);
+          this.viaSeleccionada.puntos.splice(indice, 0, punto);
+          recalculaCurvaVia(this.viaSeleccionada);
         };
 
         /** Retorna el índice, de los puntos de la vía seleccionada, más cercano, hacia atrás, al punto de la curva pasado */
@@ -987,10 +984,10 @@ export default {
          * @return boolean Si el puntero está sobre un punto de la vía seleccionada
          */
         let punteroEnPuntoViaSeleccionda = () => {
-          if (viaSeleccionada) {
+          if (this.viaSeleccionada) {
             let x = s.mouseX;
             let y = s.mouseY;
-            let puntosAbsolutos = traduceAAbsolutos(viaSeleccionada.puntos);
+            let puntosAbsolutos = traduceAAbsolutos(this.viaSeleccionada.puntos);
             return indiceClickado(x, y, puntosAbsolutos) > -1;
           } else {
             return false;
@@ -1023,7 +1020,7 @@ export default {
          * @return boolean Si el puntero está sobre la via seleccionada
          */
         let punteroEnViaSeleccionada = () => {
-          return viaSeleccionada && viaSeleccionada == viaBajoPuntero();
+          return this.viaSeleccionada && this.viaSeleccionada == viaBajoPuntero();
         };
 
         //***** Funciones accesibles desde el DOM *****/
@@ -1082,21 +1079,14 @@ export default {
         let seleccionarVia = () => {
           // si había ya una vía seleccionada de desmarca
           if (this.viaSeleccionada) {
-            this.viaSeleccionada = false;
+            this.viaSeleccionada = null;
             this.seleccionandoVia = false;
           } else {
             this.seleccionandoVia = true;
           }
 
-          viaSeleccionada = null;
           viaSeleccionable = null;
 
-          if (this.viaSeleccionada) {
-            this.mostrarLeyenda = false;
-            this.editandoCanvas = true;
-          } else {
-            this.editandoCanvas = false;
-          }
           pintaTodo();
         };
 
@@ -1165,9 +1155,8 @@ export default {
             });
 
             this.hayCambios = false;
-            viaSeleccionada = null;
+            this.viaSeleccionada = null;
             this.seleccionandoVia = false;
-            this.viaSeleccionada = false;
             viaSeleccionable = null;
 
             pintaTodo();
@@ -1181,21 +1170,20 @@ export default {
 
         let borrarViaSeleccionada = () => {
           if (
-            viaSeleccionada &&
-            this.dataCroquis.trazos.indexOf(viaSeleccionada) > -1
+            this.viaSeleccionada &&
+            this.dataCroquis.trazos.indexOf(this.viaSeleccionada) > -1
           ) {
-            if (viaSeleccionada.nueva) {
+            if (this.viaSeleccionada.nueva) {
               // si la vía era nueva la eliminamos directamente
               let indiceBorrar = this.dataCroquis.trazos.indexOf(
-                viaSeleccionada
+                this.viaSeleccionada
               );
               this.dataCroquis.trazos.splice(indiceBorrar, 1);
             } else {
               // marcamos la vía como borrada
-              viaSeleccionada.borrada = true;
+              this.viaSeleccionada.borrada = true;
             }
-            this.viaSeleccionada = false;
-            viaSeleccionada = null;
+            this.viaSeleccionada = null;
             pintaTodo();
           }
         };
@@ -1339,7 +1327,7 @@ export default {
             getViasBorradas().length > 0;
           this.hayVias =
             this.dataCroquis.trazos.filter((t) => !t.borrada).length > 0;
-          this.editandoCanvas = viaSeleccionada != null || this.seleccionandoVia;
+          this.editandoCanvas = this.viaSeleccionada != null || this.seleccionandoVia;
         };
 
         let pintaTodo = () => {
@@ -1355,12 +1343,12 @@ export default {
             pintaCurva(viasPintables[i].curva, BLANCO, GROSOR_VIA * 2.25);
             let color;
             if (
-              viaSeleccionada &&
-              viaSeleccionada.via.id &&
-              viaSeleccionada.via.id == viasPintables[i].via.id
+              this.viaSeleccionada &&
+              this.viaSeleccionada.via.id &&
+              this.viaSeleccionada.via.id == viasPintables[i].via.id
             ) {
               // pintamos los puntos de fondo
-              pintaPuntos(viaSeleccionada, BLANCO, RADIO_PUNTO * 3);
+              pintaPuntos(this.viaSeleccionada, BLANCO, RADIO_PUNTO * 3);
               // el color de la curva será el de curva seleccionada
               color = COLOR_SELECCIONADA;
             } else if (
@@ -1376,13 +1364,13 @@ export default {
             pintaCurva(viasPintables[i].curva, color, GROSOR_VIA);
             // de nuevo, en caso de ser la curva seleccionada pintamos los puntos de color
             if (
-              viaSeleccionada &&
-              viaSeleccionada.via.id &&
-              viaSeleccionada.via.id == viasPintables[i].via.id
+              this.viaSeleccionada &&
+              this.viaSeleccionada.via.id &&
+              this.viaSeleccionada.via.id == viasPintables[i].via.id
             ) {
-              pintaPuntos(viaSeleccionada, color, RADIO_PUNTO * 2);
+              pintaPuntos(this.viaSeleccionada, color, RADIO_PUNTO * 2);
               pintaPunto(
-                traduceAbsoluto(viaSeleccionada.puntos[indiceMarcado]),
+                traduceAbsoluto(this.viaSeleccionada.puntos[indiceMarcado]),
                 ROJO,
                 RADIO_PUNTO * 1.5
               );
