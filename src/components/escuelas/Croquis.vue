@@ -7,7 +7,8 @@
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
     <div class="div_menu" ref="div_toolbar" v-if="detalle">
-      <vue-file-toolbar-menu :content="my_menu" />
+      <vue-file-toolbar-menu :content="toolbar_fila_1" />
+      <vue-file-toolbar-menu :content="toolbar_fila_2" />
     </div>
     <div class="div_cargando" v-if="loading && detalle">
       <div class="justify-content-center">
@@ -57,7 +58,7 @@ export default {
     heightScrollBar() {
       return this.alto;
     },
-    my_menu() {
+    toolbar_fila_1() {
       return [
         {
           text: "Croquis",
@@ -162,34 +163,46 @@ export default {
               text: "Zoom",
               menu: [
                 {
-                  text: "100%",
-                  click: (e) => {
-                    this.funcionesCroquis.zoom(e, 1);
+                  text: "x1",
+                  click: () => {
+                    this.funcionesCroquis.zoom(1);
                   },
+                  active: this.factorZoom == 1,
                 },
                 {
-                  text: "150%",
-                  click: (e) => {
-                    this.funcionesCroquis.zoom(e, 1.5);
+                  text: "x1.5",
+                  click: () => {
+                    this.funcionesCroquis.zoom(1.5);
                   },
+                  active: this.factorZoom == 1.5,
                 },
                 {
-                  text: "200%",
-                  click: (e) => {
-                    this.funcionesCroquis.zoom(e, 2);
+                  text: "x2",
+                  click: () => {
+                    this.funcionesCroquis.zoom(2);
                   },
+                  active: this.factorZoom == 2,
                 },
                 {
-                  text: "300%",
-                  click: (e) => {
-                    this.funcionesCroquis.zoom(e, 3);
+                  text: "x3",
+                  click: () => {
+                    this.funcionesCroquis.zoom(3);
                   },
+                  active: this.factorZoom == 3,
                 },
                 {
-                  text: "500%",
-                  click: (e) => {
-                    this.funcionesCroquis.zoom(e, 5);
+                  text: "x5",
+                  click: () => {
+                    this.funcionesCroquis.zoom(5);
                   },
+                  active: this.factorZoom == 5,
+                },
+                {
+                  text: "x10",
+                  click: () => {
+                    this.funcionesCroquis.zoom(10);
+                  },
+                  active: this.factorZoom == 10,
                 },
               ],
             },
@@ -200,7 +213,7 @@ export default {
           menu: [
             {
               disabled: !this.hayVias,
-              text: "Seleccionar...",
+              text: "Seleccionar",
               click: (e) => this.funcionesCroquis.seleccionarVia(e),
             },
             {
@@ -238,10 +251,63 @@ export default {
         },
       ];
     },
+    toolbar_fila_2() {
+      return [
+        {
+          icon: "zoom_in",
+          title: "Zoom in",
+          click: () => {
+            this.funcionesCroquis.zoomIn();
+          },
+        },
+        {
+          icon: "zoom_out",
+          title: "Zoom out",
+          click: () => {
+            this.funcionesCroquis.zoomOut();
+          },
+        },
+        { is: "separator" },
+        {
+          icon: "restart_alt",
+          title: "Refrescar",
+          disabled: !this.hayCambios,
+          click: (e) => this.funcionesCroquis.deshacerCambios(e),
+        },
+        {
+          icon: "save",
+          title: "Guardar",
+          disabled: !this.hayCambios,
+          click: () => this.funcionesCroquis.guardarCambios(),
+        },
+        { is: "separator" },
+        {
+          icon: "add_road",
+          title: "Añadir vía al croquis",
+          click: () =>
+            this.$bvModal.show("modal-select-via" + this.dataCroquis.id),
+        },
+        {
+          icon: "edit_road",
+          title: "Editar trazo de vía",
+          click: (e) => this.funcionesCroquis.seleccionarVia(e),
+          active: this.seleccionandoVia || this.viaSeleccionada,
+          disabled: !this.hayVias,
+        },
+        {
+          icon: "delete",
+          title: "Quitar trazo de vía",
+          disabled: !this.viaSeleccionada,
+          click: () => this.funcionesCroquis.borrarViaSeleccionada(),
+        },
+      ];
+    },
   },
 
   data() {
     return {
+      factorZoom: 1,
+      factoresZoom: [1, 1.5, 2, 3, 5, 10],
       optionsViasSector: [],
       nuevaVia: null,
       dataCroquis: {},
@@ -252,6 +318,8 @@ export default {
       imagen: "",
       mostrarLeyenda: false,
       editandoCanvas: false,
+      seleccionandoVia: false,
+      viaSeleccionada: false,
       hayVias: false,
       hayCambios: false,
       tipoLeyenda: "barra",
@@ -306,7 +374,16 @@ export default {
           console.error("implementación no enlazada", e);
         },
         deshacerCambios: () => {
-          this.inicializar();
+          if (this.hayCambios) {
+            this.$confirm(
+              "Los cambios no guardados serán borrados",
+              "Descartar cambios",
+              "warning",
+              { cancelButtonText: "Cancelar", confirmButtonText: "Ok" }
+            ).then(() => {
+              this.inicializar();
+            });
+          }
         },
         exportar: (e) => {
           console.error("implementación no enlazada", e);
@@ -324,14 +401,23 @@ export default {
         color: (e) => {
           console.error("implementación no enlazada", e);
         },
-        zoom: (e, z) => {
-          console.error("implementación no enlazada", e, z);
+        zoom: (z) => {
+          console.error("implementación no enlazada", z);
+        },
+        zoomIn: (e) => {
+          console.error("implementación no enlazada", e);
+        },
+        zoomOut: (e) => {
+          console.error("implementación no enlazada", e);
         },
         seleccionarVia: (e) => {
           console.error("implementación no enlazada", e);
         },
         anadirVia: (via) => {
           console.error("implementación no enlazada", via);
+        },
+        borrarViaSeleccionada: () => {
+          console.error("implementación no enlazada");
         },
         manual: (e) => {
           console.error("implementación no enlazada", e);
@@ -385,6 +471,8 @@ export default {
       // inicializo campos
       this.mostrarLeyenda = false;
       this.editandoCanvas = false;
+      this.viaSeleccionada = false;
+      this.seleccionandoVia = false;
       this.tipoLeyenda = "barra";
       this.hayVias = false;
       this.hayCambios = false;
@@ -407,7 +495,9 @@ export default {
       let options = [];
       for (let i = 0; i < viasSector.length; i++) {
         let option = { value: viasSector[i], text: viasSector[i].nombre };
-        if (trazosCroquis.some((t) => t.via.id === viasSector[i].id)) {
+        if (
+          trazosCroquis.some((t) => !t.borrada && t.via.id === viasSector[i].id)
+        ) {
           option.disabled = true;
         }
         options.push(option);
@@ -474,11 +564,39 @@ export default {
       }
     },
 
+    async deleteViaCroquis(viaCroquis) {
+      // si es una vía nueva no persistida no hacemos nada
+      if (viaCroquis.nueva) {
+        return;
+      }
+      try {
+        let token = Vue.getToken();
+        const headers = { Authorization: "Bearer " + token };
+        let response = this.$http.delete(
+          "/escuelas/" +
+            this.dataCroquis.sector.escuela.id +
+            "/sectores/" +
+            this.dataCroquis.sector.id +
+            "/croquis/" +
+            this.dataCroquis.id +
+            "/via/" +
+            viaCroquis.via.id,
+          {
+            headers,
+          }
+        );
+        if (!response) {
+          console.error("algo ha ido mal...");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
     cargaSketch() {
       this.sketch = (s) => {
         let height = 0; // se calculará en función al alto y proporciones de la imagen
         let width;
-        let factorZoom = 1;
         let c;
         let img;
 
@@ -487,18 +605,18 @@ export default {
         //const COLOR_VIA = s.color(255, 50, 240);
         const COLOR_VIA = s.color(0, 0, 0);
         const BLANCO = s.color(255);
+        const ROJO = s.color(255, 0, 0);
         const COLOR_SELECCIONABLE = s.color(255, 0, 255);
         const COLOR_SELECCIONADA = s.color(0, 255, 255);
         //const NEGRO = s.color(0);
 
         // de cada vía se guarda, la vía en sí, su trazo(puntos guardados) y su curva(puntos interpolados), además el estado... si ha sido midificada o es una vía recién añadida
-        let viasCroquis = [];
+        //let viasCroquis = [];
 
         //leyenda
         let orientacionLeyenda;
 
         //seleccionando vía para editar
-        let seleccionandoVia = false;
         let arrastrando = false;
 
         let viaSeleccionada;
@@ -510,6 +628,11 @@ export default {
         const UNIFORM = 0;
         const CENTRIPETAL = 1;
 
+        // TODO provisional
+        let scrollWheelActivado = false;
+
+        /** FUNCIONES p5js */
+
         s.setup = () => {
           if (this.imagen !== undefined && this.imagen !== null) {
             try {
@@ -517,7 +640,7 @@ export default {
                 img.hide();
                 ajustaDimensionesCanvas();
                 c = s.createCanvas(width, height);
-                cargaViasGrabadas();
+                inicializaVias();
                 pintaTodo();
                 s.noLoop();
               });
@@ -528,16 +651,44 @@ export default {
 
           // enlazo las funciones accesibles desde fuera
           this.funcionesCroquis.zoom = zoom;
+          this.funcionesCroquis.zoomIn = zoomIn;
+          this.funcionesCroquis.zoomOut = zoomOut;
           this.funcionesCroquis.setTipoLeyenda = setTipoLeyenda;
           this.funcionesCroquis.orientacion = orientacion;
           this.funcionesCroquis.mostrarLeyenda = mostrarLeyenda;
           this.funcionesCroquis.seleccionarVia = seleccionarVia;
           this.funcionesCroquis.guardarCambios = guardarCambios;
           this.funcionesCroquis.anadirVia = anadirVia;
+          this.funcionesCroquis.borrarViaSeleccionada = borrarViaSeleccionada;
+        };
+
+        s.draw = () => {
+          if (img) {
+            pintaTodo();
+          }
         };
 
         s.windowResized = () => {
           reajusteDimensiones();
+        };
+
+        /////////// eventos de ratón ///////////
+
+        s.mouseWheel = (mouseEvent) => {
+          if (mouseEventEnCanvas(mouseEvent)) {
+            if (mouseEvent.ctrlKey && scrollWheelActivado) {
+              let i = this.factoresZoom.indexOf(this.factorZoom);
+              let j;
+              let zoomIn = mouseEvent.wheelDeltaY > 0;
+              if (zoomIn) {
+                j = Math.min(i + 1, this.factoresZoom.length - 1);
+              } else {
+                j = Math.max(i - 1, 0);
+              }
+              zoom(this.factoresZoom[j]);
+              return false;
+            }
+          }
         };
 
         s.mouseReleased = (mouseEvent) => {
@@ -585,11 +736,11 @@ export default {
 
         s.mouseClicked = (mouseEvent) => {
           if (mouseEventEnCanvas(mouseEvent)) {
-            if (seleccionandoVia) {
-              seleccionandoVia = false;
+            if (this.seleccionandoVia) {
+              this.seleccionandoVia = false;
               viaSeleccionable = null;
               // si se clickó en una vía, se selecciona ésta
-              let via = viaBajoPuntero(s.mouseX, s.mouseY);
+              let via = viaBajoPuntero();
               if (via) {
                 seleccionarViaParaEmpezarAEditar(via);
               } else {
@@ -622,24 +773,45 @@ export default {
         s.mouseMoved = (mouseEvent) => {
           if (mouseEventEnCanvas(mouseEvent)) {
             seleccionaCursor();
-            if (seleccionandoVia) {
+            if (this.seleccionandoVia) {
+              let via = viaBajoPuntero();
+              if (via) {
+                viaSeleccionable = via;
+              } else {
+                viaSeleccionable = null;
+              }
               pintaTodo();
             }
           } else {
             s.cursor("default");
           }
         };
-        // mover ->
+
+        let zoomIn = () => {
+          let i = this.factoresZoom.indexOf(this.factorZoom);
+          let j = Math.min(i + 1, this.factoresZoom.length - 1);
+          zoom(this.factoresZoom[j]);
+        };
+
+        let zoomOut = () => {
+          let i = this.factoresZoom.indexOf(this.factorZoom);
+          let j = Math.max(i - 1, 0);
+          zoom(this.factoresZoom[j]);
+        };
 
         let seleccionarViaParaEmpezarAEditar = (via) => {
           viaSeleccionada = via;
-          viaSeleccionada.modificada = true; // nos curamos en salud y decimos que se ha modificado por el mero hecho de haberse seleccionado...
+          this.viaSeleccionada = true;
+          //viaSeleccionada.modificada = true; // nos curamos en salud y decimos que se ha modificado por el mero hecho de haberse seleccionado...
           indiceMarcado = viaSeleccionada.puntos.length - 1;
           this.editandoCanvas = true;
-          this.hayCambios = true;
+          //this.hayCambios = true;
         };
 
         let borraPuntoClickado = () => {
+          if (!viaSeleccionada) {
+            return;
+          }
           let indiceBorrar = indiceClickado(
             s.mouseX,
             s.mouseY,
@@ -658,7 +830,7 @@ export default {
           if (viaSeleccionada && indiceMarcado > -1) {
             let nuevoPunto = { x: s.mouseX / width, y: s.mouseY / height };
             indiceMarcado++;
-            doAddPuntoEnViaSeleccionada(indiceMarcado + 1, nuevoPunto);
+            doAddPuntoEnViaSeleccionada(indiceMarcado /*+ 1*/, nuevoPunto);
           }
         };
 
@@ -700,13 +872,9 @@ export default {
         let seleccionaCursor = () => {
           if (puntoClickado || arrastrando) {
             s.cursor("grabbing");
-          } else if (seleccionandoVia || punteroEnPuntoViaSeleccionda()) {
-            let via = viaBajoPuntero(s.mouseX, s.mouseY);
-            if (via) {
-              viaSeleccionable = via;
-            } else {
-              viaSeleccionable = null;
-            }
+          } else if (this.seleccionandoVia) {
+            s.cursor("pointer");
+          } else if (punteroEnPuntoViaSeleccionda()) {
             s.cursor("grab");
           } else if (this.editandoCanvas && punteroEnViaSeleccionada()) {
             s.cursor("row-resize");
@@ -717,44 +885,78 @@ export default {
           }
         };
 
-        let viaBajoPuntero = (x, y) => {
-          for (let i = 0; i < viasCroquis.length; i++) {
-            if (indiceEnCurva(x, y, viasCroquis[i]) >= 0) {
-              return viasCroquis[i];
+        /**
+         * Retorna la vía situada bajo el puntero
+         * @return Object La vía bajo el puntero, null si no hay ninguna
+         */
+        let viaBajoPuntero = () => {
+          let x = s.mouseX;
+          let y = s.mouseY;
+          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
+            if (indiceEnCurva(x, y, this.dataCroquis.trazos[i]) >= 0) {
+              return this.dataCroquis.trazos[i];
             }
           }
           return null;
         };
 
-        let pendienteAB = (a, b) => {
+        /**
+         * Calcula y retorna la pendiente entre dos puntos.
+         * Nunca devolverá pendiente infinita si ambos puntos están en el mismo valor de x
+         * @param a El punto a
+         * @param b El punto b
+         * @return number La pendiente
+         */
+        let pendiente = (a, b) => {
           let difx = b.x - a.x == 0 ? 0.00001 : b.x - a.x;
           return (b.y - a.y) / difx;
         };
 
+        /**
+         * @param m La pendiente
+         * @param a El punto
+         * @return ordenada en el origen de la recta que pasa con el punto a con pendiente m
+         * */
         let ordenadaOrigen = (m, a) => {
           return a.y - m * a.x;
         };
 
-        /** retorna si el punto p está a una distancia menor a GROSOR_VIA de la recta (x0, y0, x1, y1) */
-        let distanciaMenor = (x0, x1, y0, y1, m, b, p) => {
-          if (s.abs(x1 - x0) > s.abs(y1 - y0)) {
+        /**
+         * Recorre el segmento ab calculando la distancia con el punto p, buscando si
+         * algún punto está a una distancia menor a GROSOR_VIA
+         * @param Object a El punto a
+         * @param Object b El punto b
+         * @param number p  El punto p
+         * @return boolean
+         */
+        let distanciaMenor = (a, b, p) => {
+          let m = pendiente(a, b);
+          let o = ordenadaOrigen(m, a);
+
+          let ax = a.x;
+          let ay = a.y;
+          let bx = b.x;
+          let by = b.y;
+
+          // quiero recorrer el eje que nos de más puntos
+          if (s.abs(bx - ax) > s.abs(by - ay)) {
             //recorremos eje x
-            if (x0 > x1) {
-              [x0, x1] = [x1, x0];
+            if (ax > bx) {
+              [ax, bx] = [bx, ax];
             }
-            for (let xi = x0; xi < x1; xi++) {
-              let y = m * xi + b;
+            for (let xi = ax; xi < bx; xi++) {
+              let y = m * xi + o;
               if (s.abs(s.dist(xi, y, p.x, p.y)) < GROSOR_VIA * 2) {
                 return true;
               }
             }
           } else {
             // recorremos eje y
-            if (y0 > y1) {
-              [y0, y1] = [y1, y0];
+            if (ay > by) {
+              [ay, by] = [by, ay];
             }
-            for (let yi = y0; yi < y1; yi++) {
-              let x = (yi - b) / m;
+            for (let yi = ay; yi < by; yi++) {
+              let x = (yi - o) / m;
               if (s.abs(s.dist(x, yi, p.x, p.y)) < GROSOR_VIA * 2) {
                 return true;
               }
@@ -763,42 +965,47 @@ export default {
           return false;
         };
 
+        /**
+         * Obtiene y retorna el índice sobre el que está situado el punto (x, y) de la CURVA de la vía pasasda
+         * @param number x coordenda X
+         * @param number y coordenada Y
+         * @param Object via La via
+         * @return el índice más próximo a (x, y) o -1 si (x, y) no está en la curva
+         */
         let indiceEnCurva = (x, y, via) => {
           let curva = via.curva;
           let puntoClick = { x: x, y: y };
           for (let i = 0; i < curva.length - 1; i++) {
-            let m = pendienteAB(curva[i], curva[i + 1]);
-            let b = ordenadaOrigen(m, curva[i]);
-            if (
-              distanciaMenor(
-                curva[i].x,
-                curva[i + 1].x,
-                curva[i].y,
-                curva[i + 1].y,
-                m,
-                b,
-                puntoClick
-              )
-            ) {
+            if (distanciaMenor(curva[i], curva[i + 1], puntoClick)) {
               return i;
             }
           }
           return -1;
         };
 
+        /**
+         * @return boolean Si el puntero está sobre un punto de la vía seleccionada
+         */
         let punteroEnPuntoViaSeleccionda = () => {
           if (viaSeleccionada) {
             let x = s.mouseX;
             let y = s.mouseY;
-            return (
-              indiceClickado(x, y, traduceAAbsolutos(viaSeleccionada.puntos)) >
-              -1
-            );
+            let puntosAbsolutos = traduceAAbsolutos(viaSeleccionada.puntos);
+            return indiceClickado(x, y, puntosAbsolutos) > -1;
           } else {
             return false;
           }
         };
 
+        /**
+         * Calcula si el punto (x, y) está a una distancia menor a una tolerancia
+         * dada de alguno de los puntos pasados. El caso afirmatico retorna el índice
+         * del array de puntos más próximo.
+         * @param number x La coordenada x
+         * @param number y La coordenada y
+         * @param Array<Object> puntos Array de puntos (ABSOLUTOS)
+         * @return el índice en (x, y) o -1 si no hay ninguno
+         */
         let indiceClickado = (x, y, puntos) => {
           for (let i = 0; i < puntos.length; i++) {
             let punto = puntos[i];
@@ -812,26 +1019,42 @@ export default {
           return -1;
         };
 
+        /**
+         * @return boolean Si el puntero está sobre la via seleccionada
+         */
         let punteroEnViaSeleccionada = () => {
-          return (
-            viaSeleccionada &&
-            viaSeleccionada == viaBajoPuntero(s.mouseX, s.mouseY)
-          );
-        };
-
-        // <- mover
-        s.draw = () => {
-          if (img) {
-            pintaTodo();
-          }
+          return viaSeleccionada && viaSeleccionada == viaBajoPuntero();
         };
 
         //***** Funciones accesibles desde el DOM *****/
-        let zoom = (e, z) => {
-          factorZoom = z;
+        let zoom = (z) => {
+          if (z === this.factorZoom) {
+            return;
+          }
+
+          // medidas del canvas actual
+          let ancho0 = width;
+          let alto0 = height;
+
+          let offsetX = s.mouseX - this.$refs.scroll.$el.scrollLeft;
+          let offsetY = s.mouseY - this.$refs.scroll.$el.scrollTop;
+
+          // medidas del contenedor
+          //let medidas = this.$refs.contenedor_croquis.getBoundingClientRect();
+          //let anchoContenedor = medidas.width;
+          //let altoContenedor = medidas.height;
+
+          // redimensionamos y pintamos todo
+          this.factorZoom = z;
           reajusteDimensiones();
-          this.$refs.scroll.$el.scrollTop = 0;
-          this.$refs.scroll.$el.scrollLeft = 0;
+
+          // posicionamos el scroll de modo que la posición del ratón sobre el canvas0 sea el centro del canvas1
+          let mouseX1 = s.map(s.mouseX, 0, ancho0, 0, width);
+          let mouseY1 = s.map(s.mouseY, 0, alto0, 0, height);
+
+          // posicionamos el scroll de modo que el ratón siga apuntando al mismo sitio en el nuevo canvas
+          this.$refs.scroll.$el.scrollLeft = mouseX1 - offsetX;
+          this.$refs.scroll.$el.scrollTop = mouseY1 - offsetY;
         };
 
         let setTipoLeyenda = (e, tipo) => {
@@ -857,65 +1080,169 @@ export default {
         };
 
         let seleccionarVia = () => {
-          seleccionandoVia = true;
+          // si había ya una vía seleccionada de desmarca
+          if (this.viaSeleccionada) {
+            this.viaSeleccionada = false;
+            this.seleccionandoVia = false;
+          } else {
+            this.seleccionandoVia = true;
+          }
+
           viaSeleccionada = null;
           viaSeleccionable = null;
-          this.mostrarLeyenda = false;
+
+          if (this.viaSeleccionada) {
+            this.mostrarLeyenda = false;
+            this.editandoCanvas = true;
+          } else {
+            this.editandoCanvas = false;
+          }
           pintaTodo();
         };
 
         let guardarCambios = () => {
           let modificadas = getViasModificadas();
           let nuevas = getViasNuevas();
+          let borradas = getViasBorradas();
           // TODO aquí se pedirá confirmación mostrando las vias modificadas / nuevas
-          for (let i = 0; i < modificadas.length; i++) {
-            let modificada = {
-              via: modificadas[i].via,
-              puntos: modificadas[i].puntos, //traduceARelativos(modificadas[i].puntos),
-            };
-            this.actualizaViaCroquis(modificada);
-          }
-          for (let i = 0; i < nuevas.length; i++) {
-            let nueva = {
-              via: nuevas[i].via,
-              puntos: nuevas[i].puntos, //traduceARelativos(nuevas[i].puntos),
-            };
-            this.nuevaViaCroquis(nueva);
-          }
-          // Marcamos todas las vías como no modificadas y no nuevas
-          for (let i = 0; i < viasCroquis.length; i++) {
-            viasCroquis[i].modificada = false;
-            viasCroquis[i].nueva = false;
-          }
-          // TODO aquí un spinner o algo informando que todo ha ido bien
-          this.hayCambios = false;
-          viaSeleccionada = null;
-          seleccionandoVia = false;
-          viaSeleccionable = null;
-          pintaTodo();
-          // si hay error pues se informa de lo contrario y se recarga el croquis
+          let stringCambios = [
+            modificadas.length > 0
+              ? "vías modificadas: [" +
+                modificadas.map((t) => t.via.nombre).join(", ") +
+                "]"
+              : null,
+            nuevas.length > 0
+              ? "vías nuevas: [" +
+                nuevas.map((t) => t.via.nombre).join(", ") +
+                "]"
+              : null,
+            borradas.length > 0
+              ? " vías borradas: [" +
+                borradas.map((t) => t.via.nombre).join(", ") +
+                "]"
+              : null,
+          ]
+            .filter((c) => c != null)
+            .join(", ");
+          this.$confirm(
+            "Los cambios serán guardados. " + stringCambios,
+            "Guardar cambios",
+            "info",
+            { cancelButtonText: "Cancelar", confirmButtonText: "Ok" }
+          ).then(() => {
+            for (let i = 0; i < modificadas.length; i++) {
+              let modificada = {
+                via: modificadas[i].via,
+                puntos: modificadas[i].puntos, //traduceARelativos(modificadas[i].puntos),
+              };
+              this.actualizaViaCroquis(modificada);
+            }
+            for (let i = 0; i < nuevas.length; i++) {
+              let nueva = {
+                via: nuevas[i].via,
+                puntos: nuevas[i].puntos, //traduceARelativos(nuevas[i].puntos),
+              };
+              this.nuevaViaCroquis(nueva);
+            }
+            for (let i = 0; i < borradas.length; i++) {
+              this.deleteViaCroquis(borradas[i]);
+              let indiceBorrar = this.dataCroquis.trazos.indexOf(borradas[i]);
+              this.dataCroquis.trazos.splice(indiceBorrar, 1);
+            }
 
-          // no hay errores, actualizo todo
-          this.dataCroquis.trazos = viasCroquis;
-          this.dataCroquisCopia = JSON.parse(JSON.stringify(this.dataCroquis));
+            // Marcamos todas las vías como no modificadas y no nuevas
+            for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
+              this.dataCroquis.trazos[i].modificada = false;
+              this.dataCroquis.trazos[i].nueva = false;
+            }
+
+            // notificamos que todo ha ido bien... aunque puede no haber sido así... aún no
+            // se ha llamado al API una sola vez pero bueno, yo pongo tick verde que seguro que tengo razón
+            this.$fire({
+              type: "success",
+              showConfirmButton: false,
+              timer: 1000,
+            });
+
+            this.hayCambios = false;
+            viaSeleccionada = null;
+            this.seleccionandoVia = false;
+            this.viaSeleccionada = false;
+            viaSeleccionable = null;
+
+            pintaTodo();
+
+            // guardo la copia
+            this.dataCroquisCopia = JSON.parse(
+              JSON.stringify(this.dataCroquis)
+            );
+          });
         };
 
+        let borrarViaSeleccionada = () => {
+          if (
+            viaSeleccionada &&
+            this.dataCroquis.trazos.indexOf(viaSeleccionada) > -1
+          ) {
+            if (viaSeleccionada.nueva) {
+              // si la vía era nueva la eliminamos directamente
+              let indiceBorrar = this.dataCroquis.trazos.indexOf(
+                viaSeleccionada
+              );
+              this.dataCroquis.trazos.splice(indiceBorrar, 1);
+            } else {
+              // marcamos la vía como borrada
+              viaSeleccionada.borrada = true;
+            }
+            this.viaSeleccionada = false;
+            viaSeleccionada = null;
+            pintaTodo();
+          }
+        };
+
+        /**
+         * Añade la vía pasada al croquis.
+         * Se crea un trazo inicial en mitad de la pantalla y se deja seleccionado.
+         * Se añade el trazo el croquis en estado 'nueva'
+         * Se pinta todo para que los cambios sean visibles
+         * @param Object via La nueva vía
+         */
         let anadirVia = (via) => {
           // trazo inicial en la mitad de la pantalla
           let nuevosPuntos = [
             { x: 0.5, y: 0.75 },
             { x: 0.5, y: 0.25 },
           ];
-          let viaCroquis = {
-            via: via,
-            puntos: nuevosPuntos,
-            curva: interpolate_1(nuevosPuntos, 25, 1),
-            modificada: false,
-            nueva: true,
-          };
-          // se añade el trazo recién creado al croquis
-          this.dataCroquis.trazos.push(viaCroquis);
-          addViaCroquis(viaCroquis);
+
+          let viaCroquis;
+
+          // compruebo si las vía ya está en el croquis
+          if (
+            this.dataCroquis.trazos.filter((t) => t.via.id == via.id).length > 0
+          ) {
+            // si ya está en el croquis sólo podría estar borrada, la "reactivamos"
+            if (
+              getViasBorradas().filter((t) => t.via.id == via.id).length > 0
+            ) {
+              viaCroquis = this.dataCroquis.trazos.filter(
+                (t) => t.via.id == via.id
+              )[0];
+              viaCroquis.borrada = false;
+              viaCroquis.modificada = true;
+              viaCroquis.puntos = nuevosPuntos;
+              viaCroquis.curva = interpolate_1(nuevosPuntos, 25, 1);
+            }
+          } else {
+            viaCroquis = {
+              via: via,
+              puntos: nuevosPuntos,
+              curva: interpolate_1(nuevosPuntos, 25, 1),
+              nueva: true,
+            };
+            // se añade el trazo recién creado al croquis
+            addViaCroquis(viaCroquis);
+          }
+
           seleccionarViaParaEmpezarAEditar(viaCroquis);
           pintaTodo();
         };
@@ -925,20 +1252,33 @@ export default {
         let getViasNuevas = () => {
           let nuevas = [];
           //  se comprueban las vías que se han añadido al croquis
-          for (let i = 0; i < viasCroquis.length; i++) {
-            if (viasCroquis[i].nueva) {
-              nuevas.push(viasCroquis[i]);
+          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
+            if (this.dataCroquis.trazos[i].nueva) {
+              nuevas.push(this.dataCroquis.trazos[i]);
             }
           }
           return nuevas;
         };
 
+        let getViasBorradas = () => {
+          let borradas = [];
+          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
+            if (this.dataCroquis.trazos[i].borrada) {
+              borradas.push(this.dataCroquis.trazos[i]);
+            }
+          }
+          return borradas;
+        };
+
         let getViasModificadas = () => {
           let modificadas = [];
           // se comprueban las vías que han sido modificadas
-          for (let i = 0; i < viasCroquis.length; i++) {
-            if (viasCroquis[i].modificada && !viasCroquis[i].nueva) {
-              modificadas.push(viasCroquis[i]);
+          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
+            if (
+              this.dataCroquis.trazos[i].modificada &&
+              !this.dataCroquis.trazos[i].nueva
+            ) {
+              modificadas.push(this.dataCroquis.trazos[i]);
             }
           }
           return modificadas;
@@ -962,7 +1302,7 @@ export default {
           // dimensión y del scroll
           this.alto = img.height * (width / img.width);
           // ajuste zooom
-          width *= factorZoom;
+          width *= this.factorZoom;
           // factor de ajuste, ajustamos el ancho del canvas
           height = img.height * (width / img.width);
         };
@@ -978,48 +1318,72 @@ export default {
         let pintaPuntos = (via, color, diametro) => {
           let puntos = traduceAAbsolutos(via.puntos);
           for (let i = 0; i < puntos.length; i++) {
-            s.noStroke();
-            s.fill(color);
-            s.circle(puntos[i].x, puntos[i].y, diametro);
+            pintaPunto(puntos[i], color, diametro);
           }
         };
 
+        let pintaPunto = (punto, color, diametro) => {
+          s.noStroke();
+          s.fill(color);
+          s.circle(punto.x, punto.y, diametro);
+        };
+
+        /**
+         * Comprueba si hay cambios pendientes en el croquis
+         */
+        let compruebarEstadoCroquis = () => {
+          this.hayCambios =
+            getViasModificadas().length > 0 ||
+            getViasNuevas().length > 0 ||
+            getViasBorradas().length > 0;
+          this.hayVias =
+            this.dataCroquis.trazos.filter((t) => !t.borrada).length > 0;
+        };
+
         let pintaTodo = () => {
+          // comprobamos si hay cambios
+          compruebarEstadoCroquis();
           // cursores
           seleccionaCursor();
           // pintamos la imagen
           s.image(img, 0, 0, width, height);
           // por cada vía grabada en el croquis, pintamos su curva
-          for (let i = 0; i < viasCroquis.length; i++) {
-            pintaCurva(viasCroquis[i].curva, BLANCO, GROSOR_VIA * 2.25);
+          let viasPintables = this.dataCroquis.trazos.filter((t) => !t.borrada);
+          for (let i = 0; i < viasPintables.length; i++) {
+            pintaCurva(viasPintables[i].curva, BLANCO, GROSOR_VIA * 2.25);
             let color;
             if (
               viaSeleccionada &&
               viaSeleccionada.via.id &&
-              viaSeleccionada.via.id == viasCroquis[i].via.id
+              viaSeleccionada.via.id == viasPintables[i].via.id
             ) {
               // pintamos los puntos de fondo
-              pintaPuntos(viaSeleccionada, BLANCO, RADIO_PUNTO * 2);
+              pintaPuntos(viaSeleccionada, BLANCO, RADIO_PUNTO * 3);
               // el color de la curva será el de curva seleccionada
               color = COLOR_SELECCIONADA;
             } else if (
               viaSeleccionable &&
               viaSeleccionable.via.id &&
-              viaSeleccionable.via.id == viasCroquis[i].via.id
+              viaSeleccionable.via.id == viasPintables[i].via.id
             ) {
               // pintamos la curva en color seleccionable
               color = COLOR_SELECCIONABLE;
             } else {
               color = COLOR_VIA;
             }
-            pintaCurva(viasCroquis[i].curva, color, GROSOR_VIA);
+            pintaCurva(viasPintables[i].curva, color, GROSOR_VIA);
             // de nuevo, en caso de ser la curva seleccionada pintamos los puntos de color
             if (
               viaSeleccionada &&
               viaSeleccionada.via.id &&
-              viaSeleccionada.via.id == viasCroquis[i].via.id
+              viaSeleccionada.via.id == viasPintables[i].via.id
             ) {
-              pintaPuntos(viaSeleccionada, color, GROSOR_VIA * 4);
+              pintaPuntos(viaSeleccionada, color, RADIO_PUNTO * 2);
+              pintaPunto(
+                traduceAbsoluto(viaSeleccionada.puntos[indiceMarcado]),
+                ROJO,
+                RADIO_PUNTO * 1.5
+              );
             }
           }
           // pintamos la leyenda de las vías
@@ -1050,8 +1414,8 @@ export default {
           // primera linea para la cabecera
           lineas.push(["vía", "|", "grado", "|", "longitud", "|", "chapas"]);
           lineas.push(["", "", "", "", "", "", ""]);
-          for (let i = 0; i < viasCroquis.length; i++) {
-            let via = viasCroquis[i].via;
+          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
+            let via = this.dataCroquis.trazos[i].via;
             lineas.push([
               "[" + (i + 1) + "] " + via.nombre,
               "|",
@@ -1143,12 +1507,12 @@ export default {
           // construimos el texto
           s.textFont("monospace");
           s.textSize(15);
-          for (let i = 0; i < viasCroquis.length; i++) {
+          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
             let separador = i == 0 ? "" : "; ";
             let anchoAcumulado = s.textWidth(
               lineas[lineas.length - 1] + separador
             );
-            let via = viasCroquis[i].via;
+            let via = this.dataCroquis.trazos[i].via;
             // TODO i18n chapas y metros...
             let textoVia =
               "[" +
@@ -1197,8 +1561,8 @@ export default {
         };
 
         let pintaNumerosVia = () => {
-          for (let i = 0; i < viasCroquis.length; i++) {
-            let via = viasCroquis[i];
+          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
+            let via = this.dataCroquis.trazos[i];
             let puntoInicial = traduceAAbsolutos([via.puntos[0]])[0];
 
             // círculo
@@ -1220,8 +1584,8 @@ export default {
         };
 
         let pintaLeyendaVia = () => {
-          for (let i = 0; i < viasCroquis.length; i++) {
-            let via = viasCroquis[i];
+          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
+            let via = this.dataCroquis.trazos[i];
             let puntoInicial = traduceAAbsolutos([via.puntos[0]])[0];
             s.textSize(25);
             s.fill(COLOR_VIA);
@@ -1239,25 +1603,26 @@ export default {
         let pintaCurva = (curva, color, grosor) => {
           s.stroke(color);
           s.strokeWeight(grosor);
-          for (let i = 0; i < curva.length - 1; i++) {
-            s.line(curva[i].x, curva[i].y, curva[i + 1].x, curva[i + 1].y);
+          if (curva != undefined) {
+            for (let i = 0; i < curva.length - 1; i++) {
+              s.line(curva[i].x, curva[i].y, curva[i + 1].x, curva[i + 1].y);
+            }
           }
         };
 
-        let cargaViasGrabadas = () => {
+        let inicializaVias = () => {
           for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
-            let viaCroquis = {
-              via: this.dataCroquis.trazos[i].via,
-              puntos: this.dataCroquis.trazos[i].puntos,
-              curva: interpolate_1(this.dataCroquis.trazos[i].puntos, 25, 1),
-              modificada: false,
-            };
-            addViaCroquis(viaCroquis);
+            this.dataCroquis.trazos[i].curva = interpolate_1(
+              this.dataCroquis.trazos[i].puntos,
+              25,
+              1
+            );
+            this.dataCroquis.trazos[i].modificada = false;
           }
         };
 
         let addViaCroquis = (via) => {
-          viasCroquis.push(via);
+          this.dataCroquis.trazos.push(via);
           this.hayVias = true;
         };
 
@@ -1267,24 +1632,30 @@ export default {
           if (!via) {
             console.error("se llama con via inválida");
           }
+          via.modificada = true;
+          this.hayCambios = true;
           via.curva = interpolate_1(via.puntos, 25, 1);
         };
 
         let recalculaCurvasViasGuardadas = () => {
-          for (let i = 0; i < viasCroquis.length; i++) {
-            recalculaCurvaVia(viasCroquis[i]);
+          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
+            recalculaCurvaVia(this.dataCroquis.trazos[i]);
           }
         };
 
         let traduceAAbsolutos = (puntos) => {
           let puntosAbsolutos = [];
           for (let i = 0; i < puntos.length; i++) {
-            puntosAbsolutos.push({
-              x: puntos[i].x * width,
-              y: puntos[i].y * height,
-            });
+            puntosAbsolutos.push(traduceAbsoluto(puntos[i]));
           }
           return puntosAbsolutos;
+        };
+
+        let traduceAbsoluto = (punto) => {
+          return {
+            x: punto.x * width,
+            y: punto.y * height,
+          };
         };
 
         let interpolate_1 = (puntos, pointsPerSegment, curveType) => {
