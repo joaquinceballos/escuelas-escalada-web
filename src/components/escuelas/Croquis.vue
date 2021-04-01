@@ -696,9 +696,10 @@ export default {
         s.mouseDragged = (mouseEvent) => {
           if (mouseEventEnCanvas(mouseEvent)) {
             if (puntoClickado) {
-              //arrastrando = true;
               puntoClickado.x = s.mouseX / width;
               puntoClickado.y = s.mouseY / height;
+
+              this.viaSeleccionada.modificada = true;
               recalculaCurvaVia(this.viaSeleccionada);
             }
           }
@@ -786,7 +787,6 @@ export default {
           this.viaSeleccionada = via;
           indiceMarcado = this.viaSeleccionada.puntos.length - 1;
           this.editandoCanvas = true;
-          //this.hayCambios = true;
         };
 
         let borraPuntoClickado = () => {
@@ -804,6 +804,7 @@ export default {
               indiceMarcado--;
             }
             recalculaCurvaVia(this.viaSeleccionada);
+            this.viaSeleccionada.modificada = true;
           }
         };
 
@@ -826,6 +827,7 @@ export default {
         };
 
         let doAddPuntoEnViaSeleccionada = (indice, punto) => {
+          this.viaSeleccionada.modificada = true;
           this.viaSeleccionada.puntos.splice(indice, 0, punto);
           recalculaCurvaVia(this.viaSeleccionada);
         };
@@ -1209,8 +1211,8 @@ export default {
         let anadirVia = (via) => {
           // trazo inicial en la mitad de la pantalla
           let nuevosPuntos = [
-            { x: 0.5, y: 0.75 },
-            { x: 0.5, y: 0.25 },
+            { x: 0.45, y: 0.75 },
+            { x: 0.55, y: 0.25 },
           ];
 
           let viaCroquis;
@@ -1318,8 +1320,42 @@ export default {
         let pintaPuntos = (via, color, diametro) => {
           let puntos = traduceAAbsolutos(via.puntos);
           for (let i = 0; i < puntos.length; i++) {
-            pintaPunto(puntos[i], color, diametro);
+            if (i == puntos.length - 1 && via == this.viaSeleccionada) {
+              continue; // no se pinta el último punto de la via seleccionada
+            } else {
+              pintaPunto(puntos[i], color, diametro);
+            }
           }
+          if (via == this.viaSeleccionada) {
+            pintaFlecha(via, color, diametro / 2);
+          }
+        };
+
+        let pintaFlecha = (via, color, diametro) => {
+          // sacamos algunos puntos...
+          let p0 = via.curva[via.curva.length - 1];
+          let p1 = via.curva[via.curva.length - 5];
+          let p2 = via.curva[via.curva.length - 10];
+          let p3 = via.curva[via.curva.length - 20];
+          let alfa0 = s.atan2(p0.y - p1.y, p0.x - p1.x);
+          let alfa1 = s.atan2(p0.y - p2.y, p0.x - p2.x);
+          let alfa2 = s.atan2(p0.y - p3.y, p0.x - p3.x);
+          let alfa = (alfa0 + alfa1 + alfa2) / 3;
+          let pa = {
+            x: p0.x + diametro * 2 * s.cos(alfa),
+            y: p0.y + diametro * 2 * s.sin(alfa),
+          };
+          let pb = {
+            x: p0.x + diametro * s.cos(alfa + s.PI / 2),
+            y: p0.y + diametro * s.sin(alfa + s.PI / 2),
+          };
+          let pc = {
+            x: p0.x + diametro * s.cos(alfa - s.PI / 2),
+            y: p0.y + diametro * s.sin(alfa - s.PI / 2),
+          };
+          s.noStroke();
+          s.fill(color);
+          s.triangle(pa.x, pa.y, pb.x, pb.y, pc.x, pc.y);
         };
 
         let pintaPunto = (punto, color, diametro) => {
@@ -1631,11 +1667,10 @@ export default {
         // TODO método para borrar una vía que ponga la propiedad this.hayVias a false cuando la lista de vías esté vacía
 
         let recalculaCurvaVia = (via) => {
+          console.log("recalculandoCurvaVia");
           if (!via) {
             console.error("se llama con via inválida");
           }
-          via.modificada = true;
-          this.hayCambios = true;
           via.curva = interpolate_1(via.puntos, 25, 1);
         };
 
@@ -1662,6 +1697,12 @@ export default {
 
         let interpolate_1 = (puntos, pointsPerSegment, curveType) => {
           let coordinates = traduceAAbsolutos(puntos);
+          if (coordinates.length == 2) {
+            coordinates.splice(1, 0, {
+              x: (coordinates[0].x + coordinates[1].x) / 2,
+              y: (coordinates[0].y + coordinates[1].y) / 2,
+            });
+          }
           let vertices = [];
           for (let i = 0; i < coordinates.length; i++) {
             vertices.push({ x: coordinates[i].x, y: coordinates[i].y });
