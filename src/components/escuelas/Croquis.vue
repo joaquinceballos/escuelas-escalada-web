@@ -1276,7 +1276,8 @@ export default {
           for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
             if (
               this.dataCroquis.trazos[i].modificada &&
-              !this.dataCroquis.trazos[i].nueva
+              !this.dataCroquis.trazos[i].nueva &&
+              !this.dataCroquis.trazos[i].borrada
             ) {
               modificadas.push(this.dataCroquis.trazos[i]);
             }
@@ -1338,10 +1339,11 @@ export default {
             getViasBorradas().length > 0;
           this.hayVias =
             this.dataCroquis.trazos.filter((t) => !t.borrada).length > 0;
+          this.editandoCanvas = viaSeleccionada != null || this.seleccionandoVia;
         };
 
         let pintaTodo = () => {
-          // comprobamos si hay cambios
+          // comprobamos el estado
           compruebarEstadoCroquis();
           // cursores
           seleccionaCursor();
