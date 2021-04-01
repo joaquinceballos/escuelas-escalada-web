@@ -6,7 +6,6 @@ import Perfil from "../views/perfil.vue"
 import Busqueda from "../views/busqueda.vue"
 import DetalleEscuela from "../views/DetalleEscuela.vue"
 import DetalleSector from "../views/DetalleSector.vue"
-import DetalleCroquis from "../views/DetalleCroquis.vue"
 
 Vue.use(VueRouter);
 
@@ -60,15 +59,6 @@ const routes = [{
         },
         props: true
     },
-    {
-        path: "/escuela/:idEscuela/sector/:idSector/croquis/:idCroquis",
-        name: "croquis",
-        component: DetalleCroquis,
-        meta: {
-            requiresAuth: true
-        },
-        props: true
-    }
 ];
 
 const router = new VueRouter({
