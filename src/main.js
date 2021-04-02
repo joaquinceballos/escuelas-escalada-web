@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faMountain, faSpinner, faSearch, faUser, faLanguage, faInfo, faChevronDown, faExclamationCircle } from '@fortawesome/free-solid-svg-icons';
 import TokenPlugin from "./plugins/TokenPlugin.js";
 import x5GMaps from 'x5-gmaps';
+import PerfectScrollbar from "vue2-perfect-scrollbar";
+import "vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
 
 
 const base = axios.create({
@@ -29,6 +31,8 @@ Vue.prototype.$http = base;
 Vue.use(TokenPlugin);
 
 Vue.use(x5GMaps, 'AIzaSyD60DFgSQ0wPBr78Jp3wtcWGBEiDQNZoME')
+
+Vue.use(PerfectScrollbar);
 
 library.add(faSpinner, faMountain, faSearch, faUser, faLanguage, faInfo, faChevronDown, faExclamationCircle);
 Vue.component('icons', FontAwesomeIcon);
