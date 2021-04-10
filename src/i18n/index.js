@@ -56,6 +56,9 @@ const messages = {
             },
 
             navbar: {
+                inicio: "Inicio",
+                zonas: 'Zonas',
+                admin: 'Administración',
                 busqueda: {
                     placeholder: 'Buscar'
                 },
@@ -89,6 +92,18 @@ const messages = {
                 nacimiento: 'Fecha de nacimiento'
             },
 
+            zona: {
+                titulo: 'Zonas de escalada',
+                filtropais: {
+                    texto: 'Seleccione país'
+                },
+                tabla: {
+                    region: 'región',
+                    pais: 'país',
+                    nescuelas: '#Escuelas',
+                    nvias: '#Vías'
+                },
+            },
             escuela: {
                 tabla: {
                     nombre: 'Nombre',

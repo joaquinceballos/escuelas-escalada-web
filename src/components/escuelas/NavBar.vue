@@ -2,20 +2,25 @@
   <div>
     <b-navbar id="navbar" toggleable="md" type="dark" variant="info">
       <b-navbar-brand>{{ $t("message.app.nombre") }}</b-navbar-brand>
-      <b-nav-form class="m-auto" @submit.prevent="buscador">
-        <div class="form"></div>
-        <b-form-input
-          size="md"
-          class="mr-sm-2"
-          v-bind:placeholder="$t('message.navbar.busqueda.placeholder')"
-          id="texto"
-          v-model="busqueda.texto"
-        />
-        <b-button size="md" class="my-2 my-sm-0" type="submit">
-          <icons :icon="['fas', 'search']" class="fa-search" />
-        </b-button>
-      </b-nav-form>
+      <b-navbar-nav>
+        <b-nav-item to="/">{{ $t("message.navbar.inicio") }}</b-nav-item>
+        <b-nav-item to="zona">{{ $t("message.navbar.zonas") }}</b-nav-item>
+        <b-nav-item to="admin">{{ $t("message.navbar.admin") }}</b-nav-item>
+      </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
+        <b-nav-form @submit.prevent="buscador">
+          <div class="form"></div>
+          <b-form-input
+            size="md"
+            class="mr-sm-2"
+            v-bind:placeholder="$t('message.navbar.busqueda.placeholder')"
+            id="texto"
+            v-model="busqueda.texto"
+          />
+          <b-button size="md" class="my-2 my-sm-0" type="submit">
+            <icons :icon="['fas', 'search']" class="fa-search" />
+          </b-button>
+        </b-nav-form>
         <b-nav-item-dropdown right>
           <template slot="button-content">
             <icons :icon="['fas', 'language']" class="fa-language" />

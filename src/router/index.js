@@ -6,6 +6,7 @@ import Perfil from "../views/perfil.vue"
 import Busqueda from "../views/busqueda.vue"
 import DetalleEscuela from "../views/DetalleEscuela.vue"
 import DetalleSector from "../views/DetalleSector.vue"
+import VistaZonas from "../views/VistaZonas.vue"
 
 Vue.use(VueRouter);
 
@@ -59,6 +60,15 @@ const routes = [{
         },
         props: true
     },
+    {
+        path: "/zona/",
+        name: "zona",
+        component: VistaZonas,
+        meta: {
+            requiresAuth: true
+        },
+        props: true
+    },
 ];
 
 const router = new VueRouter({
@@ -77,7 +87,8 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!Vue.tokenValido()) {
             // Si no hay un token válido nos logeamos con el usuario genérico
-            axios.post('https://api-escuelas.ddns.net/login', {
+            let baseUrl = 'http://localhost:8080';
+            axios.post(baseUrl + '/login', {
                 username: "web_guest",
                 password: "12345",
             }).then((response) => {
