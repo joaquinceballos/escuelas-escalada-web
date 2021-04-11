@@ -143,6 +143,11 @@ export default {
     recargarCroquis(croquis) {
       this.$refs["slide-croquis-" + croquis.id][0].setDataCroquis(croquis);
       this.$bvModal.hide("modal-croquis");
+      // se pueden haber creado nuevas vías
+      // no vamos a llamar al api para esto, las cogemos
+      // del mismo croquis actualizado que retornó el modal
+      this.sectorDto.vias = croquis.sector.vias;
+      this.$refs.tablaVias.setItems(this.sectorDto.vias);
     },
 
     fetchData() {

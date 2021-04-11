@@ -97,7 +97,10 @@ const messages = {
                     imagen: 'Imagen',
                     browse_text: 'Examinar',
                     placeholder: 'Escoje o arrastra imagen...',
-                    drop_placeholder: 'Suelta la imagen aquí'
+                    drop_placeholder: 'Suelta la imagen aquí',
+                    error: {
+                        imagen: 'Imagen no es válida'
+                    }
                 }
             },
 

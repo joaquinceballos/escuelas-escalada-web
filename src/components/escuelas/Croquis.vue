@@ -42,16 +42,21 @@
         :options="optionsViasSector"
         :select-size="4"
       ></b-form-select>
+      <p>Si la vía que quieres añadir no existe... créala nueva</p>
+      <button @click="modalNuevaVia">Crear vía</button>
     </b-modal>
+    <ModalVia ref="modal_via" @creada="viaCreada" />
   </div>
 </template>
 <script>
 import p5 from "p5";
 import Vue from "vue";
 import VueFileToolbarMenu from "vue-file-toolbar-menu";
+import ModalVia from "./modales/ModalNuevaVia";
 export default {
   components: {
     VueFileToolbarMenu,
+    ModalVia,
   },
 
   computed: {
@@ -453,6 +458,18 @@ export default {
   },
 
   methods: {
+
+    viaCreada(via) {
+      // añado la vía recién creada
+      this.dataCroquis.sector.vias.push(via);
+      this.$bvModal.show("modal-select-via" + this.dataCroquis.id)
+    },
+
+    modalNuevaVia() {
+      this.$bvModal.hide("modal-select-via" + this.dataCroquis.id)
+      this.$refs.modal_via.mostrar(this.dataCroquis.sector.escuela.id, this.dataCroquis.sector.id);
+    },
+
     setDataCroquis(dataCroquis) {
       this.dataCroquisCopia = JSON.parse(JSON.stringify(dataCroquis));
       this.dataCroquis = dataCroquis;

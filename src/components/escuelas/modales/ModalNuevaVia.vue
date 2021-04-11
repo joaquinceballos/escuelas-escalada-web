@@ -1,8 +1,8 @@
 <template>
   <div>
     <b-modal
-      id="modal_via"
-      ref="modal_via"
+      :id="'modal_via-' + this.idEscuela + '-' + this.idSector"
+      :ref="'modal_via-' + this.idEscuela + '-' + this.idSector"
       v-bind:title="$t('message.modal.via.titulo')"
       @show="resetModalNuevaVia"
       @hidden="resetModalNuevaVia"
@@ -27,14 +27,11 @@
             <b-form-group
               v-bind:label="$t('message.modal.via.grado')"
               label-for="select-grado"
-              v-bind:invalid-feedback="$t('message.modal.via.validacion.grado')"
-              :state="gradoState"
             >
               <b-form-select
                 id="select-grado"
                 v-model="grado"
                 :options="grados"
-                :state="gradoState"
               /> </b-form-group
           ></b-col>
           <b-col>
@@ -92,7 +89,6 @@ export default {
       nombreState: null,
       longitudState: null,
       chapasState: null,
-      gradoState: null,
       grados: [
         "1",
         "2",
@@ -169,7 +165,9 @@ export default {
             timer: 1500,
           }).then(() => {
             this.$nextTick(() => {
-              this.$bvModal.hide("modal_via");
+              this.$bvModal.hide(
+                "modal_via-" + this.idEscuela + "-" + this.idSector
+              );
             });
           });
         })
@@ -193,7 +191,6 @@ export default {
       this.chapasState =
         !this.chapas ||
         (this.chapas == Math.round(this.chapas) && this.chapas >= 0);
-      this.gradoState = this.grado && this.grado.length > 0;
       return valid;
     },
 
@@ -205,13 +202,15 @@ export default {
       this.longitudState = null;
       this.chapas = null;
       this.chapasState = null;
-      this.gradoState = null;
     },
 
     mostrar(idEscuela, idSector) {
       this.idEscuela = idEscuela;
       this.idSector = idSector;
-      this.$bvModal.show("modal_via");
+      // pequeño delay para que de tiempo a rehacer la id del modal
+      setTimeout(() => {
+        this.$bvModal.show("modal_via-" + this.idEscuela + "-" + this.idSector);
+      }, 100);
     },
   },
 

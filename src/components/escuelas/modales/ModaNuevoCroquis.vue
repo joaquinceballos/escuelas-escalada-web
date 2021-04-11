@@ -131,14 +131,19 @@ export default {
     checkViaFormValidity() {
       this.nombreState = this.nombre != null && this.nombre.length > 0;
       this.fileState =
-        this.base64Imagen != null && this.base64Imagen.length > 0;
+        this.file != null &&
+        this.base64Imagen != null &&
+        this.base64Imagen.length > 0;
       const valid = this.$refs.form.checkValidity();
-      return valid;
+      return valid && this.file != null;
     },
 
     resetModalNuevoCroquis() {
       this.nombre = "";
       this.nombreState = null;
+      this.base64Imagen = null;
+      this.file = null;
+      this.fileState = null;
     },
 
     mostrar(idEscuela, idSector) {
