@@ -7,11 +7,37 @@
     <hr />
     <p>{{ sectorDto.informacion }}</p>
     <hr />
-    <carousel :perPage="1" :navigationEnabled="true">
+    <carousel
+      :perPage="1"
+      :navigationEnabled="true"
+      :autoplay="false"
+      :loop="true"
+      :autoplayTimeout="5000"
+    >
       <slide v-for="c in croquis" :key="c.id">
-        <Croquis :croquis="c" :alto="700" />
+        <Croquis
+          :croquis="c"
+          @doble-click="modalCroquis"
+          :ref="'slide-croquis-' + c.id"
+          :detalle="false"
+        />
       </slide>
     </carousel>
+    <b-modal
+      id="modal-croquis"
+      :size="tamanoModal"
+      title="sin título, como yo"
+      :hideFooter="true"
+      :hideHeader="true"
+      :no-close-on-backdrop="true"
+      :no-close-on-esc="true"
+    >
+      <Croquis
+        :croquis="croquisDetalle"
+        :detalle="true"
+        @salir="recargarCroquis"
+      />
+    </b-modal>
   </div>
 </template><script>
 import Vue from "vue";
@@ -26,10 +52,10 @@ export default {
   },
   props: {
     idEscuela: {
-      type: Number,
+      type: [Number, String],
     },
     idSector: {
-      type: Number,
+      type: [Number, String],
     },
   },
 
@@ -39,6 +65,8 @@ export default {
 
   data() {
     return {
+      tamanoModal: "xl", //TODO echarle un ojo a vue-mq (mola), tamaño xl para un pantalla de 15 pulgadas en demasiado, además se podría manejar tablets y móbiles...
+      croquisDetalle: {},
       croquis: [],
       loading: false,
       sectorDto: {
@@ -52,6 +80,12 @@ export default {
   },
 
   methods: {
+    
+    recargarCroquis(croquis) {
+      this.$refs["slide-croquis-" + croquis.id][0].setDataCroquis(croquis);
+      this.$bvModal.hide("modal-croquis");
+    },
+
     fetchData() {
       this.loading = true;
       let token = Vue.getToken();
@@ -94,17 +128,42 @@ export default {
           { headers }
         )
         .then((response) => {
-          let croquis = response.data.data;
-          for (let i = 0; i < croquis.length; i++) {
-            croquis[i].idEscuela = this.idEscuela;
-          }
-          this.croquis = croquis;
+          this.croquis = response.data.data;
         })
         .catch((err) => {
           console.log(err);
         });
     },
+
+    modalCroquis(croquis) {
+      this.croquisDetalle = croquis;
+      this.$bvModal.show("modal-croquis");
+    },
+
+    navegaCroquis(croquis) {
+      this.$router
+        .push({
+          name: "croquis",
+          params: {
+            idEscuela: croquis.sector.escuela.id,
+            idSector: croquis.sector.id,
+            idCroquis: croquis.id,
+            croquis: croquis,
+          },
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 };
 </script>
-<style></style>
+<style>
+/* max-width: fit-content, max-width: -moz-fit-content */
+#modal-croquis > div {
+  max-height: fit-content;
+}
+#modal-croquis___BV_modal_body_ {
+  padding: 0px;
+}
+</style>

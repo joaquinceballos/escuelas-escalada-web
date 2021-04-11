@@ -15,12 +15,23 @@ const messages = {
                 codigo: 'es'
             },
 
+            formulario: {
+                campo_obligatorio: 'Campo obligatorio',
+                longitud_maxima: 'Máximo permitido: {0}',
+            },
+
             login: {
                 header: 'Escuelas de Escalada - Identifícate',
                 username: 'Nombre de usuario / email',
                 password: 'Contraseña',
                 entrar: 'Entrar',
-                registrar: '¿No tienes cuenta? Click aquí para registrarte'
+                registrar: '¿No tienes cuenta? Click aquí para registrarte',
+                obligatorio: 'Campo obligatorio',
+                bienvenido: 'Bienvenido!',
+                ko: {
+                    header: 'Error',
+                    texto: 'No se ha podido acceder con el usuario y contraseña introducidos'
+                }
             },
 
             register: {
@@ -40,6 +51,19 @@ const messages = {
                 registrado: {
                     titulo: 'Usuario registrado',
                     texto: 'Nuevo usuario creado correctamente, por favor haga login'
+                },
+                escuela: {
+                    titulo: 'Crear nueva escuela',
+                    nombre: 'Nombre de Escuela',
+                    informacion: 'información',
+                    zona: 'Zona de escalada',
+                    pais: 'país',
+                    region: 'región',
+                    creada: 'Escuela creada con éxito',
+                    error: {
+                        header: 'Error',
+                        texto: 'No se puede crear la nueva escuela con los datos introducidos'
+                    }
                 }
             },
 
@@ -50,12 +74,16 @@ const messages = {
             },
 
             navbar: {
+                inicio: "Inicio",
+                zonas: 'Zonas',
+                admin: 'Administración',
                 busqueda: {
                     placeholder: 'Buscar'
                 },
                 usuario: {
                     perfil: 'Perfil',
-                    logout: 'logout'
+                    logout: 'logout',
+                    login: 'login'
                 }
             },
 
@@ -80,6 +108,21 @@ const messages = {
                 apellido2: 'Apellido 2',
                 pais: 'País',
                 nacimiento: 'Fecha de nacimiento'
+            },
+
+            zona: {
+                titulo: 'Zonas de escalada',
+                filtropais: {
+                    texto: 'Seleccione país'
+                },
+                tabla: {
+                    region: 'región',
+                    pais: 'país',
+                    nescuelas: '#Escuelas',
+                    nvias: '#Vías'
+                },
+                anadir_escuela: 'Añadir escuela',
+                listado_escuelas: 'Listado de escuelas'
             },
 
             escuela: {
@@ -175,7 +218,8 @@ const messages = {
                 },
                 usuario: {
                     perfil: 'Profile',
-                    logout: 'logout'
+                    logout: 'logout',
+                    login: 'login'
                 }
             },
 

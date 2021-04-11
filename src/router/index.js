@@ -1,12 +1,13 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/home.vue";
-import Login from "../views/login.vue";
 import Register from "../views/register.vue";
 import Perfil from "../views/perfil.vue"
 import Busqueda from "../views/busqueda.vue"
 import DetalleEscuela from "../views/DetalleEscuela.vue"
 import DetalleSector from "../views/DetalleSector.vue"
+import VistaZonas from "../views/VistaZonas.vue"
+import VistaDetalleZona from "../views/VistaDetalleZona.vue";
 
 Vue.use(VueRouter);
 
@@ -18,11 +19,6 @@ const routes = [{
             requiresAuth: true
         },
         props: true
-    },
-    {
-        path: "/login",
-        name: "login",
-        component: Login
     },
     {
         path: "/register",
@@ -64,7 +60,25 @@ const routes = [{
             requiresAuth: true
         },
         props: true
-    }
+    },
+    {
+        path: "/zona/",
+        name: "zona",
+        component: VistaZonas,
+        meta: {
+            requiresAuth: true
+        },
+        props: true
+    },
+    {
+        path: "/zona/:id",
+        name: "detalleZona",
+        component: VistaDetalleZona,
+        meta: {
+            requiresAuth: true
+        },
+        props: true
+    },
 ];
 
 const router = new VueRouter({
@@ -73,16 +87,26 @@ const router = new VueRouter({
     routes
 });
 
+const axios = require('axios');
+
 router.beforeEach((to, from, next) => {
     if (to.name === from.name) {
         return next();
     }
     next();
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        if (Vue.getToken() == null) {
-            next({
-                path: "/login"
-            });
+        if (!Vue.tokenValido()) {
+            // Si no hay un token válido nos logeamos con el usuario genérico
+            let baseUrl = 'http://localhost:8080';
+            axios.post(baseUrl + '/login', {
+                username: "web_guest",
+                password: "12345",
+            }).then((response) => {
+                Vue.guardaToken(response.data.data.token);
+                next({
+                    path: "/"
+                });
+            }).catch((error) => { console.log(error); });
         } else {
             next();
         }
