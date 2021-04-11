@@ -7,6 +7,7 @@ import Busqueda from "../views/busqueda.vue"
 import DetalleEscuela from "../views/DetalleEscuela.vue"
 import DetalleSector from "../views/DetalleSector.vue"
 import VistaZonas from "../views/VistaZonas.vue"
+import VistaDetalleZona from "../views/VistaDetalleZona.vue";
 
 Vue.use(VueRouter);
 
@@ -64,6 +65,15 @@ const routes = [{
         path: "/zona/",
         name: "zona",
         component: VistaZonas,
+        meta: {
+            requiresAuth: true
+        },
+        props: true
+    },
+    {
+        path: "/zona/:id",
+        name: "detalleZona",
+        component: VistaDetalleZona,
         meta: {
             requiresAuth: true
         },

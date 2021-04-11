@@ -4,8 +4,8 @@
       <b-navbar-brand>{{ $t("message.app.nombre") }}</b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item to="/">{{ $t("message.navbar.inicio") }}</b-nav-item>
-        <b-nav-item to="zona">{{ $t("message.navbar.zonas") }}</b-nav-item>
-        <b-nav-item to="admin">{{ $t("message.navbar.admin") }}</b-nav-item>
+        <b-nav-item to="/zona">{{ $t("message.navbar.zonas") }}</b-nav-item>
+        <b-nav-item to="/admin">{{ $t("message.navbar.admin") }}</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-form @submit.prevent="buscador">

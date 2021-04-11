@@ -103,6 +103,7 @@ const messages = {
                     nescuelas: '#Escuelas',
                     nvias: '#Vías'
                 },
+                listado_escuelas: 'Listado de escuelas'
             },
             escuela: {
                 tabla: {

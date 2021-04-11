@@ -1,18 +1,24 @@
 <template>
   <div id="zonas" class="container">
     <h1>{{ $t("message.zona.titulo") }}</h1>
-    <b-form-select
-      v-model="selected"
-      :options="options"
-      class="mb-3"
-      @change="recargaTabla"
-    >
-      <template #first>
-        <b-form-select-option :value="null" disabled>{{
-          $t("message.zona.filtropais.texto")
-        }}</b-form-select-option>
-      </template>
-    </b-form-select>
+    <b-form inline class="mb-1 ml-auto row"
+      ><b-form-checkbox
+        v-model="filtrarConEscuelas"
+        class="mb-2 ml-auto mr-sm-2 mb-sm-0 border rounded"
+        @change="recargaTabla"
+      >
+        filtrar con escuelas
+      </b-form-checkbox>
+      <label class="mr-sm-2" for="select-filtro-pais">País</label>
+      <b-form-select
+        id="select-filtro-pais"
+        v-model="pais"
+        :options="options"
+        class="mb-2 mb-sm-0 col-2"
+        @change="recargaTabla"
+      >
+      </b-form-select>
+    </b-form>
     <TablaZonas ref="tablaZonas" />
     <Pagination ref="pagination" :perPage="4" @cambio="fetchData" />
   </div>
@@ -30,9 +36,9 @@ export default {
   },
   data() {
     return {
-      pais: "",
-      selected: null,
+      pais: null,
       options: [],
+      filtrarConEscuelas: true,
     };
   },
   methods: {
@@ -42,12 +48,13 @@ export default {
       let nombres = countries.getNames(this.$i18n.t("message.idioma.codigo"), {
         select: "official",
       });
+      this.options.push({ value: null, text: "" });
       Object.keys(nombres).forEach((n) => {
         this.options.push({ value: n, text: nombres[n] });
       });
     },
-    recargaTabla(pais) {
-      this.pais = pais;
+    recargaTabla() {
+      this.$refs.pagination.page = 1;
       this.fetchData();
     },
     fetchData() {
@@ -60,6 +67,7 @@ export default {
             this.$refs.pagination.perPage +
             "&page=" +
             (this.$refs.pagination.page - 1) +
+            (this.filtrarConEscuelas ? "&conEscuelas=true" : "") +
             (this.pais && this.pais.length > 0 ? "&pais=" + this.pais : ""),
           {
             headers,

@@ -38,17 +38,14 @@ export default {
 
   methods: {
     listadoEscuelas(zona) {
-      console.log(
-        "aquí iremos al listado de escuelas pasando la zona: " + JSON.stringify(zona)
-      );
-      /*this.$router
+      this.$router
         .push({
-          name: "escuela",
-          params: { id: escuela.id },
+          name: "detalleZona",
+          params: { id: zona.id },
         })
         .catch((error) => {
           console.log(error);
-        });*/
+        });
     },
     
     setItems(items) {
