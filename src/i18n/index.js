@@ -64,6 +64,16 @@ const messages = {
                         header: 'Error',
                         texto: 'No se puede crear la nueva escuela con los datos introducidos'
                     }
+                },
+                sector: {
+                    titulo: 'Crear nuevo Sector',
+                    nombre: 'Nombre',
+                    informacion: 'Información',
+                    creado: 'Sector creado con éxito',
+                    error: {
+                        header: 'Error',
+                        texto: 'No se puede crear el nuevo sector con los datos introducidos'
+                    }
                 }
             },
 
@@ -135,6 +145,7 @@ const messages = {
 
                 detalle: {
                     sectores: "Sectores de la escuela",
+                    anadir_sector: 'Añadir sector',
                     cierresTemporada: {
                         titulo: "Cirres de temporada",
                         texto: "Esta escuela está regulada con cierres temporales para proteger la de cría de aves. Para conocer las fechas afectadas despliegue el calendario",
