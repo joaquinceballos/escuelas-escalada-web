@@ -97,7 +97,9 @@ export default {
     ModalNuevoCroquis,
   },
   computed: {
+
     animacionBotonAnadir() {
+      // sólo se anima cuando no hay ningún croquis
       return this.croquis && this.croquis.length > 0 ? "none" : "cylon";
     },
   },
@@ -193,7 +195,9 @@ export default {
           { headers }
         )
         .then((response) => {
-          this.croquis = response.data.data;
+          let ordenados = response.data.data;
+          ordenados.sort((a, b) => -(a.id - b.id));
+          this.croquis = ordenados;
           if (this.croquis && this.croquis.length > 0) {
             this.$refs.carousel.goToPage(this.croquis[0].id);
           }
