@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import i18n from "./i18n";
 import axios from "axios";
-import BootstrapVue from "bootstrap-vue";
+import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
 import VueSimpleAlert from "vue-simple-alert";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
@@ -14,7 +14,7 @@ import TokenPlugin from "./plugins/TokenPlugin.js";
 import x5GMaps from 'x5-gmaps';
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import "vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
-
+import PaisesPlugin from "./plugins/PaisesPlugin.js";
 
 const base = axios.create({
     baseURL: "http://localhost:8080" // replace on production env
@@ -33,6 +33,10 @@ Vue.use(TokenPlugin);
 Vue.use(x5GMaps, 'AIzaSyD60DFgSQ0wPBr78Jp3wtcWGBEiDQNZoME')
 
 Vue.use(PerfectScrollbar);
+
+Vue.use(PaisesPlugin);
+
+Vue.use(IconsPlugin);
 
 library.add(faSpinner, faMountain, faSearch, faUser, faLanguage, faInfo, faChevronDown, faExclamationCircle, faGlobeEurope);
 Vue.component('icons', FontAwesomeIcon);

@@ -15,6 +15,11 @@ const messages = {
                 codigo: 'es'
             },
 
+            formulario: {
+                campo_obligatorio: 'Campo obligatorio',
+                longitud_maxima: 'Máximo permitido: {0}',
+            },
+
             login: {
                 header: 'Escuelas de Escalada - Identifícate',
                 username: 'Nombre de usuario / email',
@@ -46,6 +51,19 @@ const messages = {
                 registrado: {
                     titulo: 'Usuario registrado',
                     texto: 'Nuevo usuario creado correctamente, por favor haga login'
+                },
+                escuela: {
+                    titulo: 'Crear nueva escuela',
+                    nombre: 'Nombre de Escuela',
+                    informacion: 'información',
+                    zona: 'Zona de escalada',
+                    pais: 'país',
+                    region: 'región',
+                    creada: 'Escuela creada con éxito',
+                    error: {
+                        header: 'Error',
+                        texto: 'No se puede crear la nueva escuela con los datos introducidos'
+                    }
                 }
             },
 
@@ -103,8 +121,10 @@ const messages = {
                     nescuelas: '#Escuelas',
                     nvias: '#Vías'
                 },
+                anadir_escuela: 'Añadir escuela',
                 listado_escuelas: 'Listado de escuelas'
             },
+
             escuela: {
                 tabla: {
                     nombre: 'Nombre',

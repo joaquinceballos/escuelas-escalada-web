@@ -28,7 +28,6 @@
 import Vue from "vue";
 import TablaZonas from "./tablas/TablaZonas";
 import Pagination from "./pagination/Pagination";
-import countries from "i18n-iso-countries";
 export default {
   components: {
     TablaZonas,
@@ -43,15 +42,7 @@ export default {
   },
   methods: {
     cargaComboPaises() {
-      countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
-      countries.registerLocale(require("i18n-iso-countries/langs/es.json"));
-      let nombres = countries.getNames(this.$i18n.t("message.idioma.codigo"), {
-        select: "official",
-      });
-      this.options.push({ value: null, text: "" });
-      Object.keys(nombres).forEach((n) => {
-        this.options.push({ value: n, text: nombres[n] });
-      });
+      this.options = Vue.getComboPaises(this.$i18n.t("message.idioma.codigo"));
     },
     recargaTabla() {
       this.$refs.pagination.page = 1;

@@ -2,18 +2,25 @@
   <div class="container">
     <h1 v-if="zona">{{ this.zona.region }}</h1>
     <h2>{{ $t("message.zona.listado_escuelas") }}</h2>
+    <b-button class="ml-auto mb-1 mt-1 float-right" variant="info" @click="nuevaEscuela"
+      ><b-icon icon="plus-circle" aria-hidden="true"></b-icon
+      > {{ $t("message.zona.anadir_escuela") }}</b-button
+    >
     <TablaEscuela ref="tablaEscuelas" :items="escuelas" />
     <Pagination ref="pagination" :perPage="4" @cambio="fetchDataEscuelas" />
+    <ModalEscuela ref="modal_escuela" @creada="fetchDataEscuelas" />
   </div>
 </template>
 <script>
 import Vue from "vue";
 import Pagination from "./pagination/Pagination.vue";
 import TablaEscuela from "./tablas/TablaEscuela";
+import ModalEscuela from "./modales/ModalNuevaEscuela";
 export default {
   components: {
     TablaEscuela,
     Pagination,
+    ModalEscuela,
   },
   data() {
     return {
@@ -73,6 +80,12 @@ export default {
           }
           console.log(err.response);
         });
+    },
+
+    nuevaEscuela() {
+      this.$refs.modal_escuela.pais = this.zona.pais;
+      this.$refs.modal_escuela.idZona = this.zona.id;
+      this.$refs.modal_escuela.mostrar();
     },
   },
   mounted() {
