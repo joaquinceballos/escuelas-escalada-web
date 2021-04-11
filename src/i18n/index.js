@@ -90,6 +90,14 @@ const messages = {
                         header: 'Error',
                         texto: 'No se puede crear la nueva vía con los datos introducidos'
                     }
+                },
+                croquis: {
+                    titulo: 'Añadir nuevo croquis',
+                    nombre: 'Nombre',
+                    imagen: 'Imagen',
+                    browse_text: 'Examinar',
+                    placeholder: 'Escoje o arrastra imagen...',
+                    drop_placeholder: 'Suelta la imagen aquí'
                 }
             },
 
@@ -182,9 +190,11 @@ const messages = {
                     escuela: 'Escuela',
                     nvias: '#Vías'
                 },
-                listado_vias: 'Vías',
                 detalle: {
-                    anadir_via: 'Añadir vía'
+                    listado_vias: 'Vías',
+                    listado_croquis: 'Croquis',
+                    anadir_via: 'Añadir vía',
+                    tooltip_croquis: 'Añade nuevo croquis'
                 }
             },
 

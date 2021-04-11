@@ -7,7 +7,10 @@
     <hr />
     <p>{{ sectorDto.informacion }}</p>
     <hr />
+    <h2>{{ $t("message.sector.detalle.listado_croquis") }}</h2>
     <carousel
+      :key="carouselKey"
+      ref="carousel"
       :perPage="1"
       :navigationEnabled="true"
       :autoplay="false"
@@ -22,8 +25,29 @@
           :detalle="false"
         />
       </slide>
+      <slide key="-1" class="d-flex align-items-center">
+        <button
+          class="addCroquis bg-transparent mx-auto"
+          v-b-tooltip.hover
+          :title="$t('message.sector.detalle.tooltip_croquis')"
+        >
+          <b-iconstack font-scale="5" @click="addCroquis">
+            <b-icon stacked icon="image" variant="info"></b-icon>
+            <b-icon
+              stacked
+              icon="plus-circle-fill"
+              variant="info"
+              scale=".5"
+              shift-h="-15"
+              shift-v="-4"
+              :animation="animacionBotonAnadir"
+            ></b-icon>
+          </b-iconstack>
+        </button>
+      </slide>
     </carousel>
-    <h2>{{ $t("message.sector.listado_vias") }}</h2>
+    <hr />
+    <h2>{{ $t("message.sector.detalle.listado_vias") }}</h2>
     <b-button
       class="ml-auto mb-1 mt-1 float-right"
       variant="info"
@@ -52,7 +76,8 @@
         @salir="recargarCroquis"
       />
     </b-modal>
-    <ModalVia ref="modal_via" @creada="fetchData"/>
+    <ModalVia ref="modal_via" @creada="fetchData" />
+    <ModalNuevoCroquis ref="modal_nuevo_croquis" @creado="fetchData" />
   </div>
 </template><script>
 import Vue from "vue";
@@ -60,6 +85,7 @@ import Croquis from "./Croquis";
 import { Carousel, Slide } from "vue-carousel";
 import TablaVias from "./tablas/TablaVias";
 import ModalVia from "./modales/ModalNuevaVia";
+import ModalNuevoCroquis from "./modales/ModaNuevoCroquis";
 
 export default {
   components: {
@@ -68,6 +94,12 @@ export default {
     Slide,
     TablaVias,
     ModalVia,
+    ModalNuevoCroquis,
+  },
+  computed: {
+    animacionBotonAnadir() {
+      return this.croquis && this.croquis.length > 0 ? "none" : "cylon";
+    },
   },
   props: {
     idEscuela: {
@@ -95,10 +127,15 @@ export default {
         longitud: 0,
         vias: [],
       },
+      carouselKey: 0,
     };
   },
 
   methods: {
+    addCroquis() {
+      this.$refs.modal_nuevo_croquis.mostrar(this.idEscuela, this.idSector);
+    },
+
     nuevaVia() {
       this.$refs.modal_via.mostrar(this.idEscuela, this.idSector);
     },
@@ -152,6 +189,10 @@ export default {
         )
         .then((response) => {
           this.croquis = response.data.data;
+          if (this.croquis && this.croquis.length > 0) {
+            this.$refs.carousel.goToPage(this.croquis[0].id);
+          }
+          this.carouselKey += 1;
         })
         .catch((err) => {
           console.log(err);
@@ -188,5 +229,8 @@ export default {
 }
 #modal-croquis___BV_modal_body_ {
   padding: 0px;
+}
+.addCroquis :hover {
+  cursor: pointer;
 }
 </style>
