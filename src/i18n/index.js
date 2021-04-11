@@ -74,6 +74,22 @@ const messages = {
                         header: 'Error',
                         texto: 'No se puede crear el nuevo sector con los datos introducidos'
                     }
+                },
+                via: {
+                    titulo: 'Crear nueva vía',
+                    nombre: 'Nombre',
+                    grado: 'Grado',
+                    longitud: 'Longitud',
+                    numero_chapas: 'Número de chapas',
+                    validacion: {
+                        longitud: 'Mayor que 0',
+                        numero_chapas: 'Número no válido'
+                    },
+                    creada: 'Vía creada con éxito',
+                    error: {
+                        header: 'Error',
+                        texto: 'No se puede crear la nueva vía con los datos introducidos'
+                    }
                 }
             },
 
@@ -165,6 +181,10 @@ const messages = {
                     nombre: 'Nombre',
                     escuela: 'Escuela',
                     nvias: '#Vías'
+                },
+                listado_vias: 'Vías',
+                detalle: {
+                    anadir_via: 'Añadir vía'
                 }
             },
 
@@ -173,7 +193,8 @@ const messages = {
                     nombre: 'Nombre',
                     escuela: 'Escuela',
                     grado: 'Grado',
-                    longitud: 'Longitud'
+                    longitud: 'Longitud',
+                    numero_chapas: '#Chapas'
                 }
             }
         }

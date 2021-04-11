@@ -23,6 +23,20 @@
         />
       </slide>
     </carousel>
+    <h2>{{ $t("message.sector.listado_vias") }}</h2>
+    <b-button
+      class="ml-auto mb-1 mt-1 float-right"
+      variant="info"
+      @click="nuevaVia"
+      ><b-icon icon="plus-circle" aria-hidden="true"></b-icon>
+      {{ $t("message.sector.detalle.anadir_via") }}</b-button
+    >
+    <TablaVias
+      v-show="sectorDto.vias.length > 0"
+      ref="tablaVias"
+      :borderless="true"
+      :small="true"
+    />
     <b-modal
       id="modal-croquis"
       :size="tamanoModal"
@@ -38,17 +52,22 @@
         @salir="recargarCroquis"
       />
     </b-modal>
+    <ModalVia ref="modal_via" @creada="fetchData"/>
   </div>
 </template><script>
 import Vue from "vue";
 import Croquis from "./Croquis";
 import { Carousel, Slide } from "vue-carousel";
+import TablaVias from "./tablas/TablaVias";
+import ModalVia from "./modales/ModalNuevaVia";
 
 export default {
   components: {
     Croquis,
     Carousel,
     Slide,
+    TablaVias,
+    ModalVia,
   },
   props: {
     idEscuela: {
@@ -80,7 +99,10 @@ export default {
   },
 
   methods: {
-    
+    nuevaVia() {
+      this.$refs.modal_via.mostrar(this.idEscuela, this.idSector);
+    },
+
     recargarCroquis(croquis) {
       this.$refs["slide-croquis-" + croquis.id][0].setDataCroquis(croquis);
       this.$bvModal.hide("modal-croquis");
@@ -99,6 +121,7 @@ export default {
           // cargamos los croquis
           this.cargaCroquis();
           this.loading = false;
+          this.$refs.tablaVias.setItems(this.sectorDto.vias);
         })
         .catch((err) => {
           if (err.response.status == 403) {

@@ -48,9 +48,7 @@
         />
       </gmaps-map>
     </div>
-    <h2 v-show="escuelaDto.sectores.length > 0">
-      {{ $t("message.escuela.detalle.sectores") }}
-    </h2>
+    <h2>{{ $t("message.escuela.detalle.sectores") }}</h2>
     <b-button
       class="ml-auto mb-1 mt-1 float-right"
       variant="info"
@@ -83,7 +81,7 @@ export default {
     gmapsMarker,
     TablaSectores,
     Calendar,
-    ModalSector
+    ModalSector,
   },
   props: {
     id: {
@@ -217,9 +215,9 @@ export default {
       }
     },
 
-    nuevoSector(){
+    nuevoSector() {
       this.$refs.modal_sector.mostrar(this.escuelaDto.id);
-    }
+    },
   },
 };
 </script>
