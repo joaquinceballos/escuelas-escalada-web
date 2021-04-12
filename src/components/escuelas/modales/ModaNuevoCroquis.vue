@@ -10,19 +10,6 @@
     >
       <form ref="form">
         <b-form-group
-          v-bind:label="$t('message.modal.croquis.nombre')"
-          label-for="name-input"
-          v-bind:invalid-feedback="$t('message.formulario.campo_obligatorio')"
-          :state="nombreState"
-        >
-          <b-form-input
-            id="name-input"
-            v-model="nombre"
-            :state="nombreState"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group
           v-bind:label="$t('message.modal.croquis.imagen')"
           label-for="imagen-input"
           v-bind:invalid-feedback="$t('message.modal.croquis.error.imagen')"
@@ -50,8 +37,6 @@ export default {
     return {
       idEscuela: 0,
       idSector: 0,
-      nombre: "",
-      nombreState: null,
       file: null,
       fileState: null,
       base64Imagen: null,
@@ -84,8 +69,14 @@ export default {
       }
       let token = Vue.getToken();
       const headers = { Authorization: "Bearer " + token };
+      // nombre del informe por defecto, lo hacemos "único" con los millis y el tamaño de la imagen
       let nuevoCroquis = {
-        nombre: this.nombre,
+        nombre:
+          this.idSector +
+          "-" +
+          Date.now() +
+          "-" +
+          this.base64Imagen.length,
         imagen: this.base64Imagen,
       };
 
@@ -129,7 +120,6 @@ export default {
     },
 
     checkViaFormValidity() {
-      this.nombreState = this.nombre != null && this.nombre.length > 0;
       this.fileState =
         this.file != null &&
         this.base64Imagen != null &&
@@ -139,8 +129,6 @@ export default {
     },
 
     resetModalNuevoCroquis() {
-      this.nombre = "";
-      this.nombreState = null;
       this.base64Imagen = null;
       this.file = null;
       this.fileState = null;

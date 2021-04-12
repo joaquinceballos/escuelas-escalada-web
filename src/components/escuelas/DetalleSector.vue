@@ -96,13 +96,14 @@ export default {
     ModalVia,
     ModalNuevoCroquis,
   },
-  computed: {
 
+  computed: {
     animacionBotonAnadir() {
       // sólo se anima cuando no hay ningún croquis
       return this.croquis && this.croquis.length > 0 ? "none" : "cylon";
     },
   },
+
   props: {
     idEscuela: {
       type: [Number, String],

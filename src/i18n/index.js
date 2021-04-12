@@ -85,6 +85,12 @@ const messages = {
                         longitud: 'Mayor que 0',
                         numero_chapas: 'Número no válido'
                     },
+                    anadir_a_croquis: {
+                        titulo: 'Añadir vía',
+                        texto1: 'Selecciona la vía del sector que quieras añadir al croquis',
+                        texto2: '¿No encuentras la vía? ',
+                        texto_link: 'Créala nueva'
+                    },
                     creada: 'Vía creada con éxito',
                     error: {
                         header: 'Error',
