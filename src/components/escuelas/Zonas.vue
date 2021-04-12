@@ -1,13 +1,20 @@
 <template>
   <div id="zonas" class="container">
     <h1>{{ $t("message.zona.titulo") }}</h1>
-    <b-form inline class="mb-1 ml-auto row"
-      ><b-form-checkbox
-        v-model="filtrarConEscuelas"
-        class="mb-2 ml-auto mr-sm-2 mb-sm-0 border rounded"
+    <b-form inline class="mb-1 ml-auto row">
+      <b-form-checkbox
         @change="recargaTabla"
+        class="mb-2 ml-auto mr-sm-2 mb-sm-0 border rounded"
+        v-model="filtroConEscuelas"
+        name="check-button"
+        button
+        button-variant="info"
       >
-        filtrar con escuelas
+        {{
+          filtroConEscuelas
+            ? $t("message.zona.filtro.escuelas_si")
+            : $t("message.zona.filtro.escuelas_no")
+        }}
       </b-form-checkbox>
       <label class="mr-sm-2" for="select-filtro-pais">País</label>
       <b-form-select
@@ -37,7 +44,7 @@ export default {
     return {
       pais: null,
       options: [],
-      filtrarConEscuelas: true,
+      filtroConEscuelas: false,
     };
   },
   methods: {
@@ -58,7 +65,7 @@ export default {
             this.$refs.pagination.perPage +
             "&page=" +
             (this.$refs.pagination.page - 1) +
-            (this.filtrarConEscuelas ? "&conEscuelas=true" : "") +
+            (this.filtroConEscuelas ? "&conEscuelas=true" : "") +
             (this.pais && this.pais.length > 0 ? "&pais=" + this.pais : ""),
           {
             headers,
