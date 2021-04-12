@@ -35,11 +35,12 @@
       </b-collapse>
       <hr />
     </div>
-    <div class="my-4" style="height: 40vh">
-      <gmaps-map
-        :options="mapOptions"
-        v-if="marcadores && marcadores.length > 0"
-      >
+    <div
+      class="my-4"
+      style="height: 40vh"
+      v-if="marcadores && marcadores.length > 0"
+    >
+      <gmaps-map ref="mapaSectores" :options="mapOptions">
         <gmaps-marker
           v-for="(item, i) in marcadores"
           :key="i"
@@ -47,15 +48,21 @@
         />
       </gmaps-map>
     </div>
-    <h2 v-show="escuelaDto.sectores.length > 0">
-      {{ $t("message.escuela.detalle.sectores") }}
-    </h2>
+    <h2>{{ $t("message.escuela.detalle.sectores") }}</h2>
+    <b-button
+      class="ml-auto mb-1 mt-1 float-right"
+      variant="info"
+      @click="nuevoSector"
+      ><b-icon icon="plus-circle" aria-hidden="true"></b-icon>
+      {{ $t("message.escuela.detalle.anadir_sector") }}</b-button
+    >
     <TablaSectores
       v-show="escuelaDto.sectores.length > 0"
       ref="tablaSectores"
       :borderless="true"
       :small="true"
     />
+    <ModalSector ref="modal_sector" @creado="fetchData" />
   </div>
 </template>
 
@@ -64,8 +71,8 @@ import Vue from "vue";
 import { gmapsMap, gmapsMarker } from "x5-gmaps";
 import TablaSectores from "./tablas/TablaSectores";
 import Calendar from "v-year-calendar";
-//import { FaIni } from 'bootstrap-vue';
 import "v-year-calendar/locales/v-year-calendar.es";
+import ModalSector from "./modales/ModalNuevoSector";
 const centroid = require("polygon-centroid");
 
 export default {
@@ -74,6 +81,7 @@ export default {
     gmapsMarker,
     TablaSectores,
     Calendar,
+    ModalSector,
   },
   props: {
     id: {
@@ -205,6 +213,10 @@ export default {
       if (dia == null) {
         console.log(dia);
       }
+    },
+
+    nuevoSector() {
+      this.$refs.modal_sector.mostrar(this.escuelaDto.id);
     },
   },
 };
