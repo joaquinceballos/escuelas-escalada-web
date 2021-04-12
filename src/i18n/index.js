@@ -171,7 +171,11 @@ const messages = {
                     nvias: '#Vías'
                 },
                 anadir_escuela: 'Añadir escuela',
-                listado_escuelas: 'Listado de escuelas'
+                listado_escuelas: 'Listado de escuelas',
+                filtro: {
+                    escuelas_si: 'Mostrar todas',
+                    escuelas_no: 'Mostrar con escuelas'
+                }
             },
 
             escuela: {

@@ -152,7 +152,7 @@ export default {
       let token = Vue.getToken();
       const headers = { Authorization: "Bearer " + token };
       this.$http
-        .get("/zonas?pais=" + this.pais, { headers })
+        .get("/zonas?pais=" + this.pais + "&sort=region,asc", { headers })
         .then((response) => {
           let contenido = response.data.data.contenido;
           for (let i = 0; i < contenido.length; i++) {
