@@ -66,7 +66,8 @@ export default {
             "&page=" +
             (this.$refs.pagination.page - 1) +
             (this.filtroConEscuelas ? "&conEscuelas=true" : "") +
-            (this.pais && this.pais.length > 0 ? "&pais=" + this.pais : ""),
+            (this.pais && this.pais.length > 0 ? "&pais=" + this.pais : "") +
+            "&sort=numeroEscuelas,desc&sort=region,asc",
           {
             headers,
           }
