@@ -14,10 +14,10 @@ export default {
   },
   props: {
     idEscuela: {
-      type: Number,
+      type: [Number, String],
     },
     idSector: {
-      type: Number,
+      type: [Number, String],
     },
   },
 };
