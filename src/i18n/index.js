@@ -42,10 +42,14 @@ const messages = {
                 nombre: 'Nombre',
                 apellido1: 'Apellido 1',
                 apellido2: 'Apellido 2',
+                apellido: 'Apellido',
                 email: 'Email',
                 password: 'Contraseña',
                 submit: 'Registrar',
-                login: '¿Ya tienes cuenta? Click aquí para entrar'
+                texto_login: '¿Ya tienes cuenta?',
+                texto_login_link: 'Identificate',
+                pais: 'País',
+                obligatorio: 'Campo obligatorio'
             },
 
             modal: {

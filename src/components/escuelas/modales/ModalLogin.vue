@@ -1,4 +1,4 @@
-    <template>
+<template>
   <b-modal
     id="modal_login"
     ref="modal_login"

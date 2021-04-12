@@ -5,7 +5,7 @@
       <b-navbar-nav>
         <b-nav-item to="/">{{ $t("message.navbar.inicio") }}</b-nav-item>
         <b-nav-item to="/zona">{{ $t("message.navbar.zonas") }}</b-nav-item>
-        <b-nav-item to="/admin">{{ $t("message.navbar.admin") }}</b-nav-item>
+        <b-nav-item v-if="admin" to="/admin">{{ $t("message.navbar.admin") }}</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-form @submit.prevent="buscador">
@@ -55,6 +55,11 @@
       @logeado="getUserDetails"
       @registrar="registrar"
     />
+    <ModalRegister
+      ref="modal_register"
+      @registrado="logUserIn"
+      @loguear="loguear"
+    />
   </div>
 </template>
 
@@ -62,10 +67,12 @@
 import Vue from "vue";
 import VueJwtDecode from "vue-jwt-decode";
 import ModalLogin from "./modales/ModalLogin";
+import ModalRegister from "./modales/ModalRegister";
 
 export default {
   components: {
     ModalLogin,
+    ModalRegister,
   },
   data() {
     return {
@@ -147,10 +154,12 @@ export default {
       );
     },
     registrar() {
-      console.log("el usuario se quiere registrar...");
+      this.$refs.modal_register.mostrar();
+    },
+    loguear() {
+      this.logUserIn();
     },
   },
-  created() {},
   mounted() {
     this.getUserDetails();
   },
@@ -158,6 +167,9 @@ export default {
     invitado() {
       return this.rolInvitado();
     },
+    admin(){
+      return this.rolAdmin();
+    }
   },
 };
 </script>
