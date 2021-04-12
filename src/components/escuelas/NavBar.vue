@@ -5,7 +5,7 @@
       <b-navbar-nav>
         <b-nav-item to="/">{{ $t("message.navbar.inicio") }}</b-nav-item>
         <b-nav-item to="/zona">{{ $t("message.navbar.zonas") }}</b-nav-item>
-        <b-nav-item to="/admin">{{ $t("message.navbar.admin") }}</b-nav-item>
+        <b-nav-item v-if="admin" to="/admin">{{ $t("message.navbar.admin") }}</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-form @submit.prevent="buscador">
@@ -32,7 +32,7 @@
           <template slot="button-content">
             <icons :icon="['fas', 'user']" class="fa-user" />
           </template>
-          <b-dropdown-item v-b-modal.modal_login>{{
+          <b-dropdown-item @click="logUserIn">{{
             $t("message.navbar.usuario.login")
           }}</b-dropdown-item>
         </b-nav-item-dropdown>
@@ -50,53 +50,30 @@
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
-    <b-modal
-      id="modal_login"
+    <ModalLogin
       ref="modal_login"
-      v-bind:title="$t('message.login.header')"
-      @show="resetModalLogin"
-      @hidden="resetModalLogin"
-      @ok="handleLoginOk"
-    >
-      <form ref="form" @submit.stop.prevent="handleSubmit">
-        <b-form-group
-          v-bind:label="$t('message.login.username')"
-          label-for="name-input"
-          v-bind:invalid-feedback="$t('message.login.obligatorio')"
-          :state="loginNameState"
-        >
-          <b-form-input
-            id="name-input"
-            v-model="loginName"
-            :state="loginNameState"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          v-bind:label="$t('message.login.password')"
-          label-for="password-input"
-          v-bind:invalid-feedback="$t('message.login.obligatorio')"
-          :state="loginPasswordState"
-        >
-          <b-form-input
-            id="password-input"
-            v-model="loginPassword"
-            :state="loginPasswordState"
-            type="password"
-            required
-          ></b-form-input>
-        </b-form-group>
-      </form>
-    </b-modal>
+      @logeado="getUserDetails"
+      @registrar="registrar"
+    />
+    <ModalRegister
+      ref="modal_register"
+      @registrado="logUserIn"
+      @loguear="loguear"
+    />
   </div>
 </template>
 
 <script>
-import VueJwtDecode from "vue-jwt-decode";
 import Vue from "vue";
+import VueJwtDecode from "vue-jwt-decode";
+import ModalLogin from "./modales/ModalLogin";
+import ModalRegister from "./modales/ModalRegister";
 
 export default {
+  components: {
+    ModalLogin,
+    ModalRegister,
+  },
   data() {
     return {
       user: "",
@@ -129,6 +106,9 @@ export default {
       } catch (error) {
         console.error(error, "error from decoding token");
       }
+    },
+    logUserIn() {
+      this.$refs.modal_login.mostrar();
     },
     logUserOut() {
       Vue.borraToken();
@@ -173,68 +153,13 @@ export default {
         this.roles.includes("ROLE_USER")
       );
     },
-    resetModalLogin() {
-      this.loginName = "";
-      this.loginNameState = null;
-      this.loginPassword = "";
-      this.loginPasswordState = null;
+    registrar() {
+      this.$refs.modal_register.mostrar();
     },
-    handleLoginOk(bvModalEvt) {
-      bvModalEvt.preventDefault();
-      this.handleLoginSubmit();
-    },
-    handleLoginSubmit() {
-      if (!this.checkLoginFormValidity()) {
-        return;
-      }
-      this.$http
-        .post("/login", {
-          username: this.loginName,
-          password: this.loginPassword,
-        })
-        .then((response) => {
-          Vue.guardaToken(response.data.data.token);
-          let titulo = this.$i18n.t("message.login.bienvenido");
-          this.$fire({
-            title: titulo,
-            type: "success",
-            showConfirmButton: false,
-            timer: 1500,
-          }).then(() => {
-            this.$nextTick(() => {
-              this.$bvModal.hide("modal_login");
-            });
-          });
-          this.$nextTick(() => {
-            this.$bvModal.hide("modal_login");
-            this.getUserDetails();
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          let titulo = this.$i18n.t("message.login.ko.header");
-          let texto = this.$i18n.t("message.login.ko.texto");
-          this.$fire({
-            title: titulo,
-            text: texto,
-            type: "error",
-            showConfirmButton: true,
-          }).then(() => {
-            this.$nextTick(() => {
-              this.$bvModal.hide("modal_login");
-            });
-          });
-        });
-    },
-    checkLoginFormValidity() {
-      const valid = this.$refs.form.checkValidity();
-      this.loginNameState = this.loginName != null && this.loginName.length > 0;
-      this.loginPasswordState =
-        this.loginPassword != null && this.loginPassword.length > 0;
-      return valid;
+    loguear() {
+      this.logUserIn();
     },
   },
-  created() {},
   mounted() {
     this.getUserDetails();
   },
@@ -242,6 +167,9 @@ export default {
     invitado() {
       return this.rolInvitado();
     },
+    admin(){
+      return this.rolAdmin();
+    }
   },
 };
 </script>

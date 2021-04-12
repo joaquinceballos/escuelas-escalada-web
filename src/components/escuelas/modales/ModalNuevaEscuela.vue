@@ -46,7 +46,7 @@
             /></b-col>
             <b-col class="ml-auto">
               <b-form-select
-                id="select-pais"
+                id="select-region"
                 v-model="idZona"
                 :state="regionState"
                 :options="regiones"
