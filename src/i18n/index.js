@@ -31,7 +31,9 @@ const messages = {
                 ko: {
                     header: 'Error',
                     texto: 'No se ha podido acceder con el usuario y contraseña introducidos'
-                }
+                },
+                texto_registrar: '¿No tienes cuenta?',
+                texto_registrar_link: 'Créate una'
             },
 
             register: {
