@@ -97,11 +97,13 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!Vue.tokenValido()) {
             // Si no hay un token válido nos logeamos con el usuario genérico
-            let baseUrl = 'http://localhost:8080';
-            axios.post(baseUrl + '/login', {
-                username: "web_guest",
-                password: "12345",
-            }).then((response) => {
+            let baseUrl = process.env.VUE_APP_API_BASE_URL;
+            let user = {
+                username: process.env.VUE_APP_API_GENERIC_USER,
+                password: process.env.VUE_APP_API_GENERIC_PASSWORD,
+            };
+            console.log(user);
+            axios.post(baseUrl + '/login', user).then((response) => {
                 Vue.guardaToken(response.data.data.token);
                 next({
                     path: "/"

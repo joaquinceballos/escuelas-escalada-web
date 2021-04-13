@@ -17,7 +17,7 @@ import "vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
 import PaisesPlugin from "./plugins/PaisesPlugin.js";
 
 const base = axios.create({
-    baseURL: "https://api-escuelas.ddns.net" // replace on production env
+    baseURL: process.env.VUE_APP_API_BASE_URL
 });
 
 Vue.config.productionTip = false;
