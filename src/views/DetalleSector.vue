@@ -1,10 +1,10 @@
 <template>
   <div class="detalleEscuela">
-    <NavBar @logeado="logeado" :key="componentKey" />
+    <NavBar @logeado="logeado" :key="navbarKey" />
     <DetalleSector
       v-bind:idEscuela="idEscuela"
       v-bind:idSector="idSector"
-      :key="componentKey"
+      :key="detalleSectorKey"
     />
   </div>
 </template>
@@ -25,13 +25,12 @@ export default {
     },
   },
   data() {
-    return {
-      componentKey: 0,
-    };
+    return { navbarKey: 1, detalleSectorKey: 0 };
   },
   methods: {
     logeado() {
-      this.componentKey += 1;
+      this.navbarKey += 1;
+      this.detalleSectorKey += 1;
     },
   },
 };

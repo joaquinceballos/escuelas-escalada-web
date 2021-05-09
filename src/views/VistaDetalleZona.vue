@@ -1,7 +1,7 @@
 <template>
   <div id="escuelas">
-    <NavBar @logeado="logeado" :key="componentKey" />
-    <Zona :idZona="id" :key="componentKey" />
+    <NavBar @logeado="logeado" :key="navbarKey" />
+    <Zona :idZona="id" :key="zonaKey" />
   </div>
 </template>
 <script>
@@ -19,12 +19,14 @@ export default {
   },
   data() {
     return {
-      componentKey: 0,
+      navbarKey: 1,
+      zonaKey: 0,
     };
   },
   methods: {
     logeado() {
-      this.componentKey += 1;
+      this.zonaKey += 1;
+      this.navbarKey += 1;
     },
   },
 };

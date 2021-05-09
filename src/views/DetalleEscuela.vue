@@ -1,7 +1,7 @@
 <template>
   <div class="detalleEscuela">
-    <NavBar @logeado="logeado" :key="componentKey" />
-    <detalleEscuela v-bind:id="id" :key="componentKey" />
+    <NavBar @logeado="logeado" :key="navbarKey" />
+    <detalleEscuela v-bind:id="id" :key="detalleEscuelaKey" />
   </div>
 </template>
 <script>
@@ -19,12 +19,14 @@ export default {
   },
   data() {
     return {
-      componentKey: 0,
+      detalleEscuelaKey: 0,
+      navbarKey: 1,
     };
   },
   methods: {
     logeado() {
-      this.componentKey += 1;
+      this.navbarKey += 1;
+      this.detalleEscuelaKey += 1;
     },
   },
 };
