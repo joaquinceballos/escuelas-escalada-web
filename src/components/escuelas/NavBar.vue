@@ -4,7 +4,7 @@
       <b-navbar-brand>{{ $t("message.app.nombre") }}</b-navbar-brand>
       <b-navbar-nav>
         <b-nav-item to="/"><b-icon icon="house" variant="light"></b-icon> {{ $t("message.navbar.inicio") }}</b-nav-item>
-        <b-nav-item to="/zona"><b-icon icon="globe" variant="light"></b-icon> {{ $t("message.navbar.zonas") }}</b-nav-item>
+        <b-nav-item to="/zonas"><b-icon icon="globe" variant="light"></b-icon> {{ $t("message.navbar.zonas") }}</b-nav-item>
         <b-nav-item v-if="admin" to="/admin"><b-icon icon="screwdriver" variant="light"></b-icon> {{ $t("message.navbar.admin") }}</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">

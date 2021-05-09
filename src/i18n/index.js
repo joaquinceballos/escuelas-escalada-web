@@ -8,7 +8,8 @@ const messages = {
         message: {
 
             app: {
-                nombre: 'Escuelas de Escalada'
+                nombre: 'Escuelas de Escalada',
+                zona: 'ha creado una nueva zona de escalada en',
             },
 
             idioma: {
@@ -111,7 +112,9 @@ const messages = {
                     placeholder: 'Escoje o arrastra imagen...',
                     drop_placeholder: 'Suelta la imagen aquí',
                     error: {
-                        imagen: 'Imagen no es válida'
+                        imagen: 'Imagen no es válida',
+                        header: 'Error',
+                        texto: 'No se puede cargar el croquis: {msg}'
                     }
                 }
             },
@@ -224,6 +227,27 @@ const messages = {
                     grado: 'Grado',
                     longitud: 'Longitud',
                     numero_chapas: '#Chapas'
+                }
+            },
+
+            modificaciones: {
+                crear: {
+                    zona: '{nombre} ha creado una nueva zona de escalada en {region}',
+                    escuela: '{nombre} ha creado la escuela de {escuela}',
+                    sector: '{nombre} ha creado el sector de {sector}',
+                    croquis: '{nombre} ha creado un nuevo croquis del sector {sector} de la escuela {escuela}'
+                },
+                actualizar: {
+                    zona: '{nombre} ha actualizado la zona de escalada de {region}',
+                    escuela: '{nombre} ha actualizado datos de la escuela de {escuela}',
+                    sector: '{nombre} ha actualizado el sector de {sector}',
+                    croquis: '{nombre} ha actualizado un croquis en el sector {sector} de la escuela {escuela}'
+                },
+                borrar: {
+                    zona: '{nombre} ha borrado la zona de {region}',
+                    escuela: '{nombre} ha borrado la escuela de {escuela}',
+                    sector: '{nombre} ha borrado el sector de {sector}',
+                    croquis: '{nombre} ha borrado un croquis en el sector {sector} de la escuela {escuela}'
                 }
             }
         }
