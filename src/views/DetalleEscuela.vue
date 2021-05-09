@@ -1,7 +1,7 @@
 <template>
   <div class="detalleEscuela">
-    <NavBar />
-    <detalleEscuela v-bind:id="id" />
+    <NavBar @logeado="logeado" :key="componentKey" />
+    <detalleEscuela v-bind:id="id" :key="componentKey" />
   </div>
 </template>
 <script>
@@ -15,6 +15,16 @@ export default {
   props: {
     id: {
       type: [Number, String],
+    },
+  },
+  data() {
+    return {
+      componentKey: 0,
+    };
+  },
+  methods: {
+    logeado() {
+      this.componentKey += 1;
     },
   },
 };

@@ -2,9 +2,13 @@
   <div class="container">
     <h1 v-if="zona">{{ this.zona.region }}</h1>
     <h2>{{ $t("message.zona.listado_escuelas") }}</h2>
-    <b-button class="ml-auto mb-1 mt-1 float-right" variant="info" @click="nuevaEscuela"
-      ><b-icon icon="plus-circle" aria-hidden="true"></b-icon
-      > {{ $t("message.zona.anadir_escuela") }}</b-button
+    <b-button
+      class="ml-auto mb-1 mt-1 float-right"
+      variant="info"
+      @click="nuevaEscuela"
+      v-show="!invitado"
+      ><b-icon icon="plus-circle" aria-hidden="true"></b-icon>
+      {{ $t("message.zona.anadir_escuela") }}</b-button
     >
     <TablaEscuela ref="tablaEscuelas" :items="escuelas" />
     <Pagination ref="pagination" :perPage="4" @cambio="fetchDataEscuelas" />
@@ -90,6 +94,11 @@ export default {
   },
   mounted() {
     this.fetchData();
+  },
+  computed: {
+    invitado() {
+      return Vue.rolInvitado();
+    },
   },
 };
 </script>
