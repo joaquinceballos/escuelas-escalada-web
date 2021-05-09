@@ -50,7 +50,11 @@ const messages = {
                 texto_login: '¿Ya tienes cuenta?',
                 texto_login_link: 'Identificate',
                 pais: 'País',
-                obligatorio: 'Campo obligatorio'
+                obligatorio: 'Campo obligatorio',
+                error: {
+                    header: 'Error',
+                    texto: 'No se puedo crear el nuevo usuario: {msg}'
+                }
             },
 
             modal: {
@@ -69,7 +73,7 @@ const messages = {
                     creada: 'Escuela creada con éxito',
                     error: {
                         header: 'Error',
-                        texto: 'No se puede crear la nueva escuela con los datos introducidos'
+                        texto: 'No se puede crear la nueva escuela: {msg}'
                     }
                 },
                 sector: {
@@ -79,7 +83,7 @@ const messages = {
                     creado: 'Sector creado con éxito',
                     error: {
                         header: 'Error',
-                        texto: 'No se puede crear el nuevo sector con los datos introducidos'
+                        texto: 'No se puede crear el nuevo sector: {msg}'
                     }
                 },
                 via: {
@@ -101,7 +105,7 @@ const messages = {
                     creada: 'Vía creada con éxito',
                     error: {
                         header: 'Error',
-                        texto: 'No se puede crear la nueva vía con los datos introducidos'
+                        texto: 'No se puede crear la nueva vía: {msg}'
                     }
                 },
                 croquis: {
@@ -274,8 +278,66 @@ const messages = {
             modal: {
                 error: 'Error',
                 registrado: {
-                    titulo: 'User registered',
-                    texto: 'New user has been created, please login'
+                    titulo: 'Usuario registrado',
+                    texto: 'Nuevo usuario creado correctamente, por favor haga login'
+                },
+                escuela: {
+                    titulo: 'Crear nueva escuela',
+                    nombre: 'Nombre de Escuela',
+                    informacion: 'información',
+                    zona: 'Zona de escalada',
+                    pais: 'país',
+                    region: 'región',
+                    creada: 'Escuela creada con éxito',
+                    error: {
+                        header: 'Error',
+                        texto: 'No se puede crear la nueva escuela: {msg}'
+                    }
+                },
+                sector: {
+                    titulo: 'Crear nuevo Sector',
+                    nombre: 'Nombre',
+                    informacion: 'Información',
+                    creado: 'Sector creado con éxito',
+                    error: {
+                        header: 'Error',
+                        texto: 'No se puede crear el nuevo sector: {msg}'
+                    }
+                },
+                via: {
+                    titulo: 'Crear nueva vía',
+                    nombre: 'Nombre',
+                    grado: 'Grado',
+                    longitud: 'Longitud',
+                    numero_chapas: 'Número de chapas',
+                    validacion: {
+                        longitud: 'Mayor que 0',
+                        numero_chapas: 'Número no válido'
+                    },
+                    anadir_a_croquis: {
+                        titulo: 'Añadir vía',
+                        texto1: 'Selecciona la vía del sector que quieras añadir al croquis',
+                        texto2: '¿No encuentras la vía? ',
+                        texto_link: 'Créala nueva'
+                    },
+                    creada: 'Vía creada con éxito',
+                    error: {
+                        header: 'Error',
+                        texto: 'No se puede crear la nueva vía: {msg}'
+                    }
+                },
+                croquis: {
+                    titulo: 'Añadir nuevo croquis',
+                    nombre: 'Nombre',
+                    imagen: 'Imagen',
+                    browse_text: 'Examinar',
+                    placeholder: 'Escoje o arrastra imagen...',
+                    drop_placeholder: 'Suelta la imagen aquí',
+                    error: {
+                        imagen: 'Imagen no es válida',
+                        header: 'Error',
+                        texto: 'No se puede cargar el croquis: {msg}'
+                    }
                 }
             },
 

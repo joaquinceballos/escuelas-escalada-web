@@ -180,17 +180,15 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-          let titulo = this.$i18n.t("message.register.ko.header");
-          let texto = this.$i18n.t("message.register.ko.texto");
+          let titulo = this.$i18n.t("message.register.error.header");
+          let texto = this.$i18n.t("message.register.error.texto", {
+            msg: error.response.data.data,
+          });
           this.$fire({
             title: titulo,
             text: texto,
             type: "error",
             showConfirmButton: true,
-          }).then(() => {
-            this.$nextTick(() => {
-              this.$bvModal.hide("modal_register");
-            });
           });
         });
     },

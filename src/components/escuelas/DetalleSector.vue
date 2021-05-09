@@ -155,8 +155,7 @@ export default {
 
     fetchData() {
       this.loading = true;
-      let token = Vue.getToken();
-      const headers = { Authorization: "Bearer " + token };
+      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
       this.$http
         .get("/escuelas/" + this.idEscuela + "/sectores/" + this.idSector, {
           headers,
@@ -184,8 +183,7 @@ export default {
     },
 
     cargaCroquis() {
-      let token = Vue.getToken();
-      const headers = { Authorization: "Bearer " + token };
+      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
       this.$http
         .get(
           "/escuelas/" +

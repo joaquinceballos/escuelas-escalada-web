@@ -134,8 +134,8 @@ export default {
       if (!this.checkViaFormValidity()) {
         return;
       }
-      let token = Vue.getToken();
-      const headers = { Authorization: "Bearer " + token };
+      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+      console.log('->', headers);
       let nuevaVia = {
         nombre: this.nombre,
         grado: this.grado,
@@ -174,7 +174,9 @@ export default {
         .catch((error) => {
           console.log(error);
           let titulo = this.$i18n.t("message.modal.via.error.header");
-          let texto = this.$i18n.t("message.modal.via.error.texto");
+          let texto = this.$i18n.t("message.modal.via.error.texto", {
+            msg: error.response.data.data,
+          });
           this.$fire({
             title: titulo,
             text: texto,

@@ -86,8 +86,7 @@ export default {
         return;
       }
       // TODO emitir evento creada cuando se cree correctamente la escuela
-      let token = Vue.getToken();
-      const headers = { Authorization: "Bearer " + token };
+      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
       let nuevaEscuela = {
         nombre: this.nombre,
         informacion: this.informacion,
@@ -112,9 +111,10 @@ export default {
           });
         })
         .catch((error) => {
-          console.log(error);
           let titulo = this.$i18n.t("message.modal.escuela.error.header");
-          let texto = this.$i18n.t("message.modal.escuela.error.texto");
+          let texto = this.$i18n.t("message.modal.escuela.error.texto", {
+            msg: error.response.data.data,
+          });
           this.$fire({
             title: titulo,
             text: texto,
@@ -149,8 +149,8 @@ export default {
 
     cargaRegiones() {
       this.regiones = [];
-      let token = Vue.getToken();
-      const headers = { Authorization: "Bearer " + token };
+      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+      console.log(headers);
       this.$http
         .get("/zonas?pais=" + this.pais + "&sort=region,asc", { headers })
         .then((response) => {
