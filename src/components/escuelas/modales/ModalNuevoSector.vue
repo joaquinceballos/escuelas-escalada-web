@@ -81,8 +81,7 @@ export default {
       if (!this.checkSectorFormValidity()) {
         return;
       }
-      let token = Vue.getToken();
-      const headers = { Authorization: "Bearer " + token };
+      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
       let nuevoSector = {
         nombre: this.nombre,
         informacion: this.informacion,
@@ -111,7 +110,9 @@ export default {
         .catch((error) => {
           console.log(error);
           let titulo = this.$i18n.t("message.modal.sector.error.header");
-          let texto = this.$i18n.t("message.modal.sector.error.texto");
+          let texto = this.$i18n.t("message.modal.sector.error.texto", {
+            msg: error.response.data.data,
+          });
           this.$fire({
             title: titulo,
             text: texto,

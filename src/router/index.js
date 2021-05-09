@@ -38,7 +38,7 @@ const routes = [{
         props: true
     },
     {
-        path: "/escuela/:id",
+        path: "/escuelas/:id",
         name: "escuela",
         component: DetalleEscuela,
         meta: {
@@ -47,7 +47,7 @@ const routes = [{
         props: true
     },
     {
-        path: "/escuela/:idEscuela/sector/:idSector",
+        path: "/escuelas/:idEscuela/sectores/:idSector",
         name: "sector",
         component: DetalleSector,
         meta: {
@@ -56,7 +56,19 @@ const routes = [{
         props: true
     },
     {
-        path: "/zona/",
+        path: "/escuelas/:idEscuela/sectores/:idSector/vias/:idVia",
+        redirect: to => {
+            return { path: '/escuelas/:idEscuela/sectores/:idSector', query: { idVia: to.params.idVia } }
+        }
+    },
+    {
+        path: "/escuelas/:idEscuela/sectores/:idSector/croquis/:idCroquis",
+        redirect: to => {
+            return { path: '/escuelas/:idEscuela/sectores/:idSector', query: { idCroquis: to.params.idCroquis } }
+        }
+    },
+    {
+        path: "/zonas/",
         name: "zona",
         component: VistaZonas,
         meta: {
@@ -65,7 +77,7 @@ const routes = [{
         props: true
     },
     {
-        path: "/zona/:id",
+        path: "/zonas/:id",
         name: "detalleZona",
         component: VistaDetalleZona,
         meta: {

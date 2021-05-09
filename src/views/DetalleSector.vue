@@ -2,6 +2,7 @@
   <div class="detalleEscuela">
     <NavBar @logeado="logeado" :key="navbarKey" />
     <DetalleSector
+      v-if="montado"
       v-bind:idEscuela="idEscuela"
       v-bind:idSector="idSector"
       :key="detalleSectorKey"
@@ -25,8 +26,20 @@ export default {
     },
   },
   data() {
-    return { navbarKey: 1, detalleSectorKey: 0 };
+    return {
+      idvia: null,
+      idCroquis: null,
+      montado: false,
+      navbarKey: 1,
+      detalleSectorKey: 0,
+    };
   },
+  mounted() {
+    this.idVia = this.$route.query.idVia;
+    this.idCroquis = this.$route.query.idCroquis;
+    this.montado = true;
+  },
+
   methods: {
     logeado() {
       this.navbarKey += 1;

@@ -532,8 +532,7 @@ export default {
 
     async actualizaViaCroquis(viaCroquis) {
       try {
-        let token = Vue.getToken();
-        const headers = { Authorization: "Bearer " + token };
+        const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.put(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -558,8 +557,7 @@ export default {
 
     async nuevaViaCroquis(viaCroquis) {
       try {
-        let token = Vue.getToken();
-        const headers = { Authorization: "Bearer " + token };
+        const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.post(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -588,8 +586,7 @@ export default {
         return;
       }
       try {
-        let token = Vue.getToken();
-        const headers = { Authorization: "Bearer " + token };
+        const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.delete(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +

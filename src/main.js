@@ -15,6 +15,7 @@ import x5GMaps from 'x5-gmaps';
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import "vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
 import PaisesPlugin from "./plugins/PaisesPlugin.js";
+import HeadersPlugin from "./plugins/HeadersPlugin.js";
 
 const base = axios.create({
     baseURL: process.env.VUE_APP_API_BASE_URL
@@ -37,6 +38,8 @@ Vue.use(PerfectScrollbar);
 Vue.use(PaisesPlugin);
 
 Vue.use(IconsPlugin);
+
+Vue.use(HeadersPlugin);
 
 library.add(faSpinner, faMountain, faSearch, faUser, faLanguage, faInfo, faChevronDown, faExclamationCircle, faGlobeEurope);
 Vue.component('icons', FontAwesomeIcon);

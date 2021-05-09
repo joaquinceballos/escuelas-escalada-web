@@ -67,16 +67,11 @@ export default {
       if (!this.checkViaFormValidity()) {
         return;
       }
-      let token = Vue.getToken();
-      const headers = { Authorization: "Bearer " + token };
+      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
       // nombre del informe por defecto, lo hacemos "único" con los millis y el tamaño de la imagen
       let nuevoCroquis = {
         nombre:
-          this.idSector +
-          "-" +
-          Date.now() +
-          "-" +
-          this.base64Imagen.length,
+          this.idSector + "-" + Date.now() + "-" + this.base64Imagen.length,
         imagen: this.base64Imagen,
       };
 
@@ -107,9 +102,10 @@ export default {
           });
         })
         .catch((error) => {
-          console.log(error);
           let titulo = this.$i18n.t("message.modal.croquis.error.header");
-          let texto = this.$i18n.t("message.modal.croquis.error.texto");
+          let texto = this.$i18n.t("message.modal.croquis.error.texto", {
+            msg: error.response.data.data,
+          });
           this.$fire({
             title: titulo,
             text: texto,
