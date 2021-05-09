@@ -1,7 +1,7 @@
 <template>
   <div id="escuelas">
-    <NavBar />
-    <Zona :idZona="id" />
+    <NavBar @logeado="logeado" :key="componentKey" />
+    <Zona :idZona="id" :key="componentKey" />
   </div>
 </template>
 <script>
@@ -15,6 +15,16 @@ export default {
   props: {
     id: {
       type: [Number, String],
+    },
+  },
+  data() {
+    return {
+      componentKey: 0,
+    };
+  },
+  methods: {
+    logeado() {
+      this.componentKey += 1;
     },
   },
 };

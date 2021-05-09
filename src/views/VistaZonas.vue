@@ -1,6 +1,6 @@
 <template>
   <div id="zonas">
-    <NavBar />
+    <NavBar @logeado="logeado" :key="componentKey" />
     <Zonas />
   </div>
 </template>
@@ -12,6 +12,15 @@ export default {
     NavBar,
     Zonas,
   },
-  props: {},
+  data() {
+    return {
+      componentKey: 0,
+    };
+  },
+  methods: {
+    logeado() {
+      this.componentKey += 1;
+    },
+  },
 };
 </script>

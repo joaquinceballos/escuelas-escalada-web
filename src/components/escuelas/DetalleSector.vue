@@ -25,7 +25,7 @@
           :detalle="false"
         />
       </slide>
-      <slide key="-1" class="d-flex align-items-center">
+      <slide key="-1" class="d-flex align-items-center" v-if="!invitado">
         <button
           class="addCroquis bg-transparent mx-auto"
           v-b-tooltip.hover
@@ -52,6 +52,7 @@
       class="ml-auto mb-1 mt-1 float-right"
       variant="info"
       @click="nuevaVia"
+      v-show="!invitado"
       ><b-icon icon="plus-circle" aria-hidden="true"></b-icon>
       {{ $t("message.sector.detalle.anadir_via") }}</b-button
     >
@@ -101,6 +102,9 @@ export default {
     animacionBotonAnadir() {
       // sólo se anima cuando no hay ningún croquis
       return this.croquis && this.croquis.length > 0 ? "none" : "cylon";
+    },
+    invitado() {
+      return Vue.rolInvitado();
     },
   },
 

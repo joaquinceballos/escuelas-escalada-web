@@ -53,6 +53,7 @@
       class="ml-auto mb-1 mt-1 float-right"
       variant="info"
       @click="nuevoSector"
+      v-show="!invitado"
       ><b-icon icon="plus-circle" aria-hidden="true"></b-icon>
       {{ $t("message.escuela.detalle.anadir_sector") }}</b-button
     >
@@ -217,6 +218,11 @@ export default {
 
     nuevoSector() {
       this.$refs.modal_sector.mostrar(this.escuelaDto.id);
+    },
+  },
+  computed: {
+    invitado() {
+      return Vue.rolInvitado();
     },
   },
 };

@@ -1,7 +1,11 @@
 <template>
   <div class="detalleEscuela">
-    <NavBar />
-    <DetalleSector v-bind:idEscuela="idEscuela" v-bind:idSector="idSector" />
+    <NavBar @logeado="logeado" :key="componentKey" />
+    <DetalleSector
+      v-bind:idEscuela="idEscuela"
+      v-bind:idSector="idSector"
+      :key="componentKey"
+    />
   </div>
 </template>
 <script>
@@ -18,6 +22,16 @@ export default {
     },
     idSector: {
       type: [Number, String],
+    },
+  },
+  data() {
+    return {
+      componentKey: 0,
+    };
+  },
+  methods: {
+    logeado() {
+      this.componentKey += 1;
     },
   },
 };
