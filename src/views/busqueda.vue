@@ -1,6 +1,6 @@
 <template>
   <div class="busqueda">
-    <NavBar />
+    <NavBar :key="componentKey"/>
     <busqueda v-if="texto" v-bind:texto="texto" />
   </div>
 </template>
@@ -16,11 +16,18 @@ export default {
   data() {
     return {
       texto: "",
+      componentKey: 0,
     };
   },
 
   mounted() {
     this.texto = this.$route.query.texto;
+  },
+  
+  methods: {
+    logeado() {
+      this.componentKey += 1;
+    },
   },
 
 };

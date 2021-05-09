@@ -52,7 +52,7 @@
     </b-navbar>
     <ModalLogin
       ref="modal_login"
-      @logeado="getUserDetails"
+      @logeado="logeado"
       @registrar="registrar"
     />
     <ModalRegister
@@ -80,7 +80,6 @@ export default {
       busqueda: {
         texto: "",
       },
-      roles: [],
       loginName: "",
       loginNameState: null,
       loginPassword: "",
@@ -98,10 +97,8 @@ export default {
         if (token != null) {
           let decoded = VueJwtDecode.decode(token);
           this.user = decoded.sub;
-          this.roles = decoded.roles;
         } else {
           this.user = "";
-          this.roles = null;
         }
       } catch (error) {
         console.error(error, "error from decoding token");
@@ -136,39 +133,26 @@ export default {
           });
         });
     },
-    rolInvitado() {
-      return !this.rolAdmin() && !this.rolUser();
-    },
-    rolAdmin() {
-      return (
-        this.roles != null &&
-        this.roles.length > 0 &&
-        this.roles.includes("ROLE_ADMIN")
-      );
-    },
-    rolUser() {
-      return (
-        this.roles != null &&
-        this.roles.length > 0 &&
-        this.roles.includes("ROLE_USER")
-      );
-    },
     registrar() {
       this.$refs.modal_register.mostrar();
     },
     loguear() {
       this.logUserIn();
     },
+    logeado() {
+      this.getUserDetails();
+      this.$emit("logeado");
+    }
   },
   mounted() {
     this.getUserDetails();
   },
   computed: {
     invitado() {
-      return this.rolInvitado();
+      return Vue.rolInvitado();
     },
     admin(){
-      return this.rolAdmin();
+      return Vue.rolAdmin();
     }
   },
 };
