@@ -3,6 +3,14 @@
     :class="detalle ? 'detalle' : 'carrusel container'"
     ref="contenedor_croquis"
   >
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css"
+    />
     <div v-if="loading && !detalle" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
@@ -47,6 +55,16 @@
       </p>
     </b-modal>
     <ModalVia ref="modal_via" @creada="viaCreada" />
+    <fab
+      :key="dataCroquis.id"
+      :actions="fabActions"
+      :position="position"
+      :bgColor="bgColor"
+      positionType="absolute"
+      @abrir="abrir"
+      @borrar="borrar"
+      v-if="!detalle"
+    ></fab>
   </div>
 </template>
 <script>
@@ -54,13 +72,33 @@ import p5 from "p5";
 import Vue from "vue";
 import VueFileToolbarMenu from "vue-file-toolbar-menu";
 import ModalVia from "./modales/ModalNuevaVia";
+import fab from "vue-fab";
 export default {
   components: {
     VueFileToolbarMenu,
     ModalVia,
+    fab,
   },
 
   computed: {
+    invitado() {
+      return Vue.rolInvitado();
+    },
+    fabActions() {
+      let acciones = [];
+      if (!this.invitado) {
+        acciones.push({
+          name: "borrar",
+          icon: "delete",
+          color: "red",
+        });
+      }
+      acciones.push({
+        name: "abrir",
+        icon: "open_in_new",
+      });
+      return acciones;
+    },
     heightScrollBar() {
       return this.alto;
     },
@@ -103,60 +141,68 @@ export default {
         },
         {
           text: "Formato",
-          menu: [
-            {
-              disabled:
-                !this.dataCroquis.trazos || this.dataCroquis.trazos.length == 0,
-              text: "Leyenda",
-              menu:
-                !this.dataCroquis.trazos || this.dataCroquis.trazos.length == 0
-                  ? null
-                  : [
-                      {
-                        text: "tipo",
-                        menu: [
+          disabled: this.invitado,
+          menu: this.invitado
+            ? null
+            : [
+                {
+                  disabled:
+                    !this.dataCroquis.trazos ||
+                    this.dataCroquis.trazos.length == 0,
+                  text: "Leyenda",
+                  menu:
+                    !this.dataCroquis.trazos ||
+                    this.dataCroquis.trazos.length == 0
+                      ? null
+                      : [
                           {
-                            text: "Caja",
-                            click: (e) =>
-                              this.funcionesCroquis.setTipoLeyenda(
-                                e,
-                                "CAJA_SUPERIOR_IZQUIERDA"
-                              ),
+                            text: "tipo",
+                            menu: [
+                              {
+                                text: "Caja",
+                                click: (e) =>
+                                  this.funcionesCroquis.setTipoLeyenda(
+                                    e,
+                                    "CAJA_SUPERIOR_IZQUIERDA"
+                                  ),
+                              },
+                              {
+                                text: "Barra",
+                                click: (e) =>
+                                  this.funcionesCroquis.setTipoLeyenda(
+                                    e,
+                                    "BARRA_SUPERIOR"
+                                  ),
+                              },
+                              {
+                                text: "Vía",
+                                click: (e) =>
+                                  this.funcionesCroquis.setTipoLeyenda(
+                                    e,
+                                    "VIA"
+                                  ),
+                              },
+                            ],
                           },
                           {
-                            text: "Barra",
-                            click: (e) =>
-                              this.funcionesCroquis.setTipoLeyenda(
-                                e,
-                                "BARRA_SUPERIOR"
-                              ),
-                          },
-                          {
-                            text: "Vía",
-                            click: (e) =>
-                              this.funcionesCroquis.setTipoLeyenda(e, "VIA"),
+                            disabled: this.dataCroquis.tipoLeyenda == "VIA",
+                            text: "Orientación",
+                            menu:
+                              this.dataCroquis.tipoLeyenda == "VIA"
+                                ? null
+                                : this.orientacion[
+                                    this.dataCroquis.tipoLeyenda.substring(0, 3)
+                                  ],
                           },
                         ],
-                      },
-                      {
-                        disabled: this.dataCroquis.tipoLeyenda == "VIA",
-                        text: "Orientación",
-                        menu:
-                          this.dataCroquis.tipoLeyenda == "VIA"
-                            ? null
-                            : this.orientacion[
-                                this.dataCroquis.tipoLeyenda.substring(0, 3)
-                              ],
-                      },
-                    ],
-            },
-            {
-              text: "Color...",
-              click: (e) => {
-                this.funcionesCroquis.color(e);
-              },
-            },
-          ],
+                },
+                {
+                  text: "Color...",
+                  click: (e) => {
+                    this.funcionesCroquis.color(e);
+                  },
+                },
+              ],
         },
         {
           text: "Ver",
@@ -212,18 +258,23 @@ export default {
         },
         {
           text: "Vía",
-          menu: [
-            {
-              disabled: !this.hayVias,
-              text: "Seleccionar",
-              click: (e) => this.funcionesCroquis.seleccionarVia(e),
-            },
-            {
-              text: "Añadir...",
-              click: () =>
-                this.$bvModal.show("modal-select-via" + this.dataCroquis.id),
-            },
-          ],
+          disabled: this.invitado,
+          menu: this.invitado
+            ? null
+            : [
+                {
+                  disabled: !this.hayVias,
+                  text: "Seleccionar",
+                  click: (e) => this.funcionesCroquis.seleccionarVia(e),
+                },
+                {
+                  text: "Añadir...",
+                  click: () =>
+                    this.$bvModal.show(
+                      "modal-select-via" + this.dataCroquis.id
+                    ),
+                },
+              ],
         },
         {
           text: "Ayuda",
@@ -437,6 +488,8 @@ export default {
           }
         },
       },
+      bgColor: "#778899",
+      position: "botom-right",
     };
   },
 
@@ -450,6 +503,14 @@ export default {
   },
 
   methods: {
+    borrar() {
+      this.$emit("borrar", this.dataCroquis);
+    },
+
+    abrir() {
+      this.$emit("abrir", this.dataCroquis);
+    },
+
     viaCreada(via) {
       // añado la vía recién creada
       this.dataCroquis.sector.vias.unshift(via);
@@ -701,6 +762,7 @@ export default {
           this.funcionesCroquis.guardarCambios = guardarCambios;
           this.funcionesCroquis.anadirVia = anadirVia;
           this.funcionesCroquis.borrarViaSeleccionada = borrarViaSeleccionada;
+          this.funcionesCroquis.exportar = descargarCroquis;
         };
 
         s.draw = () => {
@@ -799,12 +861,6 @@ export default {
                 addPunto(s.mouseX, s.mouseY);
               }
             }
-          }
-        };
-
-        s.doubleClicked = (mouseEvent) => {
-          if (mouseEventEnCanvas(mouseEvent)) {
-            this.$emit("doble-click", this.dataCroquis);
           }
         };
 
@@ -1112,6 +1168,16 @@ export default {
         let setTipoLeyenda = (e, tipo) => {
           this.dataCroquis.tipoLeyenda = tipo;
           pintaTodo();
+        };
+
+        let descargarCroquis = () => {
+          let nombreEscuela = this.dataCroquis.sector.escuela.nombre;
+          let nombreSector = this.dataCroquis.sector.nombre;
+          let idCroquis = this.dataCroquis.id;
+          s.saveCanvas(
+            nombreEscuela + "_" + nombreSector + "_" + idCroquis,
+            "png"
+          );
         };
 
         let orientacion = (e, tipoLeyenda) => {
@@ -1619,7 +1685,7 @@ export default {
               "] " +
               via.nombre +
               (via.grado ? ", " + via.grado : "") +
-              (via.longitud ? ", " + via.longitud + " m" : "") +
+              (via.longitud ? ", " + via.longitud + "m" : "") +
               (via.numeroChapas ? ", " + via.numeroChapas + " chapas" : "");
             if (
               anchoAcumulado + separador.length + s.textWidth(textoVia) >

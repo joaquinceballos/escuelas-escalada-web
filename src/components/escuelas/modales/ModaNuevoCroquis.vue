@@ -67,12 +67,16 @@ export default {
       if (!this.checkViaFormValidity()) {
         return;
       }
-      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+      const headers = Vue.getHeaders(
+        Vue.getToken(),
+        this.$i18n.t("message.idioma.codigo")
+      );
       // nombre del informe por defecto, lo hacemos "único" con los millis y el tamaño de la imagen
       let nuevoCroquis = {
         nombre:
           this.idSector + "-" + Date.now() + "-" + this.base64Imagen.length,
         imagen: this.base64Imagen,
+        tipoLeyenda: "CAJA_INFERIOR_DERECHA",
       };
 
       this.$http

@@ -119,6 +119,10 @@ const messages = {
                         imagen: 'Imagen no es válida',
                         header: 'Error',
                         texto: 'No se puede cargar el croquis: {msg}'
+                    },
+                    borrar: {
+                        titulo: 'Confirmar borrado de croquis',
+                        texto: 'Se borrará el croquis incluyendo la imágen y los trazos de vía dibujados sobre el mismo.'
                     }
                 }
             },
