@@ -1,7 +1,12 @@
 <template>
   <div class="detalleEscuela">
-    <NavBar />
-    <DetalleSector v-bind:idEscuela="idEscuela" v-bind:idSector="idSector" />
+    <NavBar @logeado="logeado" :key="navbarKey" />
+    <DetalleSector
+      v-if="montado"
+      v-bind:idEscuela="idEscuela"
+      v-bind:idSector="idSector"
+      :key="detalleSectorKey"
+    />
   </div>
 </template>
 <script>
@@ -18,6 +23,27 @@ export default {
     },
     idSector: {
       type: [Number, String],
+    },
+  },
+  data() {
+    return {
+      idvia: null,
+      idCroquis: null,
+      montado: false,
+      navbarKey: 1,
+      detalleSectorKey: 0,
+    };
+  },
+  mounted() {
+    this.idVia = this.$route.query.idVia;
+    this.idCroquis = this.$route.query.idCroquis;
+    this.montado = true;
+  },
+
+  methods: {
+    logeado() {
+      this.navbarKey += 1;
+      this.detalleSectorKey += 1;
     },
   },
 };

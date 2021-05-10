@@ -1,7 +1,7 @@
 name: Create and publish a package
 on:
   push:
-    branches: [ develop, feature-release ]
+    branches: [ feature-entornos ]
   pull_request:
     branches: [ develop ]
 jobs:
@@ -29,8 +29,9 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
-        repository: ${{ github.repository }}/web-image
+        repository: ${{ github.repository }}/web-image-dev
         tags: latest,${{ steps.tag_version.outputs.new_tag }}
+        dockerfile: Dockerfile.dev
   docker-build:
     runs-on: ubuntu-latest
     needs: [build-and-push-image]
@@ -40,16 +41,18 @@ jobs:
       with:
         command: |
           cd app/
+          echo paramos el contenedor
+          sudo docker container stop contenedor-web-escuelas-dev
+          echo eliminamos el contenedor
+          sudo docker container rm contenedor-web-escuelas-dev
+          echo borramos la imagen actual
+          sudo docker image rm docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image-dev
           echo docker login
           sudo docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-          echo docker pull
-          sudo docker pull docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image:latest
-          echo docker stop container
-          sudo docker container stop contenedor-web-escuelas
-          echo docker remove container
-          sudo docker container rm contenedor-web-escuelas
-          echo docker run
-          sudo docker run -p 443:443 -p 80:80 -v /home/ubuntu/app/server.conf:/etc/nginx/conf.d/server.conf -v /home/ubuntu/app/certs:/certs --name contenedor-web-escuelas -d docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image
+          echo nos bajamos la última versión de la imagen
+          sudo docker pull docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image-dev:latest
+          echo arrancamos el contenedor de desarrollo
+          sudo docker run -p 8080:8080 -v /home/ubuntu/app/server.desa.conf:/etc/nginx/conf.d/server.conf --name contenedor-web-escuelas-dev -d docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image-dev
           echo fin
         host: ${{ secrets.WEB_HOST }}
         user: ${{ secrets.SSH_USER }}

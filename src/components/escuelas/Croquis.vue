@@ -28,30 +28,34 @@
       v-if="detalle"
       v-bind:id="'modal-select-via' + croquis.id"
       :ref="'modal-select-via' + croquis.id"
-      title="Añade vía al croquis"
+      v-bind:title="$t('message.modal.via.anadir_a_croquis.titulo')"
       @show="resetModalSelectVia"
       @hidden="resetModalSelectVia"
       @ok="handleSelectViaOk"
     >
-      <p>
-        Texto diciendo que añada la vía que quiera el croquis y que si no
-        aparece la que quiere que la añada al sector
-      </p>
+      <p>{{ $t("message.modal.via.anadir_a_croquis.texto1") }}</p>
       <b-form-select
         v-model="nuevaVia"
         :options="optionsViasSector"
         :select-size="4"
       ></b-form-select>
+      <p>
+        {{ $t("message.modal.via.anadir_a_croquis.texto2") }}
+        <b-link @click="modalNuevaVia">{{ $t("message.modal.via.anadir_a_croquis.texto_link") }}</b-link>
+      </p>
     </b-modal>
+    <ModalVia ref="modal_via" @creada="viaCreada" />
   </div>
 </template>
 <script>
 import p5 from "p5";
 import Vue from "vue";
 import VueFileToolbarMenu from "vue-file-toolbar-menu";
+import ModalVia from "./modales/ModalNuevaVia";
 export default {
   components: {
     VueFileToolbarMenu,
+    ModalVia,
   },
 
   computed: {
@@ -453,6 +457,20 @@ export default {
   },
 
   methods: {
+    viaCreada(via) {
+      // añado la vía recién creada
+      this.dataCroquis.sector.vias.unshift(via);
+      this.$bvModal.show("modal-select-via" + this.dataCroquis.id);
+    },
+
+    modalNuevaVia() {
+      this.$bvModal.hide("modal-select-via" + this.dataCroquis.id);
+      this.$refs.modal_via.mostrar(
+        this.dataCroquis.sector.escuela.id,
+        this.dataCroquis.sector.id
+      );
+    },
+
     setDataCroquis(dataCroquis) {
       this.dataCroquisCopia = JSON.parse(JSON.stringify(dataCroquis));
       this.dataCroquis = dataCroquis;
@@ -514,8 +532,7 @@ export default {
 
     async actualizaViaCroquis(viaCroquis) {
       try {
-        let token = Vue.getToken();
-        const headers = { Authorization: "Bearer " + token };
+        const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.put(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -540,8 +557,7 @@ export default {
 
     async nuevaViaCroquis(viaCroquis) {
       try {
-        let token = Vue.getToken();
-        const headers = { Authorization: "Bearer " + token };
+        const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.post(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -570,8 +586,7 @@ export default {
         return;
       }
       try {
-        let token = Vue.getToken();
-        const headers = { Authorization: "Bearer " + token };
+        const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.delete(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -1667,7 +1682,6 @@ export default {
         // TODO método para borrar una vía que ponga la propiedad this.hayVias a false cuando la lista de vías esté vacía
 
         let recalculaCurvaVia = (via) => {
-          console.log("recalculandoCurvaVia");
           if (!via) {
             console.error("se llama con via inválida");
           }
@@ -1858,7 +1872,7 @@ export default {
   max-width: 100% !important;
 }
 .carrusel {
-  max-width: 85% !important;
+  max-width: 50% !important;
   padding-right: 0px !important;
   padding-left: 0px !important;
 }

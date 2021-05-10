@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <NavBar />
+    <NavBar @logeado="logeado" :key="componentKey" />
     <home />
   </div>
 </template>
@@ -11,6 +11,16 @@ export default {
   components: {
     NavBar,
     home,
+  },
+  data() {
+    return {
+      componentKey: 0,
+    };
+  },
+  methods: {
+    logeado() {
+      this.componentKey += 1;
+    },
   },
 };
 </script>

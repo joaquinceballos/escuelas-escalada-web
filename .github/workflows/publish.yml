@@ -1,7 +1,7 @@
 name: Create and publish a package
 on:
-  release:
-    types: [published]
+  pull_request:
+    branches: [ main ]
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -26,18 +26,20 @@ jobs:
       with:
         command: |
           cd app/
+          echo paramos el contenedor de producción
+          sudo docker container stop contenedor-web-escuelas
+          echo eliminamos el contenedor
+          sudo docker container rm contenedor-web-escuelas
+          echo borramos la imagen actual
+          sudo docker image rm docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image
           echo docker login
           sudo docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
-          echo docker pull
+          echo nos bajamos la última versión de la imagen
           sudo docker pull docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image:latest
-          echo docker stop container
-          sudo docker container stop contenedor-web-escuelas
-          echo docker remove container
-          sudo docker container rm contenedor-web-escuelas
-          echo docker run
+          echo arrancamos el contenedor de producción
           sudo docker run -p 443:443 -v /home/ubuntu/app/server.conf:/etc/nginx/conf.d/server.conf -v /home/ubuntu/app/certs:/certs --name contenedor-web-escuelas -d docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image
           echo fin
         host: ${{ secrets.WEB_HOST }}
         user: ${{ secrets.SSH_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        args: "-tt -vvv"         
+        args: "-tt -vvv"     

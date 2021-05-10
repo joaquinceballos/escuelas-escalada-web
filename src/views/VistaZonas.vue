@@ -1,34 +1,26 @@
 <template>
-  <div class="busqueda">
-    <NavBar :key="componentKey"/>
-    <busqueda v-if="texto" v-bind:texto="texto" />
+  <div id="zonas">
+    <NavBar @logeado="logeado" :key="componentKey" />
+    <Zonas />
   </div>
 </template>
 <script>
 import NavBar from "../components/escuelas/NavBar";
-import busqueda from "../components/escuelas/buscador/Busqueda";
+import Zonas from "../components/escuelas/Zonas";
 export default {
   components: {
     NavBar,
-    busqueda,
+    Zonas,
   },
-
   data() {
     return {
-      texto: "",
       componentKey: 0,
     };
   },
-
-  mounted() {
-    this.texto = this.$route.query.texto;
-  },
-  
   methods: {
     logeado() {
       this.componentKey += 1;
     },
   },
-
 };
 </script>

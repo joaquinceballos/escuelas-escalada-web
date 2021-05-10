@@ -1,11 +1,12 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/home.vue";
-import Register from "../views/register.vue";
 import Perfil from "../views/perfil.vue"
 import Busqueda from "../views/busqueda.vue"
 import DetalleEscuela from "../views/DetalleEscuela.vue"
 import DetalleSector from "../views/DetalleSector.vue"
+import VistaZonas from "../views/VistaZonas.vue"
+import VistaDetalleZona from "../views/VistaDetalleZona.vue";
 
 Vue.use(VueRouter);
 
@@ -17,11 +18,6 @@ const routes = [{
             requiresAuth: true
         },
         props: true
-    },
-    {
-        path: "/register",
-        name: "register",
-        component: Register
     },
     {
         path: "/perfil/:usuario",
@@ -42,7 +38,7 @@ const routes = [{
         props: true
     },
     {
-        path: "/escuela/:id",
+        path: "/escuelas/:id",
         name: "escuela",
         component: DetalleEscuela,
         meta: {
@@ -51,9 +47,39 @@ const routes = [{
         props: true
     },
     {
-        path: "/escuela/:idEscuela/sector/:idSector",
+        path: "/escuelas/:idEscuela/sectores/:idSector",
         name: "sector",
         component: DetalleSector,
+        meta: {
+            requiresAuth: true
+        },
+        props: true
+    },
+    {
+        path: "/escuelas/:idEscuela/sectores/:idSector/vias/:idVia",
+        redirect: to => {
+            return { path: '/escuelas/:idEscuela/sectores/:idSector', query: { idVia: to.params.idVia } }
+        }
+    },
+    {
+        path: "/escuelas/:idEscuela/sectores/:idSector/croquis/:idCroquis",
+        redirect: to => {
+            return { path: '/escuelas/:idEscuela/sectores/:idSector', query: { idCroquis: to.params.idCroquis } }
+        }
+    },
+    {
+        path: "/zonas/",
+        name: "zona",
+        component: VistaZonas,
+        meta: {
+            requiresAuth: true
+        },
+        props: true
+    },
+    {
+        path: "/zonas/:id",
+        name: "detalleZona",
+        component: VistaDetalleZona,
         meta: {
             requiresAuth: true
         },
@@ -77,10 +103,13 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!Vue.tokenValido()) {
             // Si no hay un token válido nos logeamos con el usuario genérico
-            axios.post('https://api-escuelas.ddns.net/login', {
-                username: "web_guest",
-                password: "12345",
-            }).then((response) => {
+            let baseUrl = process.env.VUE_APP_API_BASE_URL;
+            let user = {
+                username: process.env.VUE_APP_API_GENERIC_USER,
+                password: process.env.VUE_APP_API_GENERIC_PASSWORD,
+            };
+            console.log(user);
+            axios.post(baseUrl + '/login', user).then((response) => {
                 Vue.guardaToken(response.data.data.token);
                 next({
                     path: "/"
