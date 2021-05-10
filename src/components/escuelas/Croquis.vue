@@ -41,7 +41,9 @@
       ></b-form-select>
       <p>
         {{ $t("message.modal.via.anadir_a_croquis.texto2") }}
-        <b-link @click="modalNuevaVia">{{ $t("message.modal.via.anadir_a_croquis.texto_link") }}</b-link>
+        <b-link @click="modalNuevaVia">{{
+          $t("message.modal.via.anadir_a_croquis.texto_link")
+        }}</b-link>
       </p>
     </b-modal>
     <ModalVia ref="modal_via" @creada="viaCreada" />
@@ -103,54 +105,50 @@ export default {
           text: "Formato",
           menu: [
             {
-              disabled: this.editandoCanvas,
+              disabled:
+                !this.dataCroquis.trazos || this.dataCroquis.trazos.length == 0,
               text: "Leyenda",
-              menu: this.editandoCanvas
-                ? null
-                : [
-                    {
-                      text: "mostrar",
-                      icon: this.mostrarLeyenda
-                        ? "check_box"
-                        : "check_box_outline_blank",
-                      click: (e) => this.funcionesCroquis.mostrarLeyenda(e),
-                    },
-                    {
-                      disabled: !this.mostrarLeyenda,
-                      text: "tipo",
-                      menu: this.mostrarLeyenda
-                        ? [
-                            {
-                              text: "Caja",
-                              click: (e) =>
-                                this.funcionesCroquis.setTipoLeyenda(e, "caja"),
-                            },
-                            {
-                              text: "Barra",
-                              click: (e) =>
-                                this.funcionesCroquis.setTipoLeyenda(
-                                  e,
-                                  "barra"
-                                ),
-                            },
-                            {
-                              text: "Vía",
-                              click: (e) =>
-                                this.funcionesCroquis.setTipoLeyenda(e, "via"),
-                            },
-                          ]
-                        : null,
-                    },
-                    {
-                      disabled:
-                        !this.mostrarLeyenda || this.tipoLeyenda == "via",
-                      text: "Orientación",
-                      menu:
-                        !this.mostrarLeyenda || this.tipoLeyenda == "via"
-                          ? null
-                          : this.orientacion[this.tipoLeyenda],
-                    },
-                  ],
+              menu:
+                !this.dataCroquis.trazos || this.dataCroquis.trazos.length == 0
+                  ? null
+                  : [
+                      {
+                        text: "tipo",
+                        menu: [
+                          {
+                            text: "Caja",
+                            click: (e) =>
+                              this.funcionesCroquis.setTipoLeyenda(
+                                e,
+                                "CAJA_SUPERIOR_IZQUIERDA"
+                              ),
+                          },
+                          {
+                            text: "Barra",
+                            click: (e) =>
+                              this.funcionesCroquis.setTipoLeyenda(
+                                e,
+                                "BARRA_SUPERIOR"
+                              ),
+                          },
+                          {
+                            text: "Vía",
+                            click: (e) =>
+                              this.funcionesCroquis.setTipoLeyenda(e, "VIA"),
+                          },
+                        ],
+                      },
+                      {
+                        disabled: this.dataCroquis.tipoLeyenda == "VIA",
+                        text: "Orientación",
+                        menu:
+                          this.dataCroquis.tipoLeyenda == "VIA"
+                            ? null
+                            : this.orientacion[
+                                this.dataCroquis.tipoLeyenda.substring(0, 3)
+                              ],
+                      },
+                    ],
             },
             {
               text: "Color...",
@@ -320,7 +318,6 @@ export default {
       sketch: {},
       loading: false,
       imagen: "",
-      mostrarLeyenda: false,
       editandoCanvas: false,
       seleccionandoVia: false,
       viaSeleccionada: null,
@@ -329,43 +326,43 @@ export default {
       tipoLeyenda: "barra",
       // submenús de "Orientación" dependiendo del tipo de leyenda seleccionado
       orientacion: {
-        caja: [
+        CAJ: [
           {
             text: "sup. izquierda",
             click: (e) => {
-              this.funcionesCroquis.orientacion(e, "supizq");
+              this.funcionesCroquis.orientacion(e, "CAJA_SUPERIOR_IZQUIERDA");
             },
           },
           {
             text: "sup. derecha",
             click: (e) => {
-              this.funcionesCroquis.orientacion(e, "supder");
+              this.funcionesCroquis.orientacion(e, "CAJA_SUPERIOR_DERECHA");
             },
           },
           {
             text: "inf. izquierda",
             click: (e) => {
-              this.funcionesCroquis.orientacion(e, "infizq");
+              this.funcionesCroquis.orientacion(e, "CAJA_INFERIOR_IZQUIERDA");
             },
           },
           {
             text: "inf. derecha",
             click: (e) => {
-              this.funcionesCroquis.orientacion(e, "infder");
+              this.funcionesCroquis.orientacion(e, "CAJA_INFERIOR_DERECHA");
             },
           },
         ],
-        barra: [
+        BAR: [
           {
             text: "inferior",
             click: (e) => {
-              this.funcionesCroquis.orientacion(e, "inf");
+              this.funcionesCroquis.orientacion(e, "BARRA_INFERIOR");
             },
           },
           {
             text: "superior",
             click: (e) => {
-              this.funcionesCroquis.orientacion(e, "sup");
+              this.funcionesCroquis.orientacion(e, "BARRA_SUPERIOR");
             },
           },
         ],
@@ -390,10 +387,6 @@ export default {
           }
         },
         exportar: (e) => {
-          console.error("implementación no enlazada", e);
-        },
-        mostrarLeyenda: (e) => {
-          this.mostrarLeyenda = !this.mostrarLeyenda;
           console.error("implementación no enlazada", e);
         },
         setTipoLeyenda: (e, tipo) => {
@@ -487,7 +480,6 @@ export default {
       }
 
       // inicializo campos
-      this.mostrarLeyenda = false;
       this.editandoCanvas = false;
       this.viaSeleccionada = null;
       this.seleccionandoVia = false;
@@ -530,9 +522,42 @@ export default {
       }
     },
 
+    async actualizaTipoLeyenda() {
+      try {
+        const headers = Vue.getHeaders(
+          Vue.getToken(),
+          this.$i18n.t("message.idioma.codigo")
+        );
+        let response = this.$http.put(
+          "/escuelas/" +
+            this.dataCroquis.sector.escuela.id +
+            "/sectores/" +
+            this.dataCroquis.sector.id +
+            "/croquis/" +
+            this.dataCroquis.id +
+            "/leyenda/?tipoLeyenda=" +
+            this.dataCroquis.tipoLeyenda,
+          null,
+          {
+            headers,
+          }
+        );
+        if (!response) {
+          console.error("algo ha ido mal...");
+        } else {
+          this.dataCroquisCopia.tipoLeyenda = this.dataCroquis.tipoLeyenda;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
     async actualizaViaCroquis(viaCroquis) {
       try {
-        const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+        const headers = Vue.getHeaders(
+          Vue.getToken(),
+          this.$i18n.t("message.idioma.codigo")
+        );
         let response = this.$http.put(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -557,7 +582,10 @@ export default {
 
     async nuevaViaCroquis(viaCroquis) {
       try {
-        const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+        const headers = Vue.getHeaders(
+          Vue.getToken(),
+          this.$i18n.t("message.idioma.codigo")
+        );
         let response = this.$http.post(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -586,7 +614,10 @@ export default {
         return;
       }
       try {
-        const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+        const headers = Vue.getHeaders(
+          Vue.getToken(),
+          this.$i18n.t("message.idioma.codigo")
+        );
         let response = this.$http.delete(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -615,8 +646,8 @@ export default {
         let c;
         let img;
 
-        const RADIO_PUNTO = 5;
-        const GROSOR_VIA = 4;
+        let RADIO_PUNTO = 0;
+        let GROSOR_VIA = 0;
         //const COLOR_VIA = s.color(255, 50, 240);
         const COLOR_VIA = s.color(0, 0, 0);
         const BLANCO = s.color(255);
@@ -627,9 +658,6 @@ export default {
 
         // de cada vía se guarda, la vía en sí, su trazo(puntos guardados) y su curva(puntos interpolados), además el estado... si ha sido midificada o es una vía recién añadida
         //let viasCroquis = [];
-
-        //leyenda
-        let orientacionLeyenda;
 
         //seleccionando vía para editar
         let arrastrando = false;
@@ -669,7 +697,6 @@ export default {
           this.funcionesCroquis.zoomOut = zoomOut;
           this.funcionesCroquis.setTipoLeyenda = setTipoLeyenda;
           this.funcionesCroquis.orientacion = orientacion;
-          this.funcionesCroquis.mostrarLeyenda = mostrarLeyenda;
           this.funcionesCroquis.seleccionarVia = seleccionarVia;
           this.funcionesCroquis.guardarCambios = guardarCambios;
           this.funcionesCroquis.anadirVia = anadirVia;
@@ -1083,24 +1110,12 @@ export default {
         };
 
         let setTipoLeyenda = (e, tipo) => {
-          this.tipoLeyenda = tipo;
-          // tenemos el tipo de leyenda, aplicaremos la orientación por defecto
-          if (this.orientacion[this.tipoLeyenda] != undefined) {
-            // tipo de leyenda 'caja' o 'barra' seleccionamos la orientación por defecto y ya se pintará todo desde ahí
-            this.orientacion[this.tipoLeyenda][0].click(e);
-          } else {
-            // tipo de leyenda 'vía' pintamos todo ya directamente
-            pintaTodo();
-          }
-        };
-
-        let orientacion = (e, tipo) => {
-          orientacionLeyenda = tipo;
+          this.dataCroquis.tipoLeyenda = tipo;
           pintaTodo();
         };
 
-        let mostrarLeyenda = () => {
-          this.mostrarLeyenda = !this.mostrarLeyenda;
+        let orientacion = (e, tipoLeyenda) => {
+          this.dataCroquis.tipoLeyenda = tipoLeyenda;
           pintaTodo();
         };
 
@@ -1139,6 +1154,9 @@ export default {
                 borradas.map((t) => t.via.nombre).join(", ") +
                 "]"
               : null,
+            this.dataCroquis.tipoLeyenda != this.dataCroquisCopia.tipoLeyenda
+              ? "Leyenda"
+              : null,
           ]
             .filter((c) => c != null)
             .join(", ");
@@ -1166,6 +1184,11 @@ export default {
               this.deleteViaCroquis(borradas[i]);
               let indiceBorrar = this.dataCroquis.trazos.indexOf(borradas[i]);
               this.dataCroquis.trazos.splice(indiceBorrar, 1);
+            }
+            if (
+              this.dataCroquis.tipoLeyenda != this.dataCroquisCopia.tipoLeyenda
+            ) {
+              this.actualizaTipoLeyenda();
             }
 
             // Marcamos todas las vías como no modificadas y no nuevas
@@ -1322,6 +1345,10 @@ export default {
           width *= this.factorZoom;
           // factor de ajuste, ajustamos el ancho del canvas
           height = img.height * (width / img.width);
+
+          // grosores vía y puntos:
+          GROSOR_VIA = width / 250;
+          RADIO_PUNTO = width / 200;
         };
 
         /** Comprueba y retorna si el evento de raton se ha producido contra el canvas */
@@ -1386,7 +1413,8 @@ export default {
           this.hayCambios =
             getViasModificadas().length > 0 ||
             getViasNuevas().length > 0 ||
-            getViasBorradas().length > 0;
+            getViasBorradas().length > 0 ||
+            this.dataCroquis.tipoLeyenda != this.dataCroquisCopia.tipoLeyenda;
           this.hayVias =
             this.dataCroquis.trazos.filter((t) => !t.borrada).length > 0;
           this.editandoCanvas =
@@ -1439,22 +1467,38 @@ export default {
               );
             }
           }
-          // pintamos la leyenda de las vías
-          if (this.mostrarLeyenda) {
-            pintaLeyenda();
-          }
+
+          pintaLeyenda();
         };
 
         let pintaLeyenda = () => {
-          if (this.tipoLeyenda == "via") {
-            pintaLeyendaVia();
-          } else if (this.tipoLeyenda == "barra") {
-            pintaLeyendaBarra();
-          } else if (this.tipoLeyenda == "caja") {
+          // pintamos sólo si hay trazos...
+          if (!this.dataCroquis.trazos || this.dataCroquis.trazos.length == 0) {
+            return;
+          }
+          if (
+            this.dataCroquis.tipoLeyenda == "CAJA_SUPERIOR_IZQUIERDA" ||
+            this.dataCroquis.tipoLeyenda == "CAJA_SUPERIOR_DERECHA" ||
+            this.dataCroquis.tipoLeyenda == "CAJA_INFERIOR_DERECHA" ||
+            this.dataCroquis.tipoLeyenda == "CAJA_INFERIOR_IZQUIERDA"
+          ) {
             pintaLeyendaCaja();
+          } else if (
+            this.dataCroquis.tipoLeyenda == "BARRA_SUPERIOR" ||
+            this.dataCroquis.tipoLeyenda == "BARRA_INFERIOR"
+          ) {
+            pintaLeyendaBarra();
+          } else if (this.dataCroquis.tipoLeyenda == "VIA") {
+            pintaLeyendaVia();
           } else {
             console.error("tipo de leyenda no esperado");
           }
+        };
+
+        let trazosOrdenados = () => {
+          return this.dataCroquis.trazos.sort(
+            (a, b) => a.puntos[0].x - b.puntos[0].x
+          );
         };
 
         let pintaLeyendaCaja = () => {
@@ -1467,8 +1511,8 @@ export default {
           // primera linea para la cabecera
           lineas.push(["vía", "|", "grado", "|", "longitud", "|", "chapas"]);
           lineas.push(["", "", "", "", "", "", ""]);
-          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
-            let via = this.dataCroquis.trazos[i].via;
+          for (let i = 0; i < trazosOrdenados().length; i++) {
+            let via = trazosOrdenados()[i].via;
             lineas.push([
               "[" + (i + 1) + "] " + via.nombre,
               "|",
@@ -1481,25 +1525,27 @@ export default {
           }
 
           // pintamos el rectángulo
-          s.textSize(12);
+          s.textSize(width / 80);
           s.textFont("monospace");
           let ancho = s.textWidth("  ");
           for (let i = 0; i < lineas[0].length; i++) {
             ancho += s.textWidth(" " + mayorPalabra(lineas, i));
           }
-          let alto = lineas.length * (s.textSize() + s.textDescent());
+          let alto = lineas.length * (s.textSize() + s.textDescent()) * 1.1;
 
           // calculamos coordenadas de la caja
-          if (orientacionLeyenda == "supizq") {
+          if (this.dataCroquis.tipoLeyenda == "CAJA_SUPERIOR_IZQUIERDA") {
             x = 0;
             y = 0;
-          } else if (orientacionLeyenda == "supder") {
+          } else if (this.dataCroquis.tipoLeyenda == "CAJA_SUPERIOR_DERECHA") {
             x = width - ancho;
             y = 0;
-          } else if (orientacionLeyenda == "infder") {
+          } else if (this.dataCroquis.tipoLeyenda == "CAJA_INFERIOR_DERECHA") {
             x = width - ancho;
             y = height - alto;
-          } else if (orientacionLeyenda == "infizq") {
+          } else if (
+            this.dataCroquis.tipoLeyenda == "CAJA_INFERIOR_IZQUIERDA"
+          ) {
             x = 0;
             y = height - alto;
           } else {
@@ -1510,7 +1556,7 @@ export default {
 
           s.fill(BLANCO);
           s.stroke(COLOR_VIA);
-          s.strokeWeight(2);
+          s.strokeWeight(width / 500);
           s.rect(x, y, ancho, alto);
 
           // pintamos las lineas
@@ -1559,8 +1605,8 @@ export default {
 
           // construimos el texto
           s.textFont("monospace");
-          s.textSize(15);
-          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
+          s.textSize(width / 80);
+          for (let i = 0; i < trazosOrdenados().length; i++) {
             let separador = i == 0 ? "" : "; ";
             let anchoAcumulado = s.textWidth(
               lineas[lineas.length - 1] + separador
@@ -1589,9 +1635,9 @@ export default {
           let altoTotalBarra = altoLinea * lineas.length;
 
           let y;
-          if (orientacionLeyenda == "sup") {
+          if (this.dataCroquis.tipoLeyenda == "BARRA_SUPERIOR") {
             y = 0;
-          } else if (orientacionLeyenda == "inf") {
+          } else if (this.dataCroquis.tipoLeyenda == "BARRA_INFERIOR") {
             y = height - altoTotalBarra - s.textDescent() * 2;
           } else {
             // por defecto ...
@@ -1614,24 +1660,38 @@ export default {
         };
 
         let pintaNumerosVia = () => {
-          for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
-            let via = this.dataCroquis.trazos[i];
+          for (let i = 0; i < trazosOrdenados().length; i++) {
+            let via = trazosOrdenados()[i];
             let puntoInicial = traduceAAbsolutos([via.puntos[0]])[0];
 
+            let colorPunto =
+              this.viaSeleccionada &&
+              this.viaSeleccionada.via &&
+              this.viaSeleccionada.via.id == via.via.id
+                ? s.color(0, 0, 0, 64)
+                : COLOR_VIA;
+
             // círculo
-            s.fill(COLOR_VIA);
+            s.fill(colorPunto);
             s.stroke(BLANCO);
             s.strokeWeight(2);
-            s.circle(puntoInicial.x, puntoInicial.y, 30);
+            s.circle(puntoInicial.x, puntoInicial.y, width / 40);
+
+            let colorTexto =
+              this.viaSeleccionada &&
+              this.viaSeleccionada.via &&
+              this.viaSeleccionada.via.id == via.via.id
+                ? s.color(255, 255, 255, 128)
+                : BLANCO;
 
             // texto
             s.noStroke();
-            s.fill(BLANCO);
-            s.textSize(20);
+            s.fill(colorTexto);
+            s.textSize(width / 60);
             s.text(
               i + 1,
               puntoInicial.x - s.textWidth(i + 1) / 2,
-              puntoInicial.y + s.textDescent()
+              puntoInicial.y + s.textDescent() / 2
             );
           }
         };
@@ -1640,7 +1700,7 @@ export default {
           for (let i = 0; i < this.dataCroquis.trazos.length; i++) {
             let via = this.dataCroquis.trazos[i];
             let puntoInicial = traduceAAbsolutos([via.puntos[0]])[0];
-            s.textSize(25);
+            s.textSize(width / 60);
             s.fill(COLOR_VIA);
             s.strokeWeight(3);
             s.stroke(BLANCO);
