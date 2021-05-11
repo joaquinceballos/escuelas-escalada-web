@@ -43,7 +43,7 @@ export default {
   methods: {
     fetchData() {
       this.loading = true;
-      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
       this.$http
         .get("/cambios?page=0&size=50&sort=fecha,desc", {
           headers,

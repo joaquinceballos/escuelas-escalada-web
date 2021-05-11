@@ -624,10 +624,7 @@ export default {
 
     async actualizaTipoLeyenda() {
       try {
-        const headers = Vue.getHeaders(
-          Vue.getToken(),
-          this.$i18n.t("message.idioma.codigo")
-        );
+        const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.put(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -654,10 +651,7 @@ export default {
 
     async actualizaViaCroquis(viaCroquis) {
       try {
-        const headers = Vue.getHeaders(
-          Vue.getToken(),
-          this.$i18n.t("message.idioma.codigo")
-        );
+        const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.put(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -682,10 +676,7 @@ export default {
 
     async nuevaViaCroquis(viaCroquis) {
       try {
-        const headers = Vue.getHeaders(
-          Vue.getToken(),
-          this.$i18n.t("message.idioma.codigo")
-        );
+        const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.post(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -714,10 +705,7 @@ export default {
         return;
       }
       try {
-        const headers = Vue.getHeaders(
-          Vue.getToken(),
-          this.$i18n.t("message.idioma.codigo")
-        );
+        const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.delete(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +

@@ -134,7 +134,7 @@ export default {
       if (!this.checkViaFormValidity()) {
         return;
       }
-      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
       console.log('->', headers);
       let nuevaVia = {
         nombre: this.nombre,
