@@ -29,6 +29,7 @@
           v-bind:id="'canvas-' + croquis.id + detalle"
           class="div_canvas"
           :ref="'ref-canvas-' + croquis.id + detalle"
+          @contextmenu.prevent.stop="handleClick($event)"
         ></div>
       </perfect-scrollbar>
     </div>
@@ -65,6 +66,13 @@
       @borrar="borrar"
       v-if="!detalle"
     ></fab>
+    <vue-simple-context-menu
+      v-if="dataCroquis.id && detalle"
+      :elementId="'vueSimpleContextMenu' + dataCroquis.id"
+      :options="optionsContextMenu"
+      :ref="'vueSimpleContextMenu' + dataCroquis.id"
+      @option-clicked="optionClicked"
+    />
   </div>
 </template>
 <script>
@@ -73,14 +81,25 @@ import Vue from "vue";
 import VueFileToolbarMenu from "vue-file-toolbar-menu";
 import ModalVia from "./modales/ModalNuevaVia";
 import fab from "vue-fab";
+import VueSimpleContextMenu from "vue-simple-context-menu";
+import "vue-simple-context-menu/dist/vue-simple-context-menu.css";
 export default {
   components: {
     VueFileToolbarMenu,
     ModalVia,
     fab,
+    VueSimpleContextMenu,
   },
 
   computed: {
+    optionsContextMenu() {
+      return [
+        {
+          name: this.$t("message.croquis.context_menu.borrar_punto"),
+          accion: "borrar",
+        },
+      ];
+    },
     invitado() {
       return Vue.rolInvitado();
     },
@@ -419,6 +438,12 @@ export default {
         ],
       },
       funcionesCroquis: {
+        borrarPunto: () => {
+          console.error("implementación no enlazada");
+        },
+        getPuntoClickado: () => {
+          console.error("implementación no enlazada");
+        },
         cargarImagen: (e) => {
           console.error("implementación no enlazada", e);
         },
@@ -503,6 +528,20 @@ export default {
   },
 
   methods: {
+    handleClick(event) {
+      let indicePunto = this.funcionesCroquis.getPuntoClickado();
+      if (indicePunto >= 0) {
+        this.$refs["vueSimpleContextMenu" + this.dataCroquis.id].showMenu(
+          event,
+          { indiceBorrar: indicePunto }
+        );
+      }
+    },
+    optionClicked(evento) {
+      if (evento.option.accion === "borrar") {
+        this.funcionesCroquis.borrarPunto(evento.item.indiceBorrar);
+      }
+    },
     borrar() {
       this.$emit("borrar", this.dataCroquis);
     },
@@ -763,6 +802,8 @@ export default {
           this.funcionesCroquis.anadirVia = anadirVia;
           this.funcionesCroquis.borrarViaSeleccionada = borrarViaSeleccionada;
           this.funcionesCroquis.exportar = descargarCroquis;
+          this.funcionesCroquis.getPuntoClickado = getPuntoClickado;
+          this.funcionesCroquis.borrarPunto = borrarPunto;
         };
 
         s.draw = () => {
@@ -827,9 +868,9 @@ export default {
                 insertaPuntoEnViaSeleccionada();
               }
             } else if (boton == 1) {
-              borraPuntoClickado();
+              borrarPuntoClickado();
             } else if (boton == 2) {
-              console.log("click botón derecho");
+              // no hacemos nada con clicks derechos aquí...
             }
           }
         };
@@ -887,7 +928,30 @@ export default {
           this.editandoCanvas = true;
         };
 
-        let borraPuntoClickado = () => {
+        let getPuntoClickado = () => {
+          if (!this.viaSeleccionada) {
+            return -1;
+          }
+          return indiceClickado(
+            s.mouseX,
+            s.mouseY,
+            traduceAAbsolutos(this.viaSeleccionada.puntos)
+          );
+        };
+
+        let borrarPunto = (indiceBorrar) => {
+          if (indiceBorrar >= 0 && this.viaSeleccionada.puntos.length > 2) {
+            this.viaSeleccionada.puntos.splice(indiceBorrar, 1);
+            if (indiceBorrar <= indiceMarcado) {
+              indiceMarcado--;
+            }
+            recalculaCurvaVia(this.viaSeleccionada);
+            this.viaSeleccionada.modificada = true;
+            pintaTodo();
+          }
+        };
+
+        let borrarPuntoClickado = () => {
           if (!this.viaSeleccionada) {
             return;
           }
@@ -896,14 +960,7 @@ export default {
             s.mouseY,
             traduceAAbsolutos(this.viaSeleccionada.puntos)
           );
-          if (indiceBorrar >= 0 && this.viaSeleccionada.puntos.length > 2) {
-            this.viaSeleccionada.puntos.splice(indiceBorrar, 1);
-            if (indiceBorrar <= indiceMarcado) {
-              indiceMarcado--;
-            }
-            recalculaCurvaVia(this.viaSeleccionada);
-            this.viaSeleccionada.modificada = true;
-          }
+          borrarPunto(indiceBorrar);
         };
 
         let addPunto = () => {
@@ -2025,5 +2082,8 @@ export default {
 }
 .ps {
   height: 100%;
+}
+.vue-simple-context-menu {
+  position: fixed !important;
 }
 </style>

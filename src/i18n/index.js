@@ -238,6 +238,12 @@ const messages = {
                 }
             },
 
+            croquis: {
+                context_menu: {
+                    borrar_punto: "borrar punto"
+                }
+            },
+
             modificaciones: {
                 crear: {
                     zona: '{nombre} ha creado una nueva zona de escalada en {region}',

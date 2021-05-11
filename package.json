@@ -31,6 +31,7 @@
         "vue-jwt-decode": "^0.1.0",
         "vue-router": "^3.4.7",
         "vue-simple-alert": "^1.1.1",
+        "vue-simple-context-menu": "^3.4.1",
         "vue2-perfect-scrollbar": "^1.5.0",
         "vue2-timeago": "^2.0.0-beta.5",
         "vuex": "^3.5.1",
