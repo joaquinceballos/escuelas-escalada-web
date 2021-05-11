@@ -1552,7 +1552,9 @@ export default {
           // pintamos la imagen
           s.image(img, 0, 0, width, height);
           // por cada vía grabada en el croquis, pintamos su curva
+          console.log(this.dataCroquis.trazos);
           let viasPintables = this.dataCroquis.trazos.filter((t) => !t.borrada);
+          console.log(viasPintables);
           for (let i = 0; i < viasPintables.length; i++) {
             pintaCurva(viasPintables[i].curva, BLANCO, GROSOR_VIA * 2.25);
             let color;
@@ -1596,7 +1598,10 @@ export default {
 
         let pintaLeyenda = () => {
           // pintamos sólo si hay trazos...
-          if (!this.dataCroquis.trazos || this.dataCroquis.trazos.length == 0) {
+          if (
+            !this.dataCroquis.trazos ||
+            this.dataCroquis.trazos.filter((t) => !t.borrada).length == 0
+          ) {
             return;
           }
           if (
@@ -1619,9 +1624,9 @@ export default {
         };
 
         let trazosOrdenados = () => {
-          return this.dataCroquis.trazos.sort(
-            (a, b) => a.puntos[0].x - b.puntos[0].x
-          );
+          return this.dataCroquis.trazos
+            .filter((t) => !t.borrada)
+            .sort((a, b) => a.puntos[0].x - b.puntos[0].x);
         };
 
         let pintaLeyendaCaja = () => {
