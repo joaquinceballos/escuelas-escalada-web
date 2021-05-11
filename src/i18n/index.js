@@ -119,6 +119,10 @@ const messages = {
                         imagen: 'Imagen no es válida',
                         header: 'Error',
                         texto: 'No se puede cargar el croquis: {msg}'
+                    },
+                    borrar: {
+                        titulo: 'Confirmar borrado de croquis',
+                        texto: 'Se borrará el croquis incluyendo la imágen y los trazos de vía dibujados sobre el mismo.'
                     }
                 }
             },
@@ -231,6 +235,12 @@ const messages = {
                     grado: 'Grado',
                     longitud: 'Longitud',
                     numero_chapas: '#Chapas'
+                }
+            },
+
+            croquis: {
+                context_menu: {
+                    borrar_punto: "borrar punto"
                 }
             },
 

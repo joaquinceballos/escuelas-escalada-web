@@ -20,9 +20,10 @@
       <slide v-for="c in croquis" :key="c.id">
         <Croquis
           :croquis="c"
-          @doble-click="modalCroquis"
           :ref="'slide-croquis-' + c.id"
           :detalle="false"
+          @abrir="modalCroquis"
+          @borrar="borrarCroquis"
         />
       </slide>
       <slide key="-1" class="d-flex align-items-center" v-if="!invitado">
@@ -139,6 +140,58 @@ export default {
   },
 
   methods: {
+    borrarCroquis(croquis) {
+      let texto = this.$t("message.modal.croquis.borrar.texto");
+      let titulo = this.$t("message.modal.croquis.borrar.titulo");
+      this.$bvModal
+        .msgBoxConfirm(texto, {
+          title: titulo,
+          //size: "sm",
+          //buttonSize: "sm",
+          okVariant: "danger",
+          //okTitle: "YES",
+          //cancelTitle: "NO",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true,
+        })
+        .then((value) => {
+          if (value) {
+            const headers = Vue.getHeaders(
+              Vue.getToken(),
+              this.$i18n.t("message.idioma.codigo")
+            );
+            this.$http
+              .delete(
+                "/escuelas/" +
+                  this.idEscuela +
+                  "/sectores/" +
+                  this.idSector +
+                  "/croquis/" +
+                  croquis.id,
+                {
+                  headers,
+                }
+              )
+              .then(() => {
+                this.$fire({
+                  title: "Borrado!!",
+                  type: "success",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.croquis = this.croquis.filter((c) => c.id != croquis.id);
+              })
+              .catch((err) => {
+                console.log(err.response);
+              });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+
     addCroquis() {
       this.$refs.modal_nuevo_croquis.mostrar(this.idEscuela, this.idSector);
     },
@@ -159,7 +212,10 @@ export default {
 
     fetchData() {
       this.loading = true;
-      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+      const headers = Vue.getHeaders(
+        Vue.getToken(),
+        this.$i18n.t("message.idioma.codigo")
+      );
       this.$http
         .get("/escuelas/" + this.idEscuela + "/sectores/" + this.idSector, {
           headers,
@@ -187,7 +243,10 @@ export default {
     },
 
     cargaCroquis() {
-      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+      const headers = Vue.getHeaders(
+        Vue.getToken(),
+        this.$i18n.t("message.idioma.codigo")
+      );
       this.$http
         .get(
           "/escuelas/" +
