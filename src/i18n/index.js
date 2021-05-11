@@ -124,6 +124,18 @@ const messages = {
                         titulo: 'Confirmar borrado de croquis',
                         texto: 'Se borrará el croquis incluyendo la imágen y los trazos de vía dibujados sobre el mismo.'
                     }
+                },
+                ascension: {
+                    header: 'Nueva ascensión',
+                    fecha: 'Fecha',
+                    grado: 'Grado',
+                    comentario: 'Comentario',
+                    registrada: 'Ascensión egistrada!',
+                    ko: {
+                        header: 'Error',
+                        texto: 'Error registrando ascensión {msg}'
+                    }
+
                 }
             },
 

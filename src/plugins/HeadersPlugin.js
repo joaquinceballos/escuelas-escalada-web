@@ -2,9 +2,9 @@ const HeadersPlugin = {
 
     install(Vue) {
 
-        Vue.getHeaders = function(token, idioma) {
+        Vue.getHeaders = function(idioma) {
             return {
-                Authorization: "Bearer " + token,
+                Authorization: "Bearer " + Vue.getToken(),
                 "Accept-Language": idioma
             };
         }

@@ -62,7 +62,7 @@
       ref="tablaVias"
       :borderless="true"
       :small="true"
-      @click="clickEnTablaVias"
+      @click="cargaSideBarVia"
     />
     <b-modal
       id="modal-croquis"
@@ -81,6 +81,7 @@
     </b-modal>
     <ModalVia ref="modal_via" @creada="fetchData" />
     <ModalNuevoCroquis ref="modal_nuevo_croquis" @creado="fetchData" />
+    <ModalAscension ref="modal-ascension" @registrada="ascensionRegistrada" />
     <b-sidebar
       id="sidebar-ascensiones"
       ref="sidebar-ascensiones"
@@ -113,14 +114,7 @@
             >
               <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1">{{ ascension.usuario.nombre }}</h5>
-                <small>
-                  <time-ago
-                    long=true
-                    :locale="locale"
-                    :datetime="ascension.fecha"
-                    tooltip
-                  ></time-ago
-                ></small>
+                <small>{{ ascension.fecha }}</small>
               </div>
               <p class="mb-1">{{ ascension.comentario }}</p>
               <small>{{ ascension.grado }}</small>
@@ -145,8 +139,7 @@ import { Carousel, Slide } from "vue-carousel";
 import TablaVias from "./tablas/TablaVias";
 import ModalVia from "./modales/ModalNuevaVia";
 import ModalNuevoCroquis from "./modales/ModaNuevoCroquis";
-import { TimeAgo } from "vue2-timeago";
-import "vue2-timeago/dist/vue2-timeago.css";
+import ModalAscension from "./modales/ModalAscension";
 
 export default {
   components: {
@@ -156,7 +149,7 @@ export default {
     TablaVias,
     ModalVia,
     ModalNuevoCroquis,
-    TimeAgo,
+    ModalAscension,
   },
 
   computed: {
@@ -210,6 +203,9 @@ export default {
   },
 
   methods: {
+    ascensionRegistrada() {
+      this.cargaSideBarVia(this.viaClickada);
+    },
     clickFooterSidebar() {
       let tabActiva = this.$refs["tabs-sidebar"].currentTab;
       if (tabActiva == 0) {
@@ -235,13 +231,10 @@ export default {
       console.log("actualizremos la vía...");
     },
     anadirAscension() {
-      console.log("añadimos la ascensión...");
+      this.$refs["modal-ascension"].mostrar(this.viaClickada.id);
     },
-    clickEnTablaVias(via) {
-      const headers = Vue.getHeaders(
-        Vue.getToken(),
-        this.$i18n.t("message.idioma.codigo")
-      );
+    cargaSideBarVia(via) {
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
       // si el sidebar se está mostrando lo ocultamos
       this.viaClickada = via;
       this.ascensionesViaClickada = [];
@@ -284,7 +277,6 @@ export default {
         .then((value) => {
           if (value) {
             const headers = Vue.getHeaders(
-              Vue.getToken(),
               this.$i18n.t("message.idioma.codigo")
             );
             this.$http
@@ -338,10 +330,7 @@ export default {
 
     fetchData() {
       this.loading = true;
-      const headers = Vue.getHeaders(
-        Vue.getToken(),
-        this.$i18n.t("message.idioma.codigo")
-      );
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
       this.$http
         .get("/escuelas/" + this.idEscuela + "/sectores/" + this.idSector, {
           headers,
@@ -369,10 +358,7 @@ export default {
     },
 
     cargaCroquis() {
-      const headers = Vue.getHeaders(
-        Vue.getToken(),
-        this.$i18n.t("message.idioma.codigo")
-      );
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
       this.$http
         .get(
           "/escuelas/" +
