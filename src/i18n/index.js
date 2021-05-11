@@ -224,7 +224,18 @@ const messages = {
                     listado_vias: 'Vías',
                     listado_croquis: 'Croquis',
                     anadir_via: 'Añadir vía',
-                    tooltip_croquis: 'Añade nuevo croquis'
+                    tooltip_croquis: 'Añade nuevo croquis',
+                    ascensiones: {
+                        titulo: 'Ascensiones',
+                        anadir: 'Añade la tuya'
+                    },
+                    via: {
+                        longitud: 'Longitud',
+                        numeroChapas: 'Número de chapas',
+                        grado: 'Grado',
+                        informacion: 'Información',
+                        editar: 'Editar la via'
+                    }
                 }
             },
 

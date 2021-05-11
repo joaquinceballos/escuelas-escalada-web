@@ -1552,9 +1552,7 @@ export default {
           // pintamos la imagen
           s.image(img, 0, 0, width, height);
           // por cada vía grabada en el croquis, pintamos su curva
-          console.log(this.dataCroquis.trazos);
           let viasPintables = this.dataCroquis.trazos.filter((t) => !t.borrada);
-          console.log(viasPintables);
           for (let i = 0; i < viasPintables.length; i++) {
             pintaCurva(viasPintables[i].curva, BLANCO, GROSOR_VIA * 2.25);
             let color;

@@ -11,7 +11,7 @@
           <b-row>
             <b-col>
               <time-ago
-                long="true"
+                long=true
                 :locale="locale"
                 :datetime="point.fecha"
                 tooltip
