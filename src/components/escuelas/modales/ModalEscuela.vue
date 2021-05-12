@@ -4,8 +4,8 @@
       id="modal_escuela"
       ref="modal_escuela"
       v-bind:title="$t('message.modal.escuela.titulo')"
-      @show="resetModalNuevaEscuela"
-      @hidden="resetModalNuevaEscuela"
+      @show="resetModalEscuela"
+      @hidden="resetModalEscuela"
       @ok="handleFormularioOk"
     >
       <form ref="form">
@@ -63,6 +63,7 @@ import Vue from "vue";
 export default {
   data() {
     return {
+      escuela: null,
       nombre: "",
       informacion: "",
       informacionState: null,
@@ -81,11 +82,7 @@ export default {
       this.handleEscuelaSubmit();
     },
 
-    handleEscuelaSubmit() {
-      if (!this.checkEscuelaFormValidity()) {
-        return;
-      }
-      // TODO emitir evento creada cuando se cree correctamente la escuela
+    grabarNuevaEscuela() {
       const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
       let nuevaEscuela = {
         nombre: this.nombre,
@@ -128,6 +125,62 @@ export default {
         });
     },
 
+    actualizarEscuela() {
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
+      this.$http
+        .put(
+          "/escuelas/" + this.escuela.id,
+          {
+            nombre: this.nombre,
+            informacion: this.informacion,
+            zona: { id: this.idZona },
+          },
+          { headers }
+        )
+        .then((response) => {
+          this.$emit("actualizada", response.data.data);
+          let titulo = this.$i18n.t("message.modal.escuela.actualizada");
+          this.$fire({
+            title: titulo,
+            type: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(() => {
+            this.$nextTick(() => {
+              this.$bvModal.hide("modal_escuela");
+            });
+          });
+        })
+        .catch((error) => {
+          let titulo = this.$i18n.t("message.modal.escuela.error.header");
+          let texto = this.$i18n.t("message.modal.escuela.error.texto", {
+            msg: error.response.data.data,
+          });
+          this.$fire({
+            title: titulo,
+            text: texto,
+            type: "error",
+            showConfirmButton: true,
+          }).then(() => {
+            this.$nextTick(() => {
+              this.$bvModal.hide("modal_escuela");
+            });
+          });
+        });
+    },
+
+    handleEscuelaSubmit() {
+      if (!this.checkEscuelaFormValidity()) {
+        return;
+      }
+
+      if (this.escuela) {
+        this.actualizarEscuela();
+      } else {
+        this.grabarNuevaEscuela();
+      }
+    },
+
     checkEscuelaFormValidity() {
       const valid = this.$refs.form.checkValidity();
       this.nombreState = this.nombre != null && this.nombre.length > 0;
@@ -136,10 +189,15 @@ export default {
       return valid;
     },
 
-    resetModalNuevaEscuela() {
-      this.nombre = "";
+    resetModalEscuela() {
+      if (this.escuela) {
+        this.nombre = this.escuela.nombre;
+        this.informacion = this.escuela.informacion;
+      } else {
+        this.nombre = "";
+        this.informacion = "";
+      }
       this.nombreState = null;
-      this.informacion = "";
       this.informacionState = null;
     },
 
@@ -150,7 +208,6 @@ export default {
     cargaRegiones() {
       this.regiones = [];
       const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
-      console.log(headers);
       this.$http
         .get("/zonas?pais=" + this.pais + "&sort=region,asc", { headers })
         .then((response) => {
@@ -175,7 +232,10 @@ export default {
         });
     },
 
-    mostrar() {
+    mostrar(pais, idZona, escuela) {
+      this.pais = pais;
+      this.idZona = idZona;
+      this.escuela = escuela;
       this.cargaRegiones();
       this.$bvModal.show("modal_escuela");
     },

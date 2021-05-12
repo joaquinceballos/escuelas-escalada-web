@@ -3,7 +3,15 @@
     <div v-if="loading" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
-    <h1 class="pb-2">{{ escuelaDto.nombre }}</h1>
+    <h1 class="pb-2">
+      {{ escuelaDto.nombre }}
+      <b-button
+        v-b-toggle.sidebar-detalle-escuela
+        size="sm"
+        variant="outline-info"
+        ><b-icon icon="info-circle" aria-hidden="true"></b-icon
+      ></b-button>
+    </h1>
     <hr />
     <p>{{ escuelaDto.informacion }}</p>
     <hr />
@@ -64,6 +72,56 @@
       :small="true"
     />
     <ModalSector ref="modal_sector" @creado="fetchData" />
+    <ModalEscuela ref="modal_escuela" @actualizada="escuelaAtualizada" />
+    <b-sidebar
+      id="sidebar-detalle-escuela"
+      ref="sidebar-detalle-escuela"
+      :title="escuelaDto.nombre"
+      backdrop
+      shadow
+      right
+    >
+      <b-tabs
+        ref="tabs-sidebar"
+        content-class="mt-3"
+        v-on:activate-tab="tabActivada"
+      >
+        <b-tab :title="$t('message.escuela.detalle.escuela.ficha')" active>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.escuela.detalle.escuela.zona") }}
+            </legend>
+            <p class="innerPara">
+              {{ escuelaDto.zona ? escuelaDto.zona.region : "xxx" }}
+            </p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.escuela.detalle.escuela.numero_sectores") }}
+            </legend>
+            <p class="innerPara">
+              {{ escuelaDto.sectores.length }}
+            </p>
+          </fieldset>
+        </b-tab>
+        <b-tab :title="$t('message.escuela.detalle.cierresTemporada.titulo')">
+          <p>juanito</p>
+        </b-tab>
+      </b-tabs>
+      <template #footer v-if="!invitado">
+        <div class="d-flex bg-info text-light align-items-center px-3 py-2">
+          <strong class="mr-auto">{{
+            $t("message.escuela.detalle.escuela.editar")
+          }}</strong>
+          <b-button size="sm" @click="actualizarEscuela" class="mr-1"
+            ><b-icon icon="pencil" aria-hidden="true"></b-icon
+          ></b-button>
+          <b-button class="bg-danger" size="sm" @click="borrarEscuela"
+            ><b-icon icon="trash" aria-hidden="true"></b-icon
+          ></b-button>
+        </div>
+      </template>
+    </b-sidebar>
   </div>
 </template>
 
@@ -74,6 +132,7 @@ import TablaSectores from "./tablas/TablaSectores";
 import Calendar from "v-year-calendar";
 import "v-year-calendar/locales/v-year-calendar.es";
 import ModalSector from "./modales/ModalSector";
+import ModalEscuela from "./modales/ModalEscuela";
 const centroid = require("polygon-centroid");
 
 export default {
@@ -83,6 +142,7 @@ export default {
     TablaSectores,
     Calendar,
     ModalSector,
+    ModalEscuela,
   },
   props: {
     id: {
@@ -107,12 +167,69 @@ export default {
         zoom: 14,
       },
       cierres: [],
+      tabActiva: 0,
     };
   },
   mounted() {
     this.fetchData();
   },
   methods: {
+    escuelaAtualizada() {
+      this.fetchData();
+    },
+    actualizarEscuela() {
+      this.$refs.modal_escuela.mostrar(
+        this.escuelaDto.zona.pais,
+        this.escuelaDto.zona.id,
+        this.escuelaDto
+      );
+    },
+    borrarEscuela() {
+      let texto = this.$t("message.modal.escuela.borrar.texto", {
+        nombre: this.escuelaDto.nombre,
+      });
+      let titulo = this.$t("message.modal.escuela.borrar.titulo");
+      this.$bvModal
+        .msgBoxConfirm(texto, {
+          title: titulo,
+          okVariant: "danger",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true,
+        })
+        .then((value) => {
+          if (value) {
+            const headers = Vue.getHeaders(
+              this.$i18n.t("message.idioma.codigo")
+            );
+            this.$http
+              .delete(
+                "/escuelas/" + this.escuelaDto.id ,
+                {
+                  headers,
+                }
+              )
+              .then(() => {
+                this.$fire({
+                  title: "Borrada!!",
+                  type: "success",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.$router.push("/zonas/" + this.escuelaDto.zona.id);
+              })
+              .catch((err) => {
+                console.log(err.response);
+              });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    tabActivada(nuevaTab) {
+      this.tabActiva = nuevaTab;
+    },
     fetchData() {
       this.loading = true;
       const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
@@ -218,7 +335,6 @@ export default {
     nuevoSector() {
       this.$refs.modal_sector.mostrar(this.escuelaDto.id);
     },
-    
   },
 
   computed: {
@@ -230,4 +346,16 @@ export default {
 </script>
 
 <style>
+fieldset {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+.innerPara {
+  padding: 20px;
+}
+legend {
+  width: 200px !important;
+  padding: 10px 20px !important;
+}
 </style>

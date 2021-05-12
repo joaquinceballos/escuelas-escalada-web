@@ -13,7 +13,7 @@ const messages = {
             },
 
             idioma: {
-                codigo: 'de'
+                codigo: 'es'
             },
 
             formulario: {
@@ -71,9 +71,14 @@ const messages = {
                     pais: 'país',
                     region: 'región',
                     creada: 'Escuela creada con éxito',
+                    actualizada: 'Escuela actualizada correctamente',
                     error: {
                         header: 'Error',
                         texto: 'No se puede crear la nueva escuela: {msg}'
+                    },
+                    borrar: {
+                        titulo: 'Confirmar borrado de escuela',
+                        texto: 'Se borrará la escuela "{nombre}" junto con todos sus sectores permanentemente'
                     }
                 },
                 sector: {
@@ -229,7 +234,7 @@ const messages = {
                     sectores: "Sectores de la escuela",
                     anadir_sector: 'Añadir sector',
                     cierresTemporada: {
-                        titulo: "Cirres de temporada",
+                        titulo: "Cierres de temporada",
                         texto: "Esta escuela está regulada con cierres temporales para proteger la de cría de aves. Para conocer las fechas afectadas despliegue el calendario",
                         botoninfo: "Más información",
                         tipo: {
@@ -237,6 +242,12 @@ const messages = {
                                 texto: "Cría estacional de aves nidificantes"
                             }
                         }
+                    },
+                    escuela: {
+                        ficha: 'Ficha',
+                        zona: 'Zona',
+                        numero_sectores: 'Número de sectores',
+                        editar: 'Modificar escuela'
                     }
 
                 }

@@ -353,7 +353,6 @@ export default {
 
   methods: {
     sectorActualizado() {
-      console.log("El sector se ha actualizado correctamente");
       this.fetchData();
     },
     actualizarSector() {
@@ -363,7 +362,7 @@ export default {
       let texto = this.$t("message.modal.sector.borrar.texto", {
         nombre: this.sectorDto.nombre,
       });
-      let titulo = this.$t("message.modal.via.borrar.titulo");
+      let titulo = this.$t("message.modal.sector.borrar.titulo");
       this.$bvModal
         .msgBoxConfirm(texto, {
           title: titulo,
@@ -402,11 +401,7 @@ export default {
           console.error(err);
         });
     },
-    editarHoralSol() {
-      console.log("abriré el modal para editar las horas de sol...");
-    },
     tabSectorActivada(newTabIndex) {
-      console.log("tab activada ->", newTabIndex);
       this.tabSectorActiva = newTabIndex;
     },
     borrarVia() {
