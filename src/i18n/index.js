@@ -84,6 +84,10 @@ const messages = {
                     error: {
                         header: 'Error',
                         texto: 'No se puede crear el nuevo sector: {msg}'
+                    },
+                    borrar: {
+                        titulo: 'Confirmar borrado de sector',
+                        texto: 'Se borrará el sector "{nombre}" junto con sus vías y croquis permanentemente'
                     }
                 },
                 via: {

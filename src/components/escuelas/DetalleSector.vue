@@ -349,7 +349,47 @@ export default {
       console.log("abriré el modal para editar el sector...");
     },
     borrarSector() {
-      console.log("pediré confirmación y borraré el sector...");
+      let texto = this.$t("message.modal.sector.borrar.texto", {
+        nombre: this.sectorDto.nombre,
+      });
+      let titulo = this.$t("message.modal.via.borrar.titulo");
+      this.$bvModal
+        .msgBoxConfirm(texto, {
+          title: titulo,
+          okVariant: "danger",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true,
+        })
+        .then((value) => {
+          if (value) {
+            const headers = Vue.getHeaders(
+              this.$i18n.t("message.idioma.codigo")
+            );
+            this.$http
+              .delete(
+                "/escuelas/" + this.idEscuela + "/sectores/" + this.idSector,
+                {
+                  headers,
+                }
+              )
+              .then(() => {
+                this.$fire({
+                  title: "Borrado!!",
+                  type: "success",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.$router.push("/escuelas/" +  this.idEscuela);
+              })
+              .catch((err) => {
+                console.log(err.response);
+              });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     editarHoralSol() {
       console.log("abriré el modal para editar las horas de sol...");
