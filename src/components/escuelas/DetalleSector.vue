@@ -79,13 +79,13 @@
         @salir="recargarCroquis"
       />
     </b-modal>
-    <ModalVia ref="modal_via" @creada="fetchData" />
+    <ModalVia ref="modal_via" @creada="fetchData" @actualizada="actualizada" />
     <ModalNuevoCroquis ref="modal_nuevo_croquis" @creado="fetchData" />
     <ModalAscension ref="modal-ascension" @registrada="ascensionRegistrada" />
     <b-sidebar
       id="sidebar-ascensiones"
       ref="sidebar-ascensiones"
-      :title="viaClickada.nombre"
+      :title="viaClickada ? viaClickada.nombre : 'xx'"
       right
       backdrop
       shadow
@@ -94,6 +94,7 @@
         ref="tabs-sidebar"
         content-class="mt-3"
         v-on:activate-tab="tabActivada"
+        v-if="viaClickada"
       >
         <b-tab title="Editar" active>
           <h5>{{ $t("message.sector.detalle.via.longitud") }}</h5>
@@ -125,8 +126,22 @@
       <template #footer v-if="!invitado">
         <div class="d-flex bg-info text-light align-items-center px-3 py-2">
           <strong class="mr-auto">{{ textoFooterSidebar }}</strong>
-          <b-button size="sm" @click="clickFooterSidebar"
-            ><b-icon :icon="iconoFooter" aria-hidden="true"></b-icon
+          <b-button
+            size="sm"
+            @click="actualizarVia"
+            v-show="tabActiva == 0"
+            class="mr-1"
+            ><b-icon icon="pencil" aria-hidden="true"></b-icon
+          ></b-button>
+          <b-button
+            class="bg-danger"
+            size="sm"
+            @click="borrarVia"
+            v-show="tabActiva == 0"
+            ><b-icon icon="trash" aria-hidden="true"></b-icon
+          ></b-button>
+          <b-button size="sm" @click="anadirAscension" v-show="tabActiva == 1"
+            ><b-icon icon="plus-circle" aria-hidden="true"></b-icon
           ></b-button>
         </div>
       </template>
@@ -137,7 +152,7 @@ import Vue from "vue";
 import Croquis from "./Croquis";
 import { Carousel, Slide } from "vue-carousel";
 import TablaVias from "./tablas/TablaVias";
-import ModalVia from "./modales/ModalNuevaVia";
+import ModalVia from "./modales/ModalVia";
 import ModalNuevoCroquis from "./modales/ModaNuevoCroquis";
 import ModalAscension from "./modales/ModalAscension";
 
@@ -197,24 +212,70 @@ export default {
       carouselKey: 0,
       ascensionesViaClickada: [],
       viaClickada: {},
-      textoFooterSidebar: this.$t("message.sector.detalle.ascensiones.anadir"),
+      tabActiva: 0,
+      textoFooterSidebar: this.$t("message.sector.detalle.via.editar"),
       iconoFooter: "pencil",
     };
   },
 
   methods: {
+    borrarVia() {
+      let texto = this.$t("message.modal.via.borrar.texto", {
+        nombre: this.viaClickada.nombre,
+      });
+      let titulo = this.$t("message.modal.via.borrar.titulo");
+      this.$bvModal
+        .msgBoxConfirm(texto, {
+          title: titulo,
+          okVariant: "danger",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true,
+        })
+        .then((value) => {
+          if (value) {
+            const headers = Vue.getHeaders(
+              this.$i18n.t("message.idioma.codigo")
+            );
+            this.$http
+              .delete(
+                "/escuelas/" +
+                  this.idEscuela +
+                  "/sectores/" +
+                  this.idSector +
+                  "/vias/" +
+                  this.viaClickada.id,
+                {
+                  headers,
+                }
+              )
+              .then(() => {
+                this.$fire({
+                  title: "Borrada!!",
+                  type: "success",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.viaClickada = null;
+                this.fetchData();
+                this.$refs["sidebar-ascensiones"].hide();
+              })
+              .catch((err) => {
+                console.log(err.response);
+              });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    actualizada(via) {
+      this.viaClikada = via;
+      this.cargaSideBarVia(via);
+      this.fetchData();
+    },
     ascensionRegistrada() {
       this.cargaSideBarVia(this.viaClickada);
-    },
-    clickFooterSidebar() {
-      let tabActiva = this.$refs["tabs-sidebar"].currentTab;
-      if (tabActiva == 0) {
-        this.actualizarVia();
-      } else if (tabActiva == 1) {
-        this.anadirAscension();
-      } else {
-        console.err("Tab activa no esperada: ", tabActiva);
-      }
     },
     tabActivada(newTabIndex) {
       if (newTabIndex == 0) {
@@ -226,9 +287,14 @@ export default {
         );
         this.iconoFooter = "plus-circle";
       }
+      this.tabActiva = newTabIndex;
     },
     actualizarVia() {
-      console.log("actualizremos la vía...");
+      this.$refs.modal_via.mostrar(
+        this.idEscuela,
+        this.idSector,
+        this.viaClickada
+      );
     },
     anadirAscension() {
       this.$refs["modal-ascension"].mostrar(this.viaClickada.id);

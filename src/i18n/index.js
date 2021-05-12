@@ -87,11 +87,13 @@ const messages = {
                     }
                 },
                 via: {
-                    titulo: 'Crear nueva vía',
+                    titulo_nueva: 'Crear nueva vía',
+                    titulo_actualizar: 'Actualizar datos vía',
                     nombre: 'Nombre',
                     grado: 'Grado',
                     longitud: 'Longitud',
                     numero_chapas: 'Número de chapas',
+                    informacion: 'Información',
                     validacion: {
                         longitud: 'Mayor que 0',
                         numero_chapas: 'Número no válido'
@@ -102,10 +104,15 @@ const messages = {
                         texto2: '¿No encuentras la vía? ',
                         texto_link: 'Créala nueva'
                     },
-                    creada: 'Vía creada con éxito',
+                    creada: 'Vía creada correctamente',
+                    actualizada: 'Vía actualizada correctamente',
                     error: {
                         header: 'Error',
                         texto: 'No se puede crear la nueva vía: {msg}'
+                    },
+                    borrar: {
+                        titulo: 'Confirmar borrado de vía',
+                        texto: 'Se borrará la vía {nombre} permanentemente'
                     }
                 },
                 croquis: {
@@ -239,14 +246,14 @@ const messages = {
                     tooltip_croquis: 'Añade nuevo croquis',
                     ascensiones: {
                         titulo: 'Ascensiones',
-                        anadir: 'Añade la tuya'
+                        anadir: 'Añade tu ascensión'
                     },
                     via: {
                         longitud: 'Longitud',
                         numeroChapas: 'Número de chapas',
                         grado: 'Grado',
                         informacion: 'Información',
-                        editar: 'Editar la via'
+                        editar: 'Modificar datos de vía'
                     }
                 }
             },

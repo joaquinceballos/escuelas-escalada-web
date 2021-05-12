@@ -79,7 +79,7 @@
 import p5 from "p5";
 import Vue from "vue";
 import VueFileToolbarMenu from "vue-file-toolbar-menu";
-import ModalVia from "./modales/ModalNuevaVia";
+import ModalVia from "./modales/ModalVia";
 import fab from "vue-fab";
 import VueSimpleContextMenu from "vue-simple-context-menu";
 import "vue-simple-context-menu/dist/vue-simple-context-menu.css";

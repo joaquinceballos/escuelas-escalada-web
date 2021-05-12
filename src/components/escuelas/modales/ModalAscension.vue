@@ -9,7 +9,7 @@
   >
     <form ref="form-ascension" @submit.stop.prevent="handleSubmit">
       <b-form-row>
-        <b-col cols="8">
+        <b-col>
           <b-form-group
             v-bind:label="$t('message.modal.ascension.fecha')"
             label-for="fecha-input"
@@ -20,9 +20,14 @@
               id="ascension-datepicker"
               v-model="fecha"
               :locale="locale"
-              class="mb-2"
+              :date-format-options="{
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+              }"
               :state="fechaState"
               :max="new Date()"
+              class="mb-2"
             ></b-form-datepicker>
           </b-form-group>
         </b-col>
