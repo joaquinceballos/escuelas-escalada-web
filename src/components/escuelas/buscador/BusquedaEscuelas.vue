@@ -35,7 +35,7 @@ export default {
 
     fetchData() {
       this.$refs.pagination.loading = true;
-      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
       this.$http
         .get(
           "/buscador/escuelas?size=" +

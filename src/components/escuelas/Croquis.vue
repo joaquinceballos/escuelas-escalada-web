@@ -79,7 +79,7 @@
 import p5 from "p5";
 import Vue from "vue";
 import VueFileToolbarMenu from "vue-file-toolbar-menu";
-import ModalVia from "./modales/ModalNuevaVia";
+import ModalVia from "./modales/ModalVia";
 import fab from "vue-fab";
 import VueSimpleContextMenu from "vue-simple-context-menu";
 import "vue-simple-context-menu/dist/vue-simple-context-menu.css";
@@ -624,10 +624,7 @@ export default {
 
     async actualizaTipoLeyenda() {
       try {
-        const headers = Vue.getHeaders(
-          Vue.getToken(),
-          this.$i18n.t("message.idioma.codigo")
-        );
+        const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.put(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -654,10 +651,7 @@ export default {
 
     async actualizaViaCroquis(viaCroquis) {
       try {
-        const headers = Vue.getHeaders(
-          Vue.getToken(),
-          this.$i18n.t("message.idioma.codigo")
-        );
+        const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.put(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -682,10 +676,7 @@ export default {
 
     async nuevaViaCroquis(viaCroquis) {
       try {
-        const headers = Vue.getHeaders(
-          Vue.getToken(),
-          this.$i18n.t("message.idioma.codigo")
-        );
+        const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.post(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -714,10 +705,7 @@ export default {
         return;
       }
       try {
-        const headers = Vue.getHeaders(
-          Vue.getToken(),
-          this.$i18n.t("message.idioma.codigo")
-        );
+        const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
         let response = this.$http.delete(
           "/escuelas/" +
             this.dataCroquis.sector.escuela.id +
@@ -1552,9 +1540,7 @@ export default {
           // pintamos la imagen
           s.image(img, 0, 0, width, height);
           // por cada vía grabada en el croquis, pintamos su curva
-          console.log(this.dataCroquis.trazos);
           let viasPintables = this.dataCroquis.trazos.filter((t) => !t.borrada);
-          console.log(viasPintables);
           for (let i = 0; i < viasPintables.length; i++) {
             pintaCurva(viasPintables[i].curva, BLANCO, GROSOR_VIA * 2.25);
             let color;

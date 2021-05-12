@@ -55,6 +55,14 @@ const TokenPlugin = {
             return rolAdmin(Vue.getRoles());
         }
 
+        Vue.getSub = function() {
+            let token = Vue.getToken();
+            if (token == null) {
+                return null;
+            }
+            return VueJwtDecode.decode(token).sub;
+        }
+
     }
 
 }

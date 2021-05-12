@@ -30,7 +30,7 @@ export default {
   methods: {
 
     clickEnFila(via) {
-      console.log("click en fila", via);
+      this.$emit("click", via);
     },
 
     setItems(items) {
