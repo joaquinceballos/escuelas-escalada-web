@@ -227,7 +227,6 @@
             <p class="innerPara">{{ viaClickada.informacion }}</p>
           </fieldset>
         </b-tab>
-        <b-tab> </b-tab>
         <b-tab :title="$t('message.sector.detalle.ascensiones.titulo')">
           <b-list-group>
             <b-list-group-item
@@ -464,6 +463,7 @@ export default {
     },
     tabViaActivada(newTabIndex) {
       this.tabViaActiva = newTabIndex;
+      console.log(this.tabViaActiva);
     },
     actualizarVia() {
       this.$refs.modal_via.mostrar(

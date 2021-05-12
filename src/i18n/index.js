@@ -157,6 +157,26 @@ const messages = {
                         texto: 'Error registrando ascensión {msg}'
                     }
 
+                },
+                cierres: {
+                    titulo: 'Nuevo cierre de temporada',
+                    inicio: 'Inicio',
+                    fin: 'Fin',
+                    motivo: 'Motivo',
+                    obligatorio: 'Campo obligatorio',
+                    rango: 'Rango de fechas no válido',
+                    combo: {
+                        CRIA_AVES: 'Cría de aves',
+                        OTROS: 'Otros'
+                    },
+                    borrar: {
+                        titulo: 'Confirmar borrado cierre de temporada',
+                        texto: '¿Borrar el cierre te temporada por motivo "{motivo}" del {inicio} al {fin}?'
+                    },
+                    error: {
+                        header: 'Error',
+                        texto: 'Error registrado el cierre de temporada: {msg}'
+                    }
                 }
             },
 
@@ -240,8 +260,18 @@ const messages = {
                         tipo: {
                             CRIA_AVES: {
                                 texto: "Cría estacional de aves nidificantes"
+                            },
+                            OTROS: {
+                                texto: "Otros motivos no especificados"
                             }
-                        }
+                        },
+                        anadir: 'Añadir cierre de temporada',
+                        motivo: {
+                            CRIA_AVES: "Cría estacional de aves nidificantes",
+                            OTROS: 'Otros motivos'
+                        },
+                        inicio: 'inicio',
+                        fin: 'fin'
                     },
                     escuela: {
                         ficha: 'Ficha',

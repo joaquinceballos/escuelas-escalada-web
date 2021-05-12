@@ -73,6 +73,7 @@
     />
     <ModalSector ref="modal_sector" @creado="fetchData" />
     <ModalEscuela ref="modal_escuela" @actualizada="escuelaAtualizada" />
+    <ModalCierre ref="modal_cierre" @grabado="cierreGrabado" />
     <b-sidebar
       id="sidebar-detalle-escuela"
       ref="sidebar-detalle-escuela"
@@ -105,19 +106,68 @@
           </fieldset>
         </b-tab>
         <b-tab :title="$t('message.escuela.detalle.cierresTemporada.titulo')">
-          <p>juanito</p>
+          <b-list-group
+            v-show="
+              escuelaDto.cierresTemporada &&
+              escuelaDto.cierresTemporada.length > 0
+            "
+          >
+            <b-list-group-item
+              class="flex-column align-items-start"
+              v-for="cierre in escuelaDto.cierresTemporada"
+              :key="cierre.id"
+            >
+              <h5 class="mb-1">
+                {{
+                  $t(
+                    "message.escuela.detalle.cierresTemporada.motivo." +
+                      cierre.motivoCierre
+                  )
+                }}
+              </h5>
+              <dl>
+                <dt>
+                  {{ $t("message.escuela.detalle.cierresTemporada.inicio") }}
+                </dt>
+                <dd>{{ cierre.inicio }}</dd>
+                <dt>
+                  {{ $t("message.escuela.detalle.cierresTemporada.fin") }}
+                </dt>
+                <dd>{{ cierre.fin }}</dd>
+              </dl>
+              <b-button
+                class="bg-danger"
+                size="sm"
+                @click="borrarCierre(cierre)"
+                ><b-icon icon="trash" aria-hidden="true"></b-icon
+              ></b-button>
+            </b-list-group-item>
+          </b-list-group>
         </b-tab>
       </b-tabs>
       <template #footer v-if="!invitado">
         <div class="d-flex bg-info text-light align-items-center px-3 py-2">
           <strong class="mr-auto">{{
-            $t("message.escuela.detalle.escuela.editar")
+            tabActiva == 0
+              ? $t("message.escuela.detalle.escuela.editar")
+              : $t("message.escuela.detalle.cierresTemporada.anadir")
           }}</strong>
-          <b-button size="sm" @click="actualizarEscuela" class="mr-1"
+          <b-button
+            size="sm"
+            @click="actualizarEscuela"
+            class="mr-1"
+            v-show="tabActiva == 0"
             ><b-icon icon="pencil" aria-hidden="true"></b-icon
           ></b-button>
-          <b-button class="bg-danger" size="sm" @click="borrarEscuela"
+          <b-button
+            class="bg-danger"
+            size="sm"
+            @click="borrarEscuela"
+            v-show="tabActiva == 0"
             ><b-icon icon="trash" aria-hidden="true"></b-icon
+          ></b-button>
+          <b-button size="sm" @click="anadirCierre" v-show="tabActiva == 1"
+            ><b-icon icon="plus-circle" aria-hidden="true"></b-icon
           ></b-button>
         </div>
       </template>
@@ -133,6 +183,7 @@ import Calendar from "v-year-calendar";
 import "v-year-calendar/locales/v-year-calendar.es";
 import ModalSector from "./modales/ModalSector";
 import ModalEscuela from "./modales/ModalEscuela";
+import ModalCierre from "./modales/ModalCierre";
 const centroid = require("polygon-centroid");
 
 export default {
@@ -143,6 +194,7 @@ export default {
     Calendar,
     ModalSector,
     ModalEscuela,
+    ModalCierre,
   },
   props: {
     id: {
@@ -174,6 +226,61 @@ export default {
     this.fetchData();
   },
   methods: {
+    borrarCierre(cierre) {
+      console.log('he llegado aquí');
+      let titulo = this.$t("message.modal.cierres.borrar.titulo");
+      let texto = this.$t("message.modal.cierres.borrar.texto", {
+        motivo: this.$t(
+          "message.escuela.detalle.cierresTemporada.motivo." +
+            cierre.motivoCierre
+        ),
+        inicio: cierre.inicio,
+        fin: cierre.fin,
+      });
+      this.$bvModal
+        .msgBoxConfirm(texto, {
+          title: titulo,
+          okVariant: "danger",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true,
+        })
+        .then((value) => {
+          if (value) {
+            const headers = Vue.getHeaders(
+              this.$i18n.t("message.idioma.codigo")
+            );
+            this.$http
+              .delete(
+                "/escuelas/" + this.escuelaDto.id + "/cierres/" + cierre.id,
+                {
+                  headers,
+                }
+              )
+              .then(() => {
+                this.$fire({
+                  title: "Borrado!!",
+                  type: "success",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.fetchData();
+              })
+              .catch((err) => {
+                console.log(err.response);
+              });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    cierreGrabado() {
+      this.fetchData();
+    },
+    anadirCierre() {
+      this.$refs.modal_cierre.mostrar(this.escuelaDto.id);
+    },
     escuelaAtualizada() {
       this.fetchData();
     },
@@ -203,12 +310,9 @@ export default {
               this.$i18n.t("message.idioma.codigo")
             );
             this.$http
-              .delete(
-                "/escuelas/" + this.escuelaDto.id ,
-                {
-                  headers,
-                }
-              )
+              .delete("/escuelas/" + this.escuelaDto.id, {
+                headers,
+              })
               .then(() => {
                 this.$fire({
                   title: "Borrada!!",
@@ -249,13 +353,24 @@ export default {
             };
           }
 
+          // ordenos los cierres por fecha de fin
+          if (
+            this.escuelaDto.cierresTemporada &&
+            this.escuelaDto.cierresTemporada.length > 0
+          ) {
+            this.escuelaDto.cierresTemporada.sort(
+              (a, b) => new Date(b.fin) - new Date(a.fin)
+            );
+          }
+
           // si tiene cierres de temporada los pinto en el calendario
           if (this.escuelaDto.cierresTemporada.length > 0) {
             for (let i = 0; i < this.escuelaDto.cierresTemporada.length; i++) {
               let cierre = this.escuelaDto.cierresTemporada[i];
               this.cierres.push({
                 id: cierre.id,
-                color: "magenta",
+                color:
+                  cierre.motivoCierre == "CRIA_AVES" ? "magenta" : "yellow",
                 name: this.$t(
                   "message.escuela.detalle.cierresTemporada.tipo." +
                     cierre.motivoCierre +
