@@ -96,15 +96,39 @@
         v-on:activate-tab="tabActivada"
         v-if="viaClickada"
       >
-        <b-tab title="Editar" active>
-          <h5>{{ $t("message.sector.detalle.via.longitud") }}</h5>
-          <p>{{ viaClickada.longitud }}</p>
-          <h5>{{ $t("message.sector.detalle.via.grado") }}</h5>
-          <p>{{ viaClickada.grado }}</p>
-          <h5>{{ $t("message.sector.detalle.via.numeroChapas") }}</h5>
-          <p>{{ viaClickada.numeroChapas }}</p>
-          <h5>{{ $t("message.sector.detalle.via.informacion") }}</h5>
-          <p>{{ viaClickada.informacion }}</p>
+        <b-tab :title="$t('message.sector.detalle.via.ficha')" active>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.via.longitud") }}
+            </legend>
+            <p class="innerPara">
+              {{
+                viaClickada.longitud
+                  ? viaClickada.longitud +
+                    " " +
+                    $t("message.sector.detalle.via.metros")
+                  : ""
+              }}
+            </p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.via.grado") }}
+            </legend>
+            <p class="innerPara">{{ viaClickada.grado }}</p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.via.numeroChapas") }}
+            </legend>
+            <p class="innerPara">{{ viaClickada.numeroChapas }}</p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.via.informacion") }}
+            </legend>
+            <p class="innerPara">{{ viaClickada.informacion }}</p>
+          </fieldset>
         </b-tab>
         <b-tab :title="$t('message.sector.detalle.ascensiones.titulo')">
           <b-list-group>
@@ -481,5 +505,17 @@ export default {
 }
 .addCroquis :hover {
   cursor: pointer;
+}
+fieldset {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+.innerPara {
+  padding: 20px;
+}
+legend {
+  width: 200px !important;
+  padding: 10px 20px !important;
 }
 </style>

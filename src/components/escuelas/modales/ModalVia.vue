@@ -269,7 +269,8 @@ export default {
     checkViaFormValidity() {
       const valid = this.$refs.form.checkValidity();
       this.nombreState = this.nombre != null && this.nombre.length > 0;
-      this.longitudState = !this.longitud || this.longitud > 0;
+      this.longitudState =
+        !this.longitud || (this.longitud > 0 && this.longitud % 0.25 == 0);
       this.chapasState =
         !this.chapas ||
         (this.chapas == Math.round(this.chapas) && this.chapas >= 0);

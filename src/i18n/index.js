@@ -95,7 +95,7 @@ const messages = {
                     numero_chapas: 'Número de chapas',
                     informacion: 'Información',
                     validacion: {
-                        longitud: 'Mayor que 0',
+                        longitud: 'Mayor que 0 y múltiplo de 0,25',
                         numero_chapas: 'Número no válido'
                     },
                     anadir_a_croquis: {
@@ -253,7 +253,9 @@ const messages = {
                         numeroChapas: 'Número de chapas',
                         grado: 'Grado',
                         informacion: 'Información',
-                        editar: 'Modificar datos de vía'
+                        editar: 'Modificar datos de vía',
+                        ficha: 'Ficha',
+                        metros: 'metros'
                     }
                 }
             },
@@ -351,7 +353,7 @@ const messages = {
                     longitud: 'Longitud',
                     numero_chapas: 'Número de chapas',
                     validacion: {
-                        longitud: 'Mayor que 0',
+                        longitud: 'Mayor que 0 y múltiplo de 0,25',
                         numero_chapas: 'Número no válido'
                     },
                     anadir_a_croquis: {
