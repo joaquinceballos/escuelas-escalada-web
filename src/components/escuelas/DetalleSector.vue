@@ -3,7 +3,15 @@
     <div v-if="loading" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
-    <h1 class="pb-2">{{ sectorDto.nombre }}</h1>
+    <h1 class="pb-2">
+      {{ sectorDto.nombre }}
+      <b-button
+        v-b-toggle.sidebar-detalle-sector
+        size="sm"
+        variant="outline-info"
+        ><b-icon icon="info-circle" aria-hidden="true"></b-icon
+      ></b-button>
+    </h1>
     <hr />
     <p>{{ sectorDto.informacion }}</p>
     <hr />
@@ -83,8 +91,92 @@
     <ModalNuevoCroquis ref="modal_nuevo_croquis" @creado="fetchData" />
     <ModalAscension ref="modal-ascension" @registrada="ascensionRegistrada" />
     <b-sidebar
-      id="sidebar-ascensiones"
-      ref="sidebar-ascensiones"
+      id="sidebar-detalle-sector"
+      ref="sidebar-detalle-sector"
+      :title="sectorDto.nombre"
+      backdrop
+      shadow
+      right
+    >
+      <b-tabs
+        ref="tabs-sidebar"
+        content-class="mt-3"
+        v-on:activate-tab="tabSectorActivada"
+      >
+        <b-tab :title="$t('message.sector.detalle.sector.ficha')" active>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.sector.escuela") }}
+            </legend>
+            <p class="innerPara">
+              {{ sectorDto.escuela ? sectorDto.escuela.nombre : "xxx" }}
+            </p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.sector.horas_de_sol.titulo") }}
+            </legend>
+            <p class="innerPara">
+              {{ $t("message.sector.detalle.sector.horas_de_sol.texto") }}
+            </p>
+            <dl v-show="sectorDto.horasDeSol">
+              <dt>
+                {{ $t("message.sector.detalle.sector.horas_de_sol.inicio") }}
+              </dt>
+              <dd>09:00</dd>
+              <dt>
+                {{ $t("message.sector.detalle.sector.horas_de_sol.fin") }}
+              </dt>
+              <dd>19:00</dd>
+            </dl>
+            <small
+              class="text-muted innerPara"
+              v-show="sectorDto.horasDeSol == null"
+              >{{
+                $t("message.sector.detalle.sector.horas_de_sol.sin_info")
+              }}</small
+            >
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.sector.numero_vias") }}
+            </legend>
+            <p class="innerPara">{{ sectorDto.vias.length }}</p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.sector.ubicacion") }}
+            </legend>
+            <dl>
+              <dt>
+                {{ $t("message.sector.detalle.sector.latitud") }}
+              </dt>
+              <dd>{{ sectorDto.latitud }}</dd>
+              <dt>
+                {{ $t("message.sector.detalle.sector.longitud") }}
+              </dt>
+              <dd>{{ sectorDto.longitud }}</dd>
+            </dl>
+          </fieldset>
+        </b-tab>
+      </b-tabs>
+      <template #footer v-if="!invitado">
+        <div class="d-flex bg-info text-light align-items-center px-3 py-2">
+          <strong class="mr-auto">{{
+            $t("message.sector.detalle.sector.editar")
+          }}</strong>
+          <b-button size="sm" @click="actualizarSector" class="mr-1"
+            ><b-icon icon="pencil" aria-hidden="true"></b-icon
+          ></b-button>
+          <b-button class="bg-danger" size="sm" @click="borrarSector"
+            ><b-icon icon="trash" aria-hidden="true"></b-icon
+          ></b-button>
+        </div>
+      </template>
+    </b-sidebar>
+    <b-sidebar
+      id="sidebar-vias"
+      ref="sidebar-vias"
       :title="viaClickada ? viaClickada.nombre : 'xx'"
       right
       backdrop
@@ -93,7 +185,7 @@
       <b-tabs
         ref="tabs-sidebar"
         content-class="mt-3"
-        v-on:activate-tab="tabActivada"
+        v-on:activate-tab="tabViaActivada"
         v-if="viaClickada"
       >
         <b-tab :title="$t('message.sector.detalle.via.ficha')" active>
@@ -130,6 +222,7 @@
             <p class="innerPara">{{ viaClickada.informacion }}</p>
           </fieldset>
         </b-tab>
+        <b-tab> </b-tab>
         <b-tab :title="$t('message.sector.detalle.ascensiones.titulo')">
           <b-list-group>
             <b-list-group-item
@@ -149,11 +242,15 @@
       </b-tabs>
       <template #footer v-if="!invitado">
         <div class="d-flex bg-info text-light align-items-center px-3 py-2">
-          <strong class="mr-auto">{{ textoFooterSidebar }}</strong>
+          <strong class="mr-auto">{{
+            tabViaActiva == 0
+              ? $t("message.sector.detalle.via.editar")
+              : $t("message.sector.detalle.ascensiones.anadir")
+          }}</strong>
           <b-button
             size="sm"
             @click="actualizarVia"
-            v-show="tabActiva == 0"
+            v-show="tabViaActiva == 0"
             class="mr-1"
             ><b-icon icon="pencil" aria-hidden="true"></b-icon
           ></b-button>
@@ -161,10 +258,13 @@
             class="bg-danger"
             size="sm"
             @click="borrarVia"
-            v-show="tabActiva == 0"
+            v-show="tabViaActiva == 0"
             ><b-icon icon="trash" aria-hidden="true"></b-icon
           ></b-button>
-          <b-button size="sm" @click="anadirAscension" v-show="tabActiva == 1"
+          <b-button
+            size="sm"
+            @click="anadirAscension"
+            v-show="tabViaActiva == 1"
             ><b-icon icon="plus-circle" aria-hidden="true"></b-icon
           ></b-button>
         </div>
@@ -232,17 +332,32 @@ export default {
         latitud: 0,
         longitud: 0,
         vias: [],
+        escuela: {
+          nombre: "",
+        },
       },
       carouselKey: 0,
       ascensionesViaClickada: [],
       viaClickada: {},
-      tabActiva: 0,
-      textoFooterSidebar: this.$t("message.sector.detalle.via.editar"),
-      iconoFooter: "pencil",
+      tabViaActiva: 0,
+      tabSectorActiva: 0,
     };
   },
 
   methods: {
+    actualizarSector() {
+      console.log("abriré el modal para editar el sector...");
+    },
+    borrarSector() {
+      console.log("pediré confirmación y borraré el sector...");
+    },
+    editarHoralSol() {
+      console.log("abriré el modal para editar las horas de sol...");
+    },
+    tabSectorActivada(newTabIndex) {
+      console.log("tab activada ->", newTabIndex);
+      this.tabSectorActiva = newTabIndex;
+    },
     borrarVia() {
       let texto = this.$t("message.modal.via.borrar.texto", {
         nombre: this.viaClickada.nombre,
@@ -282,7 +397,7 @@ export default {
                 });
                 this.viaClickada = null;
                 this.fetchData();
-                this.$refs["sidebar-ascensiones"].hide();
+                this.$refs["sidebar-vias"].hide();
               })
               .catch((err) => {
                 console.log(err.response);
@@ -301,17 +416,8 @@ export default {
     ascensionRegistrada() {
       this.cargaSideBarVia(this.viaClickada);
     },
-    tabActivada(newTabIndex) {
-      if (newTabIndex == 0) {
-        this.textoFooterSidebar = this.$t("message.sector.detalle.via.editar");
-        this.iconoFooter = "pencil";
-      } else if (newTabIndex == 1) {
-        this.textoFooterSidebar = this.$t(
-          "message.sector.detalle.ascensiones.anadir"
-        );
-        this.iconoFooter = "plus-circle";
-      }
-      this.tabActiva = newTabIndex;
+    tabViaActivada(newTabIndex) {
+      this.tabViaActiva = newTabIndex;
     },
     actualizarVia() {
       this.$refs.modal_via.mostrar(
@@ -328,8 +434,8 @@ export default {
       // si el sidebar se está mostrando lo ocultamos
       this.viaClickada = via;
       this.ascensionesViaClickada = [];
-      this.$refs["sidebar-ascensiones"].hide();
-      this.$root.$emit("bv::toggle::collapse", "sidebar-ascensiones");
+      this.$refs["sidebar-vias"].hide();
+      this.$root.$emit("bv::toggle::collapse", "sidebar-vias");
       this.$http
         .get(
           "/escuelas/" +

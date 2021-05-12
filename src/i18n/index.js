@@ -256,6 +256,24 @@ const messages = {
                         editar: 'Modificar datos de vía',
                         ficha: 'Ficha',
                         metros: 'metros'
+                    },
+                    sector: {
+                        editar: 'Modificar sector',
+                        ficha: 'Ficha',
+                        escuela: 'Escuela',
+                        nombre: 'Nombre',
+                        numero_vias: 'Número de vías',
+                        informacion: 'Información',
+                        ubicacion: 'Ubicación',
+                        latitud: 'latitud',
+                        longitud: 'longitud',
+                        horas_de_sol: {
+                            titulo: 'Horas de sol',
+                            texto: 'Horas aproximadas en que el sol incide con más fuerza',
+                            inicio: 'inicio',
+                            fin: 'fin',
+                            sin_info: 'Sin información registrada de horas de sol'
+                        }
                     }
                 }
             },
