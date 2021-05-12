@@ -124,42 +124,36 @@ export default {
     toolbar_fila_1() {
       return [
         {
-          text: "Croquis",
+          text: this.$t("message.croquis.toolbar.croquis"),
           menu: [
             {
-              text: "Cargar imagen...",
-              click: (e) => this.funcionesCroquis.cargarImagen(e),
-              disabled:
-                (this.imagen != null && this.imagen.length > 0) || this.loading,
-            },
-            {
               disabled: !this.hayCambios,
-              text: "Guardar cambios",
+              text: this.$t("message.croquis.toolbar.guardar_cambios"),
               click: (e) => this.funcionesCroquis.guardarCambios(e),
             },
             { is: "separator" },
             {
-              text: "Exportar...",
+              text: this.$t("message.croquis.toolbar.exportar"),
               click: (e) => this.funcionesCroquis.exportar(e),
             },
             { is: "separator" },
             {
-              text: "Salir",
+              text: this.$t("message.croquis.toolbar.salir"),
               click: () => this.funcionesCroquis.salir(),
             },
           ],
         },
         {
-          text: "Edición",
+          text: this.$t("message.croquis.toolbar.edicion"),
           menu: [
             {
-              text: "recargar",
+              text: this.$t("message.croquis.toolbar.recargar"),
               click: (e) => this.funcionesCroquis.deshacerCambios(e),
             },
           ],
         },
         {
-          text: "Formato",
+          text: this.$t("message.croquis.toolbar.formato"),
           disabled: this.invitado,
           menu: this.invitado
             ? null
@@ -168,17 +162,17 @@ export default {
                   disabled:
                     !this.dataCroquis.trazos ||
                     this.dataCroquis.trazos.length == 0,
-                  text: "Leyenda",
+                  text: this.$t("message.croquis.toolbar.leyenda"),
                   menu:
                     !this.dataCroquis.trazos ||
                     this.dataCroquis.trazos.length == 0
                       ? null
                       : [
                           {
-                            text: "tipo",
+                            text: this.$t("message.croquis.toolbar.tipo"),
                             menu: [
                               {
-                                text: "Caja",
+                                text: this.$t("message.croquis.toolbar.caja"),
                                 click: (e) =>
                                   this.funcionesCroquis.setTipoLeyenda(
                                     e,
@@ -186,7 +180,7 @@ export default {
                                   ),
                               },
                               {
-                                text: "Barra",
+                                text: this.$t("message.croquis.toolbar.barra"),
                                 click: (e) =>
                                   this.funcionesCroquis.setTipoLeyenda(
                                     e,
@@ -194,7 +188,7 @@ export default {
                                   ),
                               },
                               {
-                                text: "Vía",
+                                text: this.$t("message.croquis.toolbar.via"),
                                 click: (e) =>
                                   this.funcionesCroquis.setTipoLeyenda(
                                     e,
@@ -205,7 +199,9 @@ export default {
                           },
                           {
                             disabled: this.dataCroquis.tipoLeyenda == "VIA",
-                            text: "Orientación",
+                            text: this.$t(
+                              "message.croquis.toolbar.orientacion"
+                            ),
                             menu:
                               this.dataCroquis.tipoLeyenda == "VIA"
                                 ? null
@@ -215,19 +211,13 @@ export default {
                           },
                         ],
                 },
-                {
-                  text: "Color...",
-                  click: (e) => {
-                    this.funcionesCroquis.color(e);
-                  },
-                },
               ],
         },
         {
-          text: "Ver",
+          text: this.$t("message.croquis.toolbar.ver"),
           menu: [
             {
-              text: "Zoom",
+              text: this.$t("message.croquis.toolbar.zoom"),
               menu: [
                 {
                   text: "x1",
@@ -276,18 +266,18 @@ export default {
           ],
         },
         {
-          text: "Vía",
+          text: this.$t("message.croquis.toolbar.via"),
           disabled: this.invitado,
           menu: this.invitado
             ? null
             : [
                 {
                   disabled: !this.hayVias,
-                  text: "Seleccionar",
+                  text: this.$t("message.croquis.toolbar.seleccionar"),
                   click: (e) => this.funcionesCroquis.seleccionarVia(e),
                 },
                 {
-                  text: "Añadir...",
+                  text: this.$t("message.croquis.toolbar.anadir") + "...",
                   click: () =>
                     this.$bvModal.show(
                       "modal-select-via" + this.dataCroquis.id
@@ -296,17 +286,17 @@ export default {
               ],
         },
         {
-          text: "Ayuda",
+          text: this.$t("message.croquis.toolbar.ayuda"),
           menu: [
             {
-              text: "Manual",
+              text: this.$t("message.croquis.toolbar.manual"),
               click: (e) => {
                 this.funcionesCroquis.manual(e);
               },
             },
             { is: "separator" },
             {
-              text: "Acerca de...",
+              text: this.$t("message.croquis.toolbar.acercade") + "...",
               click: (e) => {
                 this.funcionesCroquis.acercaDe(e);
               },
@@ -316,7 +306,7 @@ export default {
         { is: "spacer" },
         {
           icon: "close",
-          title: "Salir",
+          title: this.$t("message.croquis.toolbar.salir"),
           click: () => {
             this.funcionesCroquis.salir();
           },
@@ -327,14 +317,14 @@ export default {
       return [
         {
           icon: "zoom_in",
-          title: "Zoom in",
+          title: this.$t("message.croquis.toolbar.zoom_in"),
           click: () => {
             this.funcionesCroquis.zoomIn();
           },
         },
         {
           icon: "zoom_out",
-          title: "Zoom out",
+          title: this.$t("message.croquis.toolbar.zoom_out"),
           click: () => {
             this.funcionesCroquis.zoomOut();
           },
@@ -342,33 +332,33 @@ export default {
         { is: "separator" },
         {
           icon: "restart_alt",
-          title: "Refrescar",
+          title: this.$t("message.croquis.toolbar.refrescar"),
           disabled: !this.hayCambios,
           click: (e) => this.funcionesCroquis.deshacerCambios(e),
         },
         {
           icon: "save",
-          title: "Guardar",
+          title: this.$t("message.croquis.toolbar.guardar_cambios"),
           disabled: !this.hayCambios,
           click: () => this.funcionesCroquis.guardarCambios(),
         },
         { is: "separator" },
         {
           icon: "add_road",
-          title: "Añadir vía al croquis",
+          title: this.$t("message.croquis.toolbar.anadir_a_croquis"),
           click: () =>
             this.$bvModal.show("modal-select-via" + this.dataCroquis.id),
         },
         {
           icon: "edit_road",
-          title: "Editar trazo de vía",
+          title: this.$t("message.croquis.toolbar.editar_trazo"),
           click: (e) => this.funcionesCroquis.seleccionarVia(e),
           active: this.seleccionandoVia || this.viaSeleccionada != null,
           disabled: !this.hayVias,
         },
         {
           icon: "delete",
-          title: "Quitar trazo de vía",
+          title: this.$t("message.croquis.toolbar.borrar_trazo"),
           disabled: this.viaSeleccionada == null,
           click: () => this.funcionesCroquis.borrarViaSeleccionada(),
         },
@@ -398,25 +388,25 @@ export default {
       orientacion: {
         CAJ: [
           {
-            text: "sup. izquierda",
+            text: this.$t("message.croquis.toolbar.supizq"),
             click: (e) => {
               this.funcionesCroquis.orientacion(e, "CAJA_SUPERIOR_IZQUIERDA");
             },
           },
           {
-            text: "sup. derecha",
+            text: this.$t("message.croquis.toolbar.supder"),
             click: (e) => {
               this.funcionesCroquis.orientacion(e, "CAJA_SUPERIOR_DERECHA");
             },
           },
           {
-            text: "inf. izquierda",
+            text: this.$t("message.croquis.toolbar.infizq"),
             click: (e) => {
               this.funcionesCroquis.orientacion(e, "CAJA_INFERIOR_IZQUIERDA");
             },
           },
           {
-            text: "inf. derecha",
+            text: this.$t("message.croquis.toolbar.infder"),
             click: (e) => {
               this.funcionesCroquis.orientacion(e, "CAJA_INFERIOR_DERECHA");
             },
@@ -424,13 +414,13 @@ export default {
         ],
         BAR: [
           {
-            text: "inferior",
+            text: this.$t("message.croquis.toolbar.inf"),
             click: (e) => {
               this.funcionesCroquis.orientacion(e, "BARRA_INFERIOR");
             },
           },
           {
-            text: "superior",
+            text: this.$t("message.croquis.toolbar.sup"),
             click: (e) => {
               this.funcionesCroquis.orientacion(e, "BARRA_SUPERIOR");
             },
@@ -443,9 +433,6 @@ export default {
         },
         getPuntoClickado: () => {
           console.error("implementación no enlazada");
-        },
-        cargarImagen: (e) => {
-          console.error("implementación no enlazada", e);
         },
         guardarCambios: (e) => {
           console.error("implementación no enlazada", e);
@@ -1623,7 +1610,15 @@ export default {
           let lineas = [];
           let x, y;
           // primera linea para la cabecera
-          lineas.push(["vía", "|", "grado", "|", "longitud", "|", "chapas"]);
+          lineas.push([
+            this.$t("message.croquis.leyenda.via"),
+            "|",
+            this.$t("message.croquis.leyenda.grado"),
+            "|",
+            this.$t("message.croquis.leyenda.longitud"),
+            "|",
+            this.$t("message.croquis.leyenda.chapas"),
+          ]);
           lineas.push(["", "", "", "", "", "", ""]);
           for (let i = 0; i < trazosOrdenados().length; i++) {
             let via = trazosOrdenados()[i].via;

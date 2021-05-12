@@ -273,6 +273,46 @@ const messages = {
             croquis: {
                 context_menu: {
                     borrar_punto: "borrar punto"
+                },
+                toolbar: {
+                    croquis: 'Croquis',
+                    guardar_cambios: "Guardar cambios",
+                    exportar: 'Exportar',
+                    salir: 'Salir',
+                    edicion: 'Edición',
+                    recargar: 'Recargar',
+                    formato: 'Formato',
+                    leyenda: 'Leyenda',
+                    tipo: 'Tipo',
+                    caja: 'Caja',
+                    barra: 'Barra',
+                    via: 'Vía',
+                    orientacion: 'Orientación',
+                    supizq: 'Sup. izquierda',
+                    supder: 'Sup. derecha',
+                    infder: 'Inf. derecha',
+                    infizq: 'Inf. inzquierda',
+                    inf: 'Inferior',
+                    sup: 'Superior',
+                    ver: 'Ver',
+                    zoom: 'Zoom',
+                    seleccionar: 'Seleccionar',
+                    anadir: 'Añadir',
+                    ayuda: 'Ayuda',
+                    manual: 'Manual',
+                    acercade: 'Acerca de',
+                    zoom_in: 'Zoom +',
+                    zoom_out: 'Zomm -',
+                    refrescar: 'Refrescar',
+                    anadir_a_croquis: 'Añadir vía a croquis',
+                    editar_trazo: 'Editar trazo',
+                    borrar_trazo: 'Borrar trazo'
+                },
+                leyenda: {
+                    via: 'vía',
+                    grado: 'grado',
+                    longitud: 'longitud',
+                    chapas: 'chapas'
                 }
             },
 
