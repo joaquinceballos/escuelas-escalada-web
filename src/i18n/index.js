@@ -87,13 +87,15 @@ const messages = {
                     }
                 },
                 via: {
-                    titulo: 'Crear nueva vía',
+                    titulo_nueva: 'Crear nueva vía',
+                    titulo_actualizar: 'Actualizar datos vía',
                     nombre: 'Nombre',
                     grado: 'Grado',
                     longitud: 'Longitud',
                     numero_chapas: 'Número de chapas',
+                    informacion: 'Información',
                     validacion: {
-                        longitud: 'Mayor que 0',
+                        longitud: 'Mayor que 0 y múltiplo de 0,25',
                         numero_chapas: 'Número no válido'
                     },
                     anadir_a_croquis: {
@@ -102,10 +104,15 @@ const messages = {
                         texto2: '¿No encuentras la vía? ',
                         texto_link: 'Créala nueva'
                     },
-                    creada: 'Vía creada con éxito',
+                    creada: 'Vía creada correctamente',
+                    actualizada: 'Vía actualizada correctamente',
                     error: {
                         header: 'Error',
                         texto: 'No se puede crear la nueva vía: {msg}'
+                    },
+                    borrar: {
+                        titulo: 'Confirmar borrado de vía',
+                        texto: 'Se borrará la vía {nombre} permanentemente'
                     }
                 },
                 croquis: {
@@ -124,6 +131,18 @@ const messages = {
                         titulo: 'Confirmar borrado de croquis',
                         texto: 'Se borrará el croquis incluyendo la imágen y los trazos de vía dibujados sobre el mismo.'
                     }
+                },
+                ascension: {
+                    header: 'Nueva ascensión',
+                    fecha: 'Fecha',
+                    grado: 'Grado',
+                    comentario: 'Comentario',
+                    registrada: 'Ascensión egistrada!',
+                    ko: {
+                        header: 'Error',
+                        texto: 'Error registrando ascensión {msg}'
+                    }
+
                 }
             },
 
@@ -224,7 +243,20 @@ const messages = {
                     listado_vias: 'Vías',
                     listado_croquis: 'Croquis',
                     anadir_via: 'Añadir vía',
-                    tooltip_croquis: 'Añade nuevo croquis'
+                    tooltip_croquis: 'Añade nuevo croquis',
+                    ascensiones: {
+                        titulo: 'Ascensiones',
+                        anadir: 'Añade tu ascensión'
+                    },
+                    via: {
+                        longitud: 'Longitud',
+                        numeroChapas: 'Número de chapas',
+                        grado: 'Grado',
+                        informacion: 'Información',
+                        editar: 'Modificar datos de vía',
+                        ficha: 'Ficha',
+                        metros: 'metros'
+                    }
                 }
             },
 
@@ -321,7 +353,7 @@ const messages = {
                     longitud: 'Longitud',
                     numero_chapas: 'Número de chapas',
                     validacion: {
-                        longitud: 'Mayor que 0',
+                        longitud: 'Mayor que 0 y múltiplo de 0,25',
                         numero_chapas: 'Número no válido'
                     },
                     anadir_a_croquis: {

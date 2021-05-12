@@ -3,9 +3,9 @@
     <b-modal
       :id="'modal_via-' + this.idEscuela + '-' + this.idSector"
       :ref="'modal_via-' + this.idEscuela + '-' + this.idSector"
-      v-bind:title="$t('message.modal.via.titulo')"
-      @show="resetModalNuevaVia"
-      @hidden="resetModalNuevaVia"
+      v-bind:title="tituloModal"
+      @show="resetModalVia"
+      @hidden="resetModalVia"
       @ok="handleFormularioOk"
     >
       <form ref="form">
@@ -22,6 +22,19 @@
             required
           ></b-form-input>
         </b-form-group>
+        <b-form-group
+          v-bind:label="$t('message.modal.via.informacion')"
+          label-for="informacion-input"
+          v-bind:invalid-feedback="$t('message.formulario.campo_obligatorio')"
+          :state="informacionState"
+        >
+          <b-form-textarea
+            id="informacion-input"
+            v-model="informacion"
+            :state="informacionState"
+            rows="2"
+          ></b-form-textarea>
+        </b-form-group>
         <b-form-row>
           <b-col>
             <b-form-group
@@ -32,6 +45,7 @@
                 id="select-grado"
                 v-model="grado"
                 :options="grados"
+                :state="gradoState"
               /> </b-form-group
           ></b-col>
           <b-col>
@@ -80,15 +94,20 @@ import Vue from "vue";
 export default {
   data() {
     return {
+      /** Si nos abren el modal pasando vía se trata de una actualización */
+      via: null,
       idEscuela: 0,
       idSector: 0,
       nombre: "",
       grado: "1",
+      gradoState: null,
       longitud: null,
       chapas: null,
       nombreState: null,
       longitudState: null,
       chapasState: null,
+      informacion: "",
+      informacionState: null,
       grados: [
         "1",
         "2",
@@ -131,11 +150,72 @@ export default {
     },
 
     handleViaSubmit() {
+      console.log("handle via submit");
       if (!this.checkViaFormValidity()) {
         return;
       }
-      const headers = Vue.getHeaders(Vue.getToken(), this.$i18n.t("message.idioma.codigo"));
-      console.log('->', headers);
+
+      if (this.via === null) {
+        this.grabaNuevaVia();
+      } else {
+        this.actualizaVia();
+      }
+    },
+
+    actualizaVia() {
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
+      this.$http
+        .put(
+          "/escuelas/" +
+            this.idEscuela +
+            "/sectores/" +
+            this.idSector +
+            "/vias/" +
+            this.via.id,
+          {
+            nombre: this.nombre,
+            grado: this.grado,
+            longitud: this.longitud,
+            numeroChapas: this.chapas,
+          },
+          {
+            headers,
+          }
+        )
+        .then((response) => {
+          this.$emit("actualizada", response.data.data);
+          let titulo = this.$i18n.t("message.modal.via.actualizada");
+          this.$fire({
+            title: titulo,
+            type: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(() => {
+            this.$nextTick(() => {
+              this.$bvModal.hide(
+                "modal_via-" + this.idEscuela + "-" + this.idSector
+              );
+            });
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          let titulo = this.$i18n.t("message.modal.via.error.header");
+          let texto = this.$i18n.t("message.modal.via.error.texto", {
+            msg: error.response.data.data,
+          });
+          this.$fire({
+            title: titulo,
+            text: texto,
+            type: "error",
+            showConfirmButton: true,
+          });
+        });
+    },
+
+    grabaNuevaVia() {
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
+
       let nuevaVia = {
         nombre: this.nombre,
         grado: this.grado,
@@ -189,30 +269,54 @@ export default {
     checkViaFormValidity() {
       const valid = this.$refs.form.checkValidity();
       this.nombreState = this.nombre != null && this.nombre.length > 0;
-      this.longitudState = !this.longitud || this.longitud > 0;
+      this.longitudState =
+        !this.longitud || (this.longitud > 0 && this.longitud % 0.25 == 0);
       this.chapasState =
         !this.chapas ||
         (this.chapas == Math.round(this.chapas) && this.chapas >= 0);
+      this.gradoState = this.grado !== null;
+      this.informacionState = true;
       return valid;
     },
 
-    resetModalNuevaVia() {
-      this.nombre = "";
+    resetModalVia() {
+      if (this.via) {
+        this.nombre = this.via.nombre;
+        this.grado = this.via.grado;
+        this.longitud = this.via.longitud;
+        this.chapas = this.via.numeroChapas;
+        this.informacion = this.via.informacion;
+      } else {
+        this.nombre = "";
+        this.grado = "1";
+        this.longitud = null;
+        this.chapas = null;
+        this.informacion = "";
+      }
       this.nombreState = null;
-      this.grado = "1";
-      this.longitud = null;
       this.longitudState = null;
-      this.chapas = null;
       this.chapasState = null;
+      this.gradoState = null;
+      this.informacionState = null;
     },
 
-    mostrar(idEscuela, idSector) {
+    mostrar(idEscuela, idSector, via) {
+      this.via = via ? via : null;
       this.idEscuela = idEscuela;
       this.idSector = idSector;
       // pequeño delay para que de tiempo a rehacer la id del modal
       setTimeout(() => {
         this.$bvModal.show("modal_via-" + this.idEscuela + "-" + this.idSector);
       }, 100);
+    },
+  },
+
+  computed: {
+    tituloModal() {
+      if (this.via) {
+        return this.$t("message.modal.via.titulo_actualizar");
+      }
+      return this.$t("message.modal.via.titulo_nueva");
     },
   },
 

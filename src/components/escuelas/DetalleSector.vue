@@ -62,6 +62,7 @@
       ref="tablaVias"
       :borderless="true"
       :small="true"
+      @click="cargaSideBarVia"
     />
     <b-modal
       id="modal-croquis"
@@ -78,16 +79,106 @@
         @salir="recargarCroquis"
       />
     </b-modal>
-    <ModalVia ref="modal_via" @creada="fetchData" />
+    <ModalVia ref="modal_via" @creada="fetchData" @actualizada="actualizada" />
     <ModalNuevoCroquis ref="modal_nuevo_croquis" @creado="fetchData" />
+    <ModalAscension ref="modal-ascension" @registrada="ascensionRegistrada" />
+    <b-sidebar
+      id="sidebar-ascensiones"
+      ref="sidebar-ascensiones"
+      :title="viaClickada ? viaClickada.nombre : 'xx'"
+      right
+      backdrop
+      shadow
+    >
+      <b-tabs
+        ref="tabs-sidebar"
+        content-class="mt-3"
+        v-on:activate-tab="tabActivada"
+        v-if="viaClickada"
+      >
+        <b-tab :title="$t('message.sector.detalle.via.ficha')" active>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.via.longitud") }}
+            </legend>
+            <p class="innerPara">
+              {{
+                viaClickada.longitud
+                  ? viaClickada.longitud +
+                    " " +
+                    $t("message.sector.detalle.via.metros")
+                  : ""
+              }}
+            </p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.via.grado") }}
+            </legend>
+            <p class="innerPara">{{ viaClickada.grado }}</p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.via.numeroChapas") }}
+            </legend>
+            <p class="innerPara">{{ viaClickada.numeroChapas }}</p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.via.informacion") }}
+            </legend>
+            <p class="innerPara">{{ viaClickada.informacion }}</p>
+          </fieldset>
+        </b-tab>
+        <b-tab :title="$t('message.sector.detalle.ascensiones.titulo')">
+          <b-list-group>
+            <b-list-group-item
+              class="flex-column align-items-start"
+              v-for="ascension in ascensiones"
+              :key="ascension.id"
+            >
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ ascension.usuario.nombre }}</h5>
+                <small>{{ ascension.fecha }}</small>
+              </div>
+              <p class="mb-1">{{ ascension.comentario }}</p>
+              <small>{{ ascension.grado }}</small>
+            </b-list-group-item>
+          </b-list-group>
+        </b-tab>
+      </b-tabs>
+      <template #footer v-if="!invitado">
+        <div class="d-flex bg-info text-light align-items-center px-3 py-2">
+          <strong class="mr-auto">{{ textoFooterSidebar }}</strong>
+          <b-button
+            size="sm"
+            @click="actualizarVia"
+            v-show="tabActiva == 0"
+            class="mr-1"
+            ><b-icon icon="pencil" aria-hidden="true"></b-icon
+          ></b-button>
+          <b-button
+            class="bg-danger"
+            size="sm"
+            @click="borrarVia"
+            v-show="tabActiva == 0"
+            ><b-icon icon="trash" aria-hidden="true"></b-icon
+          ></b-button>
+          <b-button size="sm" @click="anadirAscension" v-show="tabActiva == 1"
+            ><b-icon icon="plus-circle" aria-hidden="true"></b-icon
+          ></b-button>
+        </div>
+      </template>
+    </b-sidebar>
   </div>
 </template><script>
 import Vue from "vue";
 import Croquis from "./Croquis";
 import { Carousel, Slide } from "vue-carousel";
 import TablaVias from "./tablas/TablaVias";
-import ModalVia from "./modales/ModalNuevaVia";
+import ModalVia from "./modales/ModalVia";
 import ModalNuevoCroquis from "./modales/ModaNuevoCroquis";
+import ModalAscension from "./modales/ModalAscension";
 
 export default {
   components: {
@@ -97,9 +188,16 @@ export default {
     TablaVias,
     ModalVia,
     ModalNuevoCroquis,
+    ModalAscension,
   },
 
   computed: {
+    locale() {
+      return this.$t("message.idioma.codigo");
+    },
+    ascensiones() {
+      return this.ascensionesViaClickada;
+    },
     animacionBotonAnadir() {
       // sólo se anima cuando no hay ningún croquis
       return this.croquis && this.croquis.length > 0 ? "none" : "cylon";
@@ -136,10 +234,121 @@ export default {
         vias: [],
       },
       carouselKey: 0,
+      ascensionesViaClickada: [],
+      viaClickada: {},
+      tabActiva: 0,
+      textoFooterSidebar: this.$t("message.sector.detalle.via.editar"),
+      iconoFooter: "pencil",
     };
   },
 
   methods: {
+    borrarVia() {
+      let texto = this.$t("message.modal.via.borrar.texto", {
+        nombre: this.viaClickada.nombre,
+      });
+      let titulo = this.$t("message.modal.via.borrar.titulo");
+      this.$bvModal
+        .msgBoxConfirm(texto, {
+          title: titulo,
+          okVariant: "danger",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true,
+        })
+        .then((value) => {
+          if (value) {
+            const headers = Vue.getHeaders(
+              this.$i18n.t("message.idioma.codigo")
+            );
+            this.$http
+              .delete(
+                "/escuelas/" +
+                  this.idEscuela +
+                  "/sectores/" +
+                  this.idSector +
+                  "/vias/" +
+                  this.viaClickada.id,
+                {
+                  headers,
+                }
+              )
+              .then(() => {
+                this.$fire({
+                  title: "Borrada!!",
+                  type: "success",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.viaClickada = null;
+                this.fetchData();
+                this.$refs["sidebar-ascensiones"].hide();
+              })
+              .catch((err) => {
+                console.log(err.response);
+              });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    actualizada(via) {
+      this.viaClikada = via;
+      this.cargaSideBarVia(via);
+      this.fetchData();
+    },
+    ascensionRegistrada() {
+      this.cargaSideBarVia(this.viaClickada);
+    },
+    tabActivada(newTabIndex) {
+      if (newTabIndex == 0) {
+        this.textoFooterSidebar = this.$t("message.sector.detalle.via.editar");
+        this.iconoFooter = "pencil";
+      } else if (newTabIndex == 1) {
+        this.textoFooterSidebar = this.$t(
+          "message.sector.detalle.ascensiones.anadir"
+        );
+        this.iconoFooter = "plus-circle";
+      }
+      this.tabActiva = newTabIndex;
+    },
+    actualizarVia() {
+      this.$refs.modal_via.mostrar(
+        this.idEscuela,
+        this.idSector,
+        this.viaClickada
+      );
+    },
+    anadirAscension() {
+      this.$refs["modal-ascension"].mostrar(this.viaClickada.id);
+    },
+    cargaSideBarVia(via) {
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
+      // si el sidebar se está mostrando lo ocultamos
+      this.viaClickada = via;
+      this.ascensionesViaClickada = [];
+      this.$refs["sidebar-ascensiones"].hide();
+      this.$root.$emit("bv::toggle::collapse", "sidebar-ascensiones");
+      this.$http
+        .get(
+          "/escuelas/" +
+            this.idEscuela +
+            "/sectores/" +
+            this.idSector +
+            "/vias/" +
+            via.id +
+            "/ascenciones" /* paginación por defecto... */,
+          { headers }
+        )
+        .then((response) => {
+          let ascensiones = response.data.data.contenido;
+          for (let i = 0; i < ascensiones.length; i++) {
+            this.ascensionesViaClickada.push(ascensiones[i]);
+          }
+        });
+    },
+
     borrarCroquis(croquis) {
       let texto = this.$t("message.modal.croquis.borrar.texto");
       let titulo = this.$t("message.modal.croquis.borrar.titulo");
@@ -158,7 +367,6 @@ export default {
         .then((value) => {
           if (value) {
             const headers = Vue.getHeaders(
-              Vue.getToken(),
               this.$i18n.t("message.idioma.codigo")
             );
             this.$http
@@ -212,10 +420,7 @@ export default {
 
     fetchData() {
       this.loading = true;
-      const headers = Vue.getHeaders(
-        Vue.getToken(),
-        this.$i18n.t("message.idioma.codigo")
-      );
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
       this.$http
         .get("/escuelas/" + this.idEscuela + "/sectores/" + this.idSector, {
           headers,
@@ -243,10 +448,7 @@ export default {
     },
 
     cargaCroquis() {
-      const headers = Vue.getHeaders(
-        Vue.getToken(),
-        this.$i18n.t("message.idioma.codigo")
-      );
+      const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
       this.$http
         .get(
           "/escuelas/" +
@@ -303,5 +505,17 @@ export default {
 }
 .addCroquis :hover {
   cursor: pointer;
+}
+fieldset {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+.innerPara {
+  padding: 20px;
+}
+legend {
+  width: 200px !important;
+  padding: 10px 20px !important;
 }
 </style>
