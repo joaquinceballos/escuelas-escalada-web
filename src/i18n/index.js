@@ -13,7 +13,7 @@ const messages = {
             },
 
             idioma: {
-                codigo: 'es'
+                codigo: 'de'
             },
 
             formulario: {
@@ -81,6 +81,8 @@ const messages = {
                     nombre: 'Nombre',
                     informacion: 'Información',
                     creado: 'Sector creado con éxito',
+                    actualizado: 'Sector actualizado correctamente',
+                    posicion: 'Posición',
                     error: {
                         header: 'Error',
                         texto: 'No se puede crear el nuevo sector: {msg}'
@@ -88,7 +90,10 @@ const messages = {
                     borrar: {
                         titulo: 'Confirmar borrado de sector',
                         texto: 'Se borrará el sector "{nombre}" junto con sus vías y croquis permanentemente'
-                    }
+                    },
+                    horas_de_sol: 'Horas de sol',
+                    inicio: 'Inicio',
+                    fin: 'Fin'
                 },
                 via: {
                     titulo_nueva: 'Crear nueva vía',

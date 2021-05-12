@@ -90,6 +90,7 @@
     <ModalVia ref="modal_via" @creada="fetchData" @actualizada="actualizada" />
     <ModalNuevoCroquis ref="modal_nuevo_croquis" @creado="fetchData" />
     <ModalAscension ref="modal-ascension" @registrada="ascensionRegistrada" />
+    <ModalSector ref="modal_sector" @actualizado="sectorActualizado" />
     <b-sidebar
       id="sidebar-detalle-sector"
       ref="sidebar-detalle-sector"
@@ -123,11 +124,15 @@
               <dt>
                 {{ $t("message.sector.detalle.sector.horas_de_sol.inicio") }}
               </dt>
-              <dd>09:00</dd>
+              <dd>
+                {{ sectorDto.horasDeSol ? sectorDto.horasDeSol.inicio : "" }}
+              </dd>
               <dt>
                 {{ $t("message.sector.detalle.sector.horas_de_sol.fin") }}
               </dt>
-              <dd>19:00</dd>
+              <dd>
+                {{ sectorDto.horasDeSol ? sectorDto.horasDeSol.fin : "" }}
+              </dd>
             </dl>
             <small
               class="text-muted innerPara"
@@ -279,6 +284,7 @@ import TablaVias from "./tablas/TablaVias";
 import ModalVia from "./modales/ModalVia";
 import ModalNuevoCroquis from "./modales/ModaNuevoCroquis";
 import ModalAscension from "./modales/ModalAscension";
+import ModalSector from "./modales/ModalSector";
 
 export default {
   components: {
@@ -289,6 +295,7 @@ export default {
     ModalVia,
     ModalNuevoCroquis,
     ModalAscension,
+    ModalSector,
   },
 
   computed: {
@@ -345,8 +352,12 @@ export default {
   },
 
   methods: {
+    sectorActualizado() {
+      console.log("El sector se ha actualizado correctamente");
+      this.fetchData();
+    },
     actualizarSector() {
-      console.log("abriré el modal para editar el sector...");
+      this.$refs.modal_sector.mostrar(this.idEscuela, this.sectorDto);
     },
     borrarSector() {
       let texto = this.$t("message.modal.sector.borrar.texto", {
@@ -380,7 +391,7 @@ export default {
                   showConfirmButton: false,
                   timer: 1500,
                 });
-                this.$router.push("/escuelas/" +  this.idEscuela);
+                this.$router.push("/escuelas/" + this.idEscuela);
               })
               .catch((err) => {
                 console.log(err.response);

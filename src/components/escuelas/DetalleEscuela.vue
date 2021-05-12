@@ -73,7 +73,7 @@ import { gmapsMap, gmapsMarker } from "x5-gmaps";
 import TablaSectores from "./tablas/TablaSectores";
 import Calendar from "v-year-calendar";
 import "v-year-calendar/locales/v-year-calendar.es";
-import ModalSector from "./modales/ModalNuevoSector";
+import ModalSector from "./modales/ModalSector";
 const centroid = require("polygon-centroid");
 
 export default {
@@ -218,7 +218,9 @@ export default {
     nuevoSector() {
       this.$refs.modal_sector.mostrar(this.escuelaDto.id);
     },
+    
   },
+
   computed: {
     invitado() {
       return Vue.rolInvitado();
