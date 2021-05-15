@@ -381,6 +381,9 @@ const messages = {
                     grado: 'grado',
                     longitud: 'longitud',
                     chapas: 'chapas'
+                },
+                alert: {
+                    invitado: 'Inicia sesión para poder editar el croquis'
                 }
             },
 

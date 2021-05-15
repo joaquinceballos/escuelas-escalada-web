@@ -139,6 +139,7 @@
                 class="bg-danger"
                 size="sm"
                 @click="borrarCierre(cierre)"
+                v-show="!invitado"
                 ><b-icon icon="trash" aria-hidden="true"></b-icon
               ></b-button>
             </b-list-group-item>

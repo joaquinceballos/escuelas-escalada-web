@@ -64,6 +64,7 @@
       positionType="absolute"
       @abrir="abrir"
       @borrar="borrar"
+      :main-icon="'more_vert'"
       v-if="!detalle"
     ></fab>
     <vue-simple-context-menu
@@ -73,6 +74,17 @@
       :ref="'vueSimpleContextMenu' + dataCroquis.id"
       @option-clicked="optionClicked"
     />
+    <b-alert
+      :show="dismissCountDown"
+      dismissible
+      class="position-fixed fixed-top m-0 rounded-0"
+      style="z-index: 2000"
+      variant="warning"
+      @dismissed="dismissCountDown = 0"
+      @dismiss-count-down="countDownChanged"
+    >
+      {{ $t("message.croquis.alert.invitado") }}
+    </b-alert>
   </div>
 </template>
 <script>
@@ -345,6 +357,7 @@ export default {
         { is: "separator" },
         {
           icon: "add_road",
+          disabled: this.invitado,
           title: this.$t("message.croquis.toolbar.anadir_a_croquis"),
           click: () =>
             this.$bvModal.show("modal-select-via" + this.dataCroquis.id),
@@ -354,7 +367,7 @@ export default {
           title: this.$t("message.croquis.toolbar.editar_trazo"),
           click: (e) => this.funcionesCroquis.seleccionarVia(e),
           active: this.seleccionandoVia || this.viaSeleccionada != null,
-          disabled: !this.hayVias,
+          disabled: !this.hayVias || this.invitado,
         },
         {
           icon: "delete",
@@ -368,6 +381,7 @@ export default {
 
   data() {
     return {
+      dismissCountDown: 0,
       factorZoom: 1,
       factoresZoom: [1, 1.5, 2, 3, 5, 10],
       optionsViasSector: [],
@@ -515,6 +529,9 @@ export default {
   },
 
   methods: {
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown;
+    },
     handleClick(event) {
       let indicePunto = this.funcionesCroquis.getPuntoClickado();
       if (indicePunto >= 0) {
@@ -2029,6 +2046,7 @@ export default {
   },
 
   mounted() {
+    this.dismissCountDown = this.detalle && this.invitado ? 5 : 0;
     this.$refs.scroll.ps.settings.scrollYMarginOffset = 20; //scroll Y se mostraba a la mínima
     this.dataCroquis = JSON.parse(JSON.stringify(this.croquis));
     this.dataCroquisCopia = JSON.parse(JSON.stringify(this.croquis));
