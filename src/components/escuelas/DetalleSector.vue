@@ -486,6 +486,9 @@ export default {
       this.$refs["modal-ascension"].mostrar(this.viaClickada.id);
     },
     cargaSideBarVia(via) {
+      if (!via) {
+        return;
+      }
       const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
       // si el sidebar se está mostrando lo ocultamos
       this.viaClickada = via;

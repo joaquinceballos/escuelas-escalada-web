@@ -1,5 +1,6 @@
 <template>
   <div id="home" class="container">
+    <h1>{{ $t("message.modificaciones.titulo") }}</h1>
     <div v-if="points.length > 0" class="timeline">
       <div v-for="point in points" :key="point.id" class="container right">
         <b-container class="content">
@@ -18,7 +19,11 @@
               ></time-ago
             ></b-col>
             <b-col></b-col>
-            <b-col> <router-link :to="point.path"> ver </router-link></b-col>
+            <b-col>
+              <router-link :to="point.path">
+                <b-icon icon="box-arrow-up-right" aria-hidden="true">
+                </b-icon></router-link
+            ></b-col>
           </b-row>
         </b-container>
       </div>
@@ -121,7 +126,7 @@ export default {
             variables: {
               nombre: modificacion.usuario.nombre,
               sector: recurso.sector.nombre,
-              escuela: recurso.sector.escuela.nombre
+              escuela: recurso.sector.escuela.nombre,
             },
           };
         case "SECTOR":
@@ -137,7 +142,7 @@ export default {
             clave: "message.modificaciones." + accion + ".trazo_via",
             variables: {
               nombre: modificacion.usuario.nombre,
-              region: recurso.region,
+              via: recurso.via.nombre,
             },
           };
         case "VIA":
@@ -145,7 +150,7 @@ export default {
             clave: "message.modificaciones." + accion + ".via",
             variables: {
               nombre: modificacion.usuario.nombre,
-              region: recurso.region,
+              via: recurso.nombre,
             },
           };
         default:
