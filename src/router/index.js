@@ -7,6 +7,8 @@ import DetalleEscuela from "../views/DetalleEscuela.vue"
 import DetalleSector from "../views/DetalleSector.vue"
 import VistaZonas from "../views/VistaZonas.vue"
 import VistaDetalleZona from "../views/VistaDetalleZona.vue";
+import NoEncontrado from "../views/NoEncontrado";
+import Error from "../views/Error"
 
 Vue.use(VueRouter);
 
@@ -91,6 +93,17 @@ const routes = [{
         },
         props: true
     },
+    {
+        path: '/error',
+        name: 'error',
+        component: Error,
+        props: true
+    },
+    {
+        path: '*',
+        name: "noEncontrado",
+        component: NoEncontrado
+    }
 ];
 
 const router = new VueRouter({
@@ -98,8 +111,6 @@ const router = new VueRouter({
     //base: process.env.VUE_APP_API_ROOT,
     routes
 });
-
-const axios = require('axios');
 
 router.beforeEach((to, from, next) => {
     if (to.name === from.name) {
@@ -109,18 +120,7 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!Vue.tokenValido()) {
             // Si no hay un token válido nos logeamos con el usuario genérico
-            let baseUrl = process.env.VUE_APP_API_BASE_URL;
-            let user = {
-                username: process.env.VUE_APP_API_GENERIC_USER,
-                password: process.env.VUE_APP_API_GENERIC_PASSWORD,
-            };
-            console.log(user);
-            axios.post(baseUrl + '/login', user).then((response) => {
-                Vue.guardaToken(response.data.data.token);
-                next({
-                    path: "/"
-                });
-            }).catch((error) => { console.log(error); });
+            Vue.borraToken();
         } else {
             next();
         }

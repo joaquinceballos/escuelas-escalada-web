@@ -137,9 +137,6 @@ export default {
         .get("/usuarios/" + usuario, { headers })
         .then((response) => {
           this.idUsuario = response.data.data.id;
-        })
-        .catch((error) => {
-          console.error("error recuperando la id del usuario:", error);
         });
     },
     handleAscensionOk(bvModalEvt) {

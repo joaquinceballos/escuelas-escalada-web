@@ -115,9 +115,6 @@ export default {
     showPerfil() {
       this.$router.push({ name: "perfil", params: { usuario: this.user } });
     },
-    showHome() {
-      this.$router.push("/");
-    },
     buscador() {
       this.$router
         .push({

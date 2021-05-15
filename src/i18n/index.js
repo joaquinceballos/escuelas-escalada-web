@@ -21,6 +21,12 @@ const messages = {
                 longitud_maxima: 'Máximo permitido: {0}',
             },
 
+            home: {
+                alert: {
+                    token: 'Se ha caducado la sesión'
+                }
+            },
+
             login: {
                 header: 'Escuelas de Escalada - Identifícate',
                 username: 'Nombre de usuario / email',
@@ -388,24 +394,42 @@ const messages = {
             },
 
             modificaciones: {
+                titulo: 'Últimos cambios',
                 crear: {
-                    zona: '{nombre} ha creado una nueva zona de escalada en {region}',
-                    escuela: '{nombre} ha creado la escuela de {escuela}',
-                    sector: '{nombre} ha creado el sector de {sector}',
-                    croquis: '{nombre} ha creado un nuevo croquis del sector {sector} de la escuela {escuela}'
+                    zona: '{nombre} ha creado una nueva zona de escalada en "{region}"',
+                    escuela: '{nombre} ha creado la escuela de "{escuela}"',
+                    sector: '{nombre} ha creado el sector de "{sector}"',
+                    croquis: '{nombre} ha creado un nuevo croquis del sector "{sector}" de la escuela "{escuela}"',
+                    via: '{nombre} ha creado la vía "{via}"',
+                    trazo_via: '{nombre} ha creado un trazo de la vía "{via}"'
                 },
                 actualizar: {
-                    zona: '{nombre} ha actualizado la zona de escalada de {region}',
-                    escuela: '{nombre} ha actualizado datos de la escuela de {escuela}',
-                    sector: '{nombre} ha actualizado el sector de {sector}',
-                    croquis: '{nombre} ha actualizado un croquis en el sector {sector} de la escuela {escuela}'
+                    zona: '{nombre} ha actualizado la zona de escalada de "{region}"',
+                    escuela: '{nombre} ha actualizado datos de la escuela de "{escuela}"',
+                    sector: '{nombre} ha actualizado el sector de "{sector}"',
+                    croquis: '{nombre} ha actualizado un croquis en el sector "{sector}" de la escuela "{escuela}"',
+                    via: '{nombre} ha actualizado la vía "{via}"',
+                    trazo_via: '{nombre} ha actualizado un trazo de la vía "{via}"'
                 },
                 borrar: {
-                    zona: '{nombre} ha borrado la zona de {region}',
-                    escuela: '{nombre} ha borrado la escuela de {escuela}',
-                    sector: '{nombre} ha borrado el sector de {sector}',
-                    croquis: '{nombre} ha borrado un croquis en el sector {sector} de la escuela {escuela}'
+                    zona: '{nombre} ha borrado la zona de "{region}"',
+                    escuela: '{nombre} ha borrado la escuela de "{escuela}"',
+                    sector: '{nombre} ha borrado el sector de "{sector}"',
+                    croquis: '{nombre} ha borrado un croquis en el sector "{sector}" de la escuela "{escuela}"',
+                    via: '{nombre} ha borrado la vía "{via}"',
+                    trazo_via: '{nombre} ha borrado un trazo de la vía "{via}"'
+
                 }
+            },
+
+            no_encontrado: {
+                titulo: 'Recurso no encontrado',
+                texto: 'Puede que lo que estés buscando ya no exista...'
+            },
+
+            error: {
+                titulo: 'Error',
+                texto: 'La aplicación se ha encontrado un fallo del que no ha podido recuperarse...'
             }
         }
     },
