@@ -16,7 +16,7 @@ const PaisesPlugin = {
                 paises.push({ value: n, text: nombres[n] });
             });
 
-            return paises;
+            return paises.sort((a, b) => a.text.localeCompare(b.text));
         }
 
     }

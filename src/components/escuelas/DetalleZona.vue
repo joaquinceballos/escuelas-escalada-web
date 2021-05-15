@@ -19,7 +19,7 @@
 import Vue from "vue";
 import Pagination from "./pagination/Pagination.vue";
 import TablaEscuela from "./tablas/TablaEscuela";
-import ModalEscuela from "./modales/ModalNuevaEscuela";
+import ModalEscuela from "./modales/ModalEscuela";
 export default {
   components: {
     TablaEscuela,
@@ -85,9 +85,7 @@ export default {
     },
 
     nuevaEscuela() {
-      this.$refs.modal_escuela.pais = this.zona.pais;
-      this.$refs.modal_escuela.idZona = this.zona.id;
-      this.$refs.modal_escuela.mostrar();
+      this.$refs.modal_escuela.mostrar(this.zona.pais, this.zona.id);
     },
   },
   mounted() {

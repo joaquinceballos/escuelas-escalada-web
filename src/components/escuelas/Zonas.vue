@@ -50,6 +50,7 @@ export default {
   methods: {
     cargaComboPaises() {
       this.options = Vue.getComboPaises(this.$i18n.t("message.idioma.codigo"));
+      this.pais = "ES";
     },
     recargaTabla() {
       this.$refs.pagination.page = 1;

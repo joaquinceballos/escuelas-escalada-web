@@ -68,6 +68,12 @@ const routes = [{
         }
     },
     {
+        path: "/escuelas/:idEscuela/sectores/:idSector/croquis/:idCroquis/via/:idVia",
+        redirect: to => {
+            return { path: '/escuelas/:idEscuela/sectores/:idSector', query: { idCroquis: to.params.idCroquis } }
+        }
+    },
+    {
         path: "/zonas/",
         name: "zona",
         component: VistaZonas,

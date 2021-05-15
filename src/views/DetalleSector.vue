@@ -5,6 +5,8 @@
       v-if="montado"
       v-bind:idEscuela="idEscuela"
       v-bind:idSector="idSector"
+      v-bind:idVia="idVia"
+      v-bind:idCroquis="idCroquis"
       :key="detalleSectorKey"
     />
   </div>

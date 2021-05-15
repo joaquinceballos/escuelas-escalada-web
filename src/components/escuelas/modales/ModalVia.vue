@@ -177,6 +177,7 @@ export default {
             grado: this.grado,
             longitud: this.longitud,
             numeroChapas: this.chapas,
+            informacion: this.informacion,
           },
           {
             headers,
@@ -221,6 +222,7 @@ export default {
         grado: this.grado,
         longitud: this.longitud,
         numeroChapas: this.chapas,
+        informacion: this.informacion,
       };
 
       this.$http

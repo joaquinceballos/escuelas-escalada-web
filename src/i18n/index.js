@@ -71,9 +71,14 @@ const messages = {
                     pais: 'país',
                     region: 'región',
                     creada: 'Escuela creada con éxito',
+                    actualizada: 'Escuela actualizada correctamente',
                     error: {
                         header: 'Error',
                         texto: 'No se puede crear la nueva escuela: {msg}'
+                    },
+                    borrar: {
+                        titulo: 'Confirmar borrado de escuela',
+                        texto: 'Se borrará la escuela "{nombre}" junto con todos sus sectores permanentemente'
                     }
                 },
                 sector: {
@@ -81,10 +86,19 @@ const messages = {
                     nombre: 'Nombre',
                     informacion: 'Información',
                     creado: 'Sector creado con éxito',
+                    actualizado: 'Sector actualizado correctamente',
+                    posicion: 'Posición',
                     error: {
                         header: 'Error',
                         texto: 'No se puede crear el nuevo sector: {msg}'
-                    }
+                    },
+                    borrar: {
+                        titulo: 'Confirmar borrado de sector',
+                        texto: 'Se borrará el sector "{nombre}" junto con sus vías y croquis permanentemente'
+                    },
+                    horas_de_sol: 'Horas de sol',
+                    inicio: 'Inicio',
+                    fin: 'Fin'
                 },
                 via: {
                     titulo_nueva: 'Crear nueva vía',
@@ -143,6 +157,26 @@ const messages = {
                         texto: 'Error registrando ascensión {msg}'
                     }
 
+                },
+                cierres: {
+                    titulo: 'Nuevo cierre de temporada',
+                    inicio: 'Inicio',
+                    fin: 'Fin',
+                    motivo: 'Motivo',
+                    obligatorio: 'Campo obligatorio',
+                    rango: 'Rango de fechas no válido',
+                    combo: {
+                        CRIA_AVES: 'Cría de aves',
+                        OTROS: 'Otros'
+                    },
+                    borrar: {
+                        titulo: 'Confirmar borrado cierre de temporada',
+                        texto: '¿Borrar el cierre te temporada por motivo "{motivo}" del {inicio} al {fin}?'
+                    },
+                    error: {
+                        header: 'Error',
+                        texto: 'Error registrado el cierre de temporada: {msg}'
+                    }
                 }
             },
 
@@ -220,14 +254,30 @@ const messages = {
                     sectores: "Sectores de la escuela",
                     anadir_sector: 'Añadir sector',
                     cierresTemporada: {
-                        titulo: "Cirres de temporada",
+                        titulo: "Cierres de temporada",
                         texto: "Esta escuela está regulada con cierres temporales para proteger la de cría de aves. Para conocer las fechas afectadas despliegue el calendario",
                         botoninfo: "Más información",
                         tipo: {
                             CRIA_AVES: {
                                 texto: "Cría estacional de aves nidificantes"
+                            },
+                            OTROS: {
+                                texto: "Otros motivos no especificados"
                             }
-                        }
+                        },
+                        anadir: 'Añadir cierre de temporada',
+                        motivo: {
+                            CRIA_AVES: "Cría estacional de aves nidificantes",
+                            OTROS: 'Otros motivos'
+                        },
+                        inicio: 'inicio',
+                        fin: 'fin'
+                    },
+                    escuela: {
+                        ficha: 'Ficha',
+                        zona: 'Zona',
+                        numero_sectores: 'Número de sectores',
+                        editar: 'Modificar escuela'
                     }
 
                 }
@@ -256,6 +306,24 @@ const messages = {
                         editar: 'Modificar datos de vía',
                         ficha: 'Ficha',
                         metros: 'metros'
+                    },
+                    sector: {
+                        editar: 'Modificar sector',
+                        ficha: 'Ficha',
+                        escuela: 'Escuela',
+                        nombre: 'Nombre',
+                        numero_vias: 'Número de vías',
+                        informacion: 'Información',
+                        ubicacion: 'Ubicación',
+                        latitud: 'latitud',
+                        longitud: 'longitud',
+                        horas_de_sol: {
+                            titulo: 'Horas de sol',
+                            texto: 'Horas aproximadas en que el sol incide con más fuerza',
+                            inicio: 'inicio',
+                            fin: 'fin',
+                            sin_info: 'Sin información registrada de horas de sol'
+                        }
                     }
                 }
             },
@@ -313,6 +381,9 @@ const messages = {
                     grado: 'grado',
                     longitud: 'longitud',
                     chapas: 'chapas'
+                },
+                alert: {
+                    invitado: 'Inicia sesión para poder editar el croquis'
                 }
             },
 

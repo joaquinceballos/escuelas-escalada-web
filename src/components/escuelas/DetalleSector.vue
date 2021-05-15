@@ -3,7 +3,15 @@
     <div v-if="loading" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
-    <h1 class="pb-2">{{ sectorDto.nombre }}</h1>
+    <h1 class="pb-2">
+      {{ sectorDto.nombre }}
+      <b-button
+        v-b-toggle.sidebar-detalle-sector
+        size="sm"
+        variant="outline-info"
+        ><b-icon icon="info-circle" aria-hidden="true"></b-icon
+      ></b-button>
+    </h1>
     <hr />
     <p>{{ sectorDto.informacion }}</p>
     <hr />
@@ -82,9 +90,98 @@
     <ModalVia ref="modal_via" @creada="fetchData" @actualizada="actualizada" />
     <ModalNuevoCroquis ref="modal_nuevo_croquis" @creado="fetchData" />
     <ModalAscension ref="modal-ascension" @registrada="ascensionRegistrada" />
+    <ModalSector ref="modal_sector" @actualizado="sectorActualizado" />
     <b-sidebar
-      id="sidebar-ascensiones"
-      ref="sidebar-ascensiones"
+      id="sidebar-detalle-sector"
+      ref="sidebar-detalle-sector"
+      :title="sectorDto.nombre"
+      backdrop
+      shadow
+      right
+    >
+      <b-tabs
+        ref="tabs-sidebar"
+        content-class="mt-3"
+        v-on:activate-tab="tabSectorActivada"
+      >
+        <b-tab :title="$t('message.sector.detalle.sector.ficha')" active>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.sector.escuela") }}
+            </legend>
+            <p class="innerPara">
+              {{ sectorDto.escuela ? sectorDto.escuela.nombre : "xxx" }}
+            </p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.sector.horas_de_sol.titulo") }}
+            </legend>
+            <p class="innerPara">
+              {{ $t("message.sector.detalle.sector.horas_de_sol.texto") }}
+            </p>
+            <dl v-show="sectorDto.horasDeSol">
+              <dt>
+                {{ $t("message.sector.detalle.sector.horas_de_sol.inicio") }}
+              </dt>
+              <dd>
+                {{ sectorDto.horasDeSol ? sectorDto.horasDeSol.inicio : "" }}
+              </dd>
+              <dt>
+                {{ $t("message.sector.detalle.sector.horas_de_sol.fin") }}
+              </dt>
+              <dd>
+                {{ sectorDto.horasDeSol ? sectorDto.horasDeSol.fin : "" }}
+              </dd>
+            </dl>
+            <small
+              class="text-muted innerPara"
+              v-show="sectorDto.horasDeSol == null"
+              >{{
+                $t("message.sector.detalle.sector.horas_de_sol.sin_info")
+              }}</small
+            >
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.sector.numero_vias") }}
+            </legend>
+            <p class="innerPara">{{ sectorDto.vias.length }}</p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.sector.detalle.sector.ubicacion") }}
+            </legend>
+            <dl>
+              <dt>
+                {{ $t("message.sector.detalle.sector.latitud") }}
+              </dt>
+              <dd>{{ sectorDto.latitud }}</dd>
+              <dt>
+                {{ $t("message.sector.detalle.sector.longitud") }}
+              </dt>
+              <dd>{{ sectorDto.longitud }}</dd>
+            </dl>
+          </fieldset>
+        </b-tab>
+      </b-tabs>
+      <template #footer v-if="!invitado">
+        <div class="d-flex bg-info text-light align-items-center px-3 py-2">
+          <strong class="mr-auto">{{
+            $t("message.sector.detalle.sector.editar")
+          }}</strong>
+          <b-button size="sm" @click="actualizarSector" class="mr-1"
+            ><b-icon icon="pencil" aria-hidden="true"></b-icon
+          ></b-button>
+          <b-button class="bg-danger" size="sm" @click="borrarSector"
+            ><b-icon icon="trash" aria-hidden="true"></b-icon
+          ></b-button>
+        </div>
+      </template>
+    </b-sidebar>
+    <b-sidebar
+      id="sidebar-vias"
+      ref="sidebar-vias"
       :title="viaClickada ? viaClickada.nombre : 'xx'"
       right
       backdrop
@@ -93,7 +190,7 @@
       <b-tabs
         ref="tabs-sidebar"
         content-class="mt-3"
-        v-on:activate-tab="tabActivada"
+        v-on:activate-tab="tabViaActivada"
         v-if="viaClickada"
       >
         <b-tab :title="$t('message.sector.detalle.via.ficha')" active>
@@ -149,11 +246,15 @@
       </b-tabs>
       <template #footer v-if="!invitado">
         <div class="d-flex bg-info text-light align-items-center px-3 py-2">
-          <strong class="mr-auto">{{ textoFooterSidebar }}</strong>
+          <strong class="mr-auto">{{
+            tabViaActiva == 0
+              ? $t("message.sector.detalle.via.editar")
+              : $t("message.sector.detalle.ascensiones.anadir")
+          }}</strong>
           <b-button
             size="sm"
             @click="actualizarVia"
-            v-show="tabActiva == 0"
+            v-show="tabViaActiva == 0"
             class="mr-1"
             ><b-icon icon="pencil" aria-hidden="true"></b-icon
           ></b-button>
@@ -161,10 +262,13 @@
             class="bg-danger"
             size="sm"
             @click="borrarVia"
-            v-show="tabActiva == 0"
+            v-show="tabViaActiva == 0"
             ><b-icon icon="trash" aria-hidden="true"></b-icon
           ></b-button>
-          <b-button size="sm" @click="anadirAscension" v-show="tabActiva == 1"
+          <b-button
+            size="sm"
+            @click="anadirAscension"
+            v-show="tabViaActiva == 1"
             ><b-icon icon="plus-circle" aria-hidden="true"></b-icon
           ></b-button>
         </div>
@@ -179,6 +283,7 @@ import TablaVias from "./tablas/TablaVias";
 import ModalVia from "./modales/ModalVia";
 import ModalNuevoCroquis from "./modales/ModaNuevoCroquis";
 import ModalAscension from "./modales/ModalAscension";
+import ModalSector from "./modales/ModalSector";
 
 export default {
   components: {
@@ -189,6 +294,7 @@ export default {
     ModalVia,
     ModalNuevoCroquis,
     ModalAscension,
+    ModalSector,
   },
 
   computed: {
@@ -214,9 +320,17 @@ export default {
     idSector: {
       type: [Number, String],
     },
+    idVia: {
+      type: [Number, String],
+    },
+    idCroquis: {
+      type: [Number, String],
+    },
   },
 
   mounted() {
+    this.paramIdVia = this.idVia;
+    this.paramIdCroquis = this.idCroquis;
     this.fetchData();
   },
 
@@ -232,17 +346,73 @@ export default {
         latitud: 0,
         longitud: 0,
         vias: [],
+        escuela: {
+          nombre: "",
+        },
       },
       carouselKey: 0,
       ascensionesViaClickada: [],
       viaClickada: {},
-      tabActiva: 0,
-      textoFooterSidebar: this.$t("message.sector.detalle.via.editar"),
-      iconoFooter: "pencil",
+      tabViaActiva: 0,
+      tabSectorActiva: 0,
+      paramIdVia: null,
+      paramIdCroquis: null,
     };
   },
 
   methods: {
+    sectorActualizado() {
+      this.fetchData();
+    },
+    actualizarSector() {
+      this.$refs.modal_sector.mostrar(this.idEscuela, this.sectorDto);
+    },
+    borrarSector() {
+      let texto = this.$t("message.modal.sector.borrar.texto", {
+        nombre: this.sectorDto.nombre,
+      });
+      let titulo = this.$t("message.modal.sector.borrar.titulo");
+      this.$bvModal
+        .msgBoxConfirm(texto, {
+          title: titulo,
+          okVariant: "danger",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true,
+        })
+        .then((value) => {
+          if (value) {
+            const headers = Vue.getHeaders(
+              this.$i18n.t("message.idioma.codigo")
+            );
+            this.$http
+              .delete(
+                "/escuelas/" + this.idEscuela + "/sectores/" + this.idSector,
+                {
+                  headers,
+                }
+              )
+              .then(() => {
+                this.$fire({
+                  title: "Borrado!!",
+                  type: "success",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.$router.push("/escuelas/" + this.idEscuela);
+              })
+              .catch((err) => {
+                console.log(err.response);
+              });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    tabSectorActivada(newTabIndex) {
+      this.tabSectorActiva = newTabIndex;
+    },
     borrarVia() {
       let texto = this.$t("message.modal.via.borrar.texto", {
         nombre: this.viaClickada.nombre,
@@ -282,7 +452,7 @@ export default {
                 });
                 this.viaClickada = null;
                 this.fetchData();
-                this.$refs["sidebar-ascensiones"].hide();
+                this.$refs["sidebar-vias"].hide();
               })
               .catch((err) => {
                 console.log(err.response);
@@ -301,17 +471,9 @@ export default {
     ascensionRegistrada() {
       this.cargaSideBarVia(this.viaClickada);
     },
-    tabActivada(newTabIndex) {
-      if (newTabIndex == 0) {
-        this.textoFooterSidebar = this.$t("message.sector.detalle.via.editar");
-        this.iconoFooter = "pencil";
-      } else if (newTabIndex == 1) {
-        this.textoFooterSidebar = this.$t(
-          "message.sector.detalle.ascensiones.anadir"
-        );
-        this.iconoFooter = "plus-circle";
-      }
-      this.tabActiva = newTabIndex;
+    tabViaActivada(newTabIndex) {
+      this.tabViaActiva = newTabIndex;
+      console.log(this.tabViaActiva);
     },
     actualizarVia() {
       this.$refs.modal_via.mostrar(
@@ -328,8 +490,8 @@ export default {
       // si el sidebar se está mostrando lo ocultamos
       this.viaClickada = via;
       this.ascensionesViaClickada = [];
-      this.$refs["sidebar-ascensiones"].hide();
-      this.$root.$emit("bv::toggle::collapse", "sidebar-ascensiones");
+      this.$refs["sidebar-vias"].hide();
+      this.$root.$emit("bv::toggle::collapse", "sidebar-vias");
       this.$http
         .get(
           "/escuelas/" +
@@ -431,19 +593,16 @@ export default {
           this.cargaCroquis();
           this.loading = false;
           this.$refs.tablaVias.setItems(this.sectorDto.vias);
+
+          // si al cargar la página tenemos property idVia cargamos la información de la vía en el sidebar
+          if (this.paramIdVia) {
+            let via = this.sectorDto.vias.filter((v) => v.id == this.idVia)[0];
+            this.cargaSideBarVia(via);
+            this.paramIdVia = null;
+          }
         })
         .catch((err) => {
-          if (err.response.status == 403) {
-            this.$fire({
-              title: "No autorizado",
-              type: "error",
-              showConfirmButton: false,
-              timer: 2500,
-            }).then(() => {
-              this.$router.push("/");
-            });
-          }
-          console.log(err.response);
+          console.error(err);
         });
     },
 
@@ -463,7 +622,21 @@ export default {
           ordenados.sort((a, b) => -(a.id - b.id));
           this.croquis = ordenados;
           if (this.croquis && this.croquis.length > 0) {
+            // la navegación no parece funcionar...
             this.$refs.carousel.goToPage(this.croquis[0].id);
+          }
+
+          // si tenemos parámetro idCroquis intentaremos abrir el croquis cuya id es pasada
+          if (this.paramIdCroquis) {
+            let filtrado = this.croquis.find(
+              (c) => c.id === parseInt(this.paramIdCroquis)
+            );
+            if (filtrado) {
+              this.modalCroquis(filtrado);
+              // la navegación no parece funcionar...
+              this.$refs.carousel.goToPage(filtrado.id);
+            }
+            this.paramIdCroquis = null;
           }
           this.carouselKey += 1;
         })
