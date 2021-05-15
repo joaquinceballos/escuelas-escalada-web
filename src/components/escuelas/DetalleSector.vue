@@ -320,9 +320,17 @@ export default {
     idSector: {
       type: [Number, String],
     },
+    idVia: {
+      type: [Number, String],
+    },
+    idCroquis: {
+      type: [Number, String],
+    },
   },
 
   mounted() {
+    this.paramIdVia = this.idVia;
+    this.paramIdCroquis = this.idCroquis;
     this.fetchData();
   },
 
@@ -347,6 +355,8 @@ export default {
       viaClickada: {},
       tabViaActiva: 0,
       tabSectorActiva: 0,
+      paramIdVia: null,
+      paramIdCroquis: null,
     };
   },
 
@@ -583,19 +593,16 @@ export default {
           this.cargaCroquis();
           this.loading = false;
           this.$refs.tablaVias.setItems(this.sectorDto.vias);
+
+          // si al cargar la página tenemos property idVia cargamos la información de la vía en el sidebar
+          if (this.paramIdVia) {
+            let via = this.sectorDto.vias.filter((v) => v.id == this.idVia)[0];
+            this.cargaSideBarVia(via);
+            this.paramIdVia = null;
+          }
         })
         .catch((err) => {
-          if (err.response.status == 403) {
-            this.$fire({
-              title: "No autorizado",
-              type: "error",
-              showConfirmButton: false,
-              timer: 2500,
-            }).then(() => {
-              this.$router.push("/");
-            });
-          }
-          console.log(err.response);
+          console.error(err);
         });
     },
 
@@ -615,7 +622,21 @@ export default {
           ordenados.sort((a, b) => -(a.id - b.id));
           this.croquis = ordenados;
           if (this.croquis && this.croquis.length > 0) {
+            // la navegación no parece funcionar...
             this.$refs.carousel.goToPage(this.croquis[0].id);
+          }
+
+          // si tenemos parámetro idCroquis intentaremos abrir el croquis cuya id es pasada
+          if (this.paramIdCroquis) {
+            let filtrado = this.croquis.find(
+              (c) => c.id === parseInt(this.paramIdCroquis)
+            );
+            if (filtrado) {
+              this.modalCroquis(filtrado);
+              // la navegación no parece funcionar...
+              this.$refs.carousel.goToPage(filtrado.id);
+            }
+            this.paramIdCroquis = null;
           }
           this.carouselKey += 1;
         })

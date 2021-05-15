@@ -103,7 +103,6 @@ export default {
   },
   computed: {
     locale() {
-      console.log(this.$t("message.idioma.codigo"));
       return this.$t("message.idioma.codigo");
     },
   },
