@@ -57,10 +57,6 @@ export default {
           this.points = response.data.data.contenido.map((m) =>
             this.modificacion2Point(m)
           );
-          console.log(this.points);
-        })
-        .catch((err) => {
-          console.log(err);
         });
     },
     modificacion2Point(modificacion) {

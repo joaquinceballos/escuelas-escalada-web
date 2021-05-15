@@ -228,7 +228,6 @@ export default {
   },
   methods: {
     borrarCierre(cierre) {
-      console.log('he llegado aquí');
       let titulo = this.$t("message.modal.cierres.borrar.titulo");
       let texto = this.$t("message.modal.cierres.borrar.texto", {
         motivo: this.$t(
@@ -266,9 +265,6 @@ export default {
                   timer: 1500,
                 });
                 this.fetchData();
-              })
-              .catch((err) => {
-                console.log(err.response);
               });
           }
         })
@@ -322,9 +318,6 @@ export default {
                   timer: 1500,
                 });
                 this.$router.push("/zonas/" + this.escuelaDto.zona.id);
-              })
-              .catch((err) => {
-                console.log(err.response);
               });
           }
         })
@@ -386,19 +379,6 @@ export default {
 
           this.$refs.tablaSectores.setItems(this.escuelaDto.sectores);
           this.loading = false;
-        })
-        .catch((err) => {
-          if (err.response.status == 403) {
-            this.$fire({
-              title: "No autorizado",
-              type: "error",
-              showConfirmButton: false,
-              timer: 2500,
-            }).then(() => {
-              this.$router.push("/");
-            });
-          }
-          console.log(err.response);
         });
     },
 

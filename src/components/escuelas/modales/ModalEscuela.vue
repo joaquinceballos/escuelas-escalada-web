@@ -223,12 +223,6 @@ export default {
           if (!filtrada) {
             this.idZona = this.regiones[0].value;
           }
-        })
-        .catch((err) => {
-          if (err.response.status == 403) {
-            console.log(err);
-          }
-          console.log(err.response);
         });
     },
 

@@ -400,9 +400,6 @@ export default {
                   timer: 1500,
                 });
                 this.$router.push("/escuelas/" + this.idEscuela);
-              })
-              .catch((err) => {
-                console.log(err.response);
               });
           }
         })
@@ -453,9 +450,6 @@ export default {
                 this.viaClickada = null;
                 this.fetchData();
                 this.$refs["sidebar-vias"].hide();
-              })
-              .catch((err) => {
-                console.log(err.response);
               });
           }
         })
@@ -473,7 +467,6 @@ export default {
     },
     tabViaActivada(newTabIndex) {
       this.tabViaActiva = newTabIndex;
-      console.log(this.tabViaActiva);
     },
     actualizarVia() {
       this.$refs.modal_via.mostrar(
@@ -554,9 +547,6 @@ export default {
                   timer: 1500,
                 });
                 this.croquis = this.croquis.filter((c) => c.id != croquis.id);
-              })
-              .catch((err) => {
-                console.log(err.response);
               });
           }
         })
@@ -603,9 +593,6 @@ export default {
             this.cargaSideBarVia(via);
             this.paramIdVia = null;
           }
-        })
-        .catch((err) => {
-          console.error(err);
         });
     },
 
@@ -642,9 +629,6 @@ export default {
             this.paramIdCroquis = null;
           }
           this.carouselKey += 1;
-        })
-        .catch((err) => {
-          console.log(err);
         });
     },
 
@@ -663,9 +647,6 @@ export default {
             idCroquis: croquis.id,
             croquis: croquis,
           },
-        })
-        .catch((error) => {
-          console.log(error);
         });
     },
   },

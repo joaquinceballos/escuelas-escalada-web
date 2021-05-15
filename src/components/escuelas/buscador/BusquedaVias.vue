@@ -50,13 +50,6 @@ export default {
           this.$refs.pagination.lastPage = response.data.data.totalPaginas;
           this.$refs.tablaVias.setItems(response.data.data.contenido);
           this.$refs.pagination.loading = false;
-        })
-        .catch((err) => {
-          if (err.response.status == 403) {
-            Vue.borraToken();
-            console.err(err);
-          }
-          console.log(err.response);
         });
     },
 

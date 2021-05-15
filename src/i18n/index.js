@@ -21,6 +21,12 @@ const messages = {
                 longitud_maxima: 'Máximo permitido: {0}',
             },
 
+            home: {
+                alert: {
+                    token: 'Se ha caducado la sesión'
+                }
+            },
+
             login: {
                 header: 'Escuelas de Escalada - Identifícate',
                 username: 'Nombre de usuario / email',
@@ -414,6 +420,16 @@ const messages = {
                     trazo_via: '{nombre} ha borrado un trazo de la vía "{via}"'
 
                 }
+            },
+
+            no_encontrado: {
+                titulo: 'Recurso no encontrado',
+                texto: 'Puede que lo que estés buscando ya no exista...'
+            },
+
+            error: {
+                titulo: 'Error',
+                texto: 'La aplicación se ha encontrado un fallo del que no ha podido recuperarse...'
             }
         }
     },

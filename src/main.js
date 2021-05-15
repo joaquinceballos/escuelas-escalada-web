@@ -17,17 +17,43 @@ import "vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
 import PaisesPlugin from "./plugins/PaisesPlugin.js";
 import HeadersPlugin from "./plugins/HeadersPlugin.js";
 
-const base = axios.create({
+const customAxios = axios.create({
     baseURL: process.env.VUE_APP_API_BASE_URL
 });
+
+customAxios.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response.status == 404) {
+            console.log('No encontrado!!', error.response.status);
+            router.push({ name: "noEncontrado" });
+        } else if (error.response.status === 403) {
+            // vamos a logearnos con el usuario invitado
+            let user = {
+                username: process.env.VUE_APP_API_GENERIC_USER,
+                password: process.env.VUE_APP_API_GENERIC_PASSWORD,
+            };
+            customAxios.post('/login', user).then((response) => {
+                Vue.guardaToken(response.data.data.token);
+                router.push({ name: "home", params: { tokenCaducado: true } });
+            }).catch((error) => { console.log(error); });
+
+        } else if (error.response.status === 500) {
+            router.push({ name: "error", params: { error: error.response.data.message } });
+        }
+        return Promise.reject(error);
+    }
+);
+
+Vue.prototype.$http = customAxios;
 
 Vue.config.productionTip = false;
 
 Vue.use(BootstrapVue);
 
 Vue.use(VueSimpleAlert);
-
-Vue.prototype.$http = base;
 
 Vue.use(TokenPlugin);
 

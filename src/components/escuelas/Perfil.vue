@@ -78,19 +78,6 @@ export default {
         .then((response) => {
           this.userDto = response.data.data;
           this.loading = false;
-        })
-        .catch((err) => {
-          if (err.response.status == 403) {
-            this.$fire({
-              title: "No autorizado",
-              type: "error",
-              showConfirmButton: false,
-              timer: 2500,
-            }).then(() => {
-              this.$router.push("/");
-            });
-          }
-          console.log(err.response);
         });
     },
   },

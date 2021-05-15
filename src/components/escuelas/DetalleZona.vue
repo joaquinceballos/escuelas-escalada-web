@@ -51,9 +51,6 @@ export default {
         .then((response) => {
           this.zona = response.data.data;
           this.loading = false;
-        })
-        .catch((err) => {
-          console.error(err);
         });
     },
     fetchDataEscuelas() {
@@ -75,12 +72,6 @@ export default {
           this.$refs.pagination.lastPage = response.data.data.totalPaginas;
           this.$refs.tablaEscuelas.setItems(response.data.data.contenido);
           this.$refs.pagination.loading = false;
-        })
-        .catch((err) => {
-          if (err.response.status == 403) {
-            console.log(err);
-          }
-          console.log(err.response);
         });
     },
 
