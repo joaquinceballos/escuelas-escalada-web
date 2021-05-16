@@ -2,31 +2,26 @@
   <div id="home" class="container">
     <h1>{{ $t("message.modificaciones.titulo") }}</h1>
     <div v-if="points.length > 0" class="timeline">
-      <div v-for="point in points" :key="point.id" class="container right">
-        <b-container class="content">
-          <b-row>
-            <b-col>
-              <p>{{ $t(point.texto.clave, point.texto.variables) }}</p></b-col
-            >
-          </b-row>
-          <b-row>
-            <b-col>
-              <time-ago
-                :long="true"
-                :locale="locale"
-                :datetime="point.fecha"
-                tooltip
-              ></time-ago
-            ></b-col>
-            <b-col></b-col>
-            <b-col>
-              <router-link :to="point.path">
-                <b-icon icon="box-arrow-up-right" aria-hidden="true">
-                </b-icon></router-link
-            ></b-col>
-          </b-row>
-        </b-container>
-      </div>
+      <b-list-group>
+        <b-list-group-item
+          class="flex-column align-items-start"
+          v-for="point in points"
+          :key="point.id"
+        >
+          <div class="d-flex w-100 justify-content-between">
+            <time-ago
+              :long="true"
+              :locale="locale"
+              :datetime="point.fecha"
+              tooltip
+            ></time-ago>
+            <router-link :to="point.path">
+              <b-icon icon="box-arrow-up-right" aria-hidden="true"> </b-icon
+            ></router-link>
+          </div>
+          <p class="mb-1">{{ $t(point.texto.clave, point.texto.variables) }}</p>
+        </b-list-group-item>
+      </b-list-group>
     </div>
   </div>
 </template>
@@ -54,9 +49,9 @@ export default {
           headers,
         })
         .then((response) => {
-          this.points = response.data.data.contenido.map((m) =>
-            this.modificacion2Point(m)
-          );
+          this.points = response.data.data.contenido
+            .filter((m) => m.tipoRecurso != "ASCENSION")
+            .map((m) => this.modificacion2Point(m));
         });
     },
     modificacion2Point(modificacion) {
@@ -65,6 +60,7 @@ export default {
         texto: this.getTextoModificacion(modificacion),
         fecha: new Date(modificacion.fecha),
         path: modificacion.path,
+        nombre: modificacion.usuario.nombre,
       };
     },
     getTextoModificacion(modificacion) {
@@ -173,72 +169,9 @@ a:hover {
   cursor: pointer;
 }
 
-/* Set a background color */
-body {
-  background-color: #474e5d;
-  font-family: Helvetica, sans-serif;
-}
-
-/* The actual timeline (the vertical ruler) */
-.timeline {
-  position: relative;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* The actual timeline (the vertical ruler) */
-.timeline::after {
-  content: "";
-  position: absolute;
-  width: 6px;
-  background-color: black;
-  top: 0;
-  bottom: 0;
-  left: 0%;
-  margin-left: 0px;
-}
-
-/* Container around content */
+/* afecta al fab del croquis... */
 .container {
-  padding: 10px 40px;
   position: relative;
-  background-color: inherit;
-  width: 0%;
 }
 
-/* The actual content */
-.content {
-  padding: 20px 30px;
-  background-color: whitesmoke;
-  position: relative;
-  border-radius: 6px;
-}
-
-/* Media queries - Responsive timeline on screens less than 600px wide */
-@media screen and (max-width: 600px) {
-  /* Place the timelime to the left */
-  .timeline::after {
-    left: 31px;
-  }
-
-  /* Full-width containers */
-  .container {
-    width: 100%;
-    padding-left: 70px;
-    padding-right: 25px;
-  }
-
-  /* Make sure that all arrows are pointing leftwards */
-  .container::before {
-    left: 60px;
-    border: medium solid greenyellow;
-    border-width: 10px 10px 10px 0;
-    border-color: transparent white transparent transparent;
-  }
-
-  /* Make all right containers behave like the left ones */
-  .right {
-    left: 0%;
-  }
-}
 </style>
