@@ -17,16 +17,23 @@
       ></b-button>
     </b-card>
     <h4 class="mt-5">{{ $t("message.zona.listado_escuelas") }}</h4>
+    <p v-show="!hayEscuelas">{{ $t("message.zona.sin_escuelas") }}</p>
     <b-button
       class="ml-auto mb-1 mt-1 float-right"
       variant="info"
       @click="nuevaEscuela"
       v-show="!invitado"
-      ><b-icon icon="plus-circle" aria-hidden="true"></b-icon>
+      ><b-icon
+        icon="plus-circle"
+        aria-hidden="true"
+        :animation="!hayEscuelas ? 'throb' : 'none'"
+      ></b-icon>
       {{ $t("message.zona.anadir_escuela") }}</b-button
     >
-    <TablaEscuela ref="tablaEscuelas" :items="escuelas" />
-    <Pagination ref="pagination" :perPage="4" @cambio="fetchDataEscuelas" />
+    <div v-show="hayEscuelas">
+      <TablaEscuela ref="tablaEscuelas" :items="escuelas" />
+      <Pagination ref="pagination" :perPage="4" @cambio="fetchDataEscuelas" />
+    </div>
     <ModalEscuela ref="modal_escuela" @creada="fetchDataEscuelas" />
     <ModalZona ref="modal_zona" @actualizada="zonaActualizada" />
     <b-sidebar
@@ -97,6 +104,7 @@ export default {
       escuelas: [],
       loading: false,
       zona: null,
+      hayEscuelas: false,
     };
   },
   props: {
@@ -144,10 +152,15 @@ export default {
               })
               .catch((error) => {
                 console.log(error);
-                let titulo = this.$i18n.t("message.modal.zona.error.borrando.header");
-                let texto = this.$i18n.t("message.modal.zona.error.borrando.texto", {
-                  msg: error.response.data.data,
-                });
+                let titulo = this.$i18n.t(
+                  "message.modal.zona.error.borrando.header"
+                );
+                let texto = this.$i18n.t(
+                  "message.modal.zona.error.borrando.texto",
+                  {
+                    msg: error.response.data.data,
+                  }
+                );
                 this.$fire({
                   title: titulo,
                   text: texto,
@@ -192,6 +205,7 @@ export default {
           }
         )
         .then((response) => {
+          this.hayEscuelas = response.data.data.totalPaginas > 0;
           this.$refs.pagination.lastPage = response.data.data.totalPaginas;
           this.$refs.tablaEscuelas.setItems(response.data.data.contenido);
           this.$refs.pagination.loading = false;

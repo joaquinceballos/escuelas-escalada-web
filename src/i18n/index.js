@@ -216,7 +216,8 @@ const messages = {
             paginacion: {
                 previo: 'previo',
                 siguiente: 'siguiente',
-                de: 'de'
+                de: 'de',
+                filas: 'Por página'
             },
 
             navbar: {
@@ -242,7 +243,8 @@ const messages = {
                 },
                 vias: {
                     titulo: 'Vías'
-                }
+                },
+                sin_resultados: 'Búsqueda sin resultados...'
             },
 
             perfil: {
@@ -270,8 +272,8 @@ const messages = {
                 anadir_escuela: 'Añadir escuela',
                 listado_escuelas: 'Listado de escuelas',
                 filtro: {
-                    escuelas_si: 'Mostrar todas',
-                    escuelas_no: 'Mostrar con escuelas'
+                    escuelas: 'Sólo zonas con escuelas',
+                    pais: 'País'
                 },
                 detalle: {
                     zona: {
@@ -285,7 +287,8 @@ const messages = {
                         },
                         editar: 'Modificar zona'
                     }
-                }
+                },
+                sin_escuelas: 'La zona todavía no tiene escuelas'
             },
 
             zonas: {
@@ -303,9 +306,10 @@ const messages = {
                 detalle: {
                     sectores: "Sectores de la escuela",
                     anadir_sector: 'Añadir sector',
+                    sin_sectores: 'La escuelas no tiene sectores todavía',
                     cierresTemporada: {
                         titulo: "Cierres de temporada",
-                        texto: "Esta escuela está regulada con cierres temporales para proteger la de cría de aves. Para conocer las fechas afectadas despliegue el calendario",
+                        texto: "Esta escuela está regulada con cierres temporales. Para conocer las fechas afectadas despliegue el calendario",
                         botoninfo: "Más información",
                         tipo: {
                             CRIA_AVES: {
@@ -328,7 +332,7 @@ const messages = {
                         zona: 'Zona',
                         numero_sectores: 'Número de sectores',
                         editar: 'Modificar escuela'
-                    }
+                    },
 
                 }
             },
@@ -342,6 +346,7 @@ const messages = {
                 detalle: {
                     listado_vias: 'Vías',
                     listado_croquis: 'Croquis',
+                    sin_vias: 'El sector no tiene vías todavía',
                     anadir_via: 'Añadir vía',
                     tooltip_croquis: 'Añade nuevo croquis',
                     ascensiones: {

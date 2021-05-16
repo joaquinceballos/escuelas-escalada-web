@@ -39,8 +39,9 @@
           class="addCroquis bg-transparent mx-auto"
           v-b-tooltip.hover
           :title="$t('message.sector.detalle.tooltip_croquis')"
+          @click="addCroquis"
         >
-          <b-iconstack font-scale="5" @click="addCroquis">
+          <b-iconstack font-scale="5">
             <b-icon stacked icon="image" variant="info"></b-icon>
             <b-icon
               stacked
@@ -57,12 +58,19 @@
     </carousel>
     <hr />
     <h2>{{ $t("message.sector.detalle.listado_vias") }}</h2>
+    <p v-show="sectorDto.vias.length == 0">
+      {{ $t("message.sector.detalle.sin_vias") }}
+    </p>
     <b-button
       class="ml-auto mb-1 mt-1 float-right"
       variant="info"
       @click="nuevaVia"
       v-show="!invitado"
-      ><b-icon icon="plus-circle" aria-hidden="true"></b-icon>
+      ><b-icon
+        icon="plus-circle"
+        aria-hidden="true"
+        :animation="sectorDto.vias.length == 0 ? 'throb' : 'none'"
+      ></b-icon>
       {{ $t("message.sector.detalle.anadir_via") }}</b-button
     >
     <TablaVias
@@ -476,7 +484,10 @@ export default {
       );
     },
     anadirAscension() {
-      this.$refs["modal-ascension"].mostrar(this.viaClickada.id, this.viaClickada.grado);
+      this.$refs["modal-ascension"].mostrar(
+        this.viaClickada.id,
+        this.viaClickada.grado
+      );
     },
     cargaSideBarVia(via) {
       if (!via) {
@@ -638,16 +649,15 @@ export default {
     },
 
     navegaCroquis(croquis) {
-      this.$router
-        .push({
-          name: "croquis",
-          params: {
-            idEscuela: croquis.sector.escuela.id,
-            idSector: croquis.sector.id,
-            idCroquis: croquis.id,
-            croquis: croquis,
-          },
-        });
+      this.$router.push({
+        name: "croquis",
+        params: {
+          idEscuela: croquis.sector.escuela.id,
+          idSector: croquis.sector.id,
+          idCroquis: croquis.id,
+          croquis: croquis,
+        },
+      });
     },
   },
 };

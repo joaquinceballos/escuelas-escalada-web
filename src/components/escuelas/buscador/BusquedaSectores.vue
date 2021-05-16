@@ -1,10 +1,11 @@
 <template>
   <div id="datatable-sectores" class="container">
     <h1 class="pb-2">{{ $t("message.resultados.sectores.titulo") }}</h1>
-    <div class="border border-black rounded">
-      <TablaSectores ref="tablaSectores" :columnaEscuela="true"/>
+    <div class="border border-black rounded" v-show="resultados">
+      <TablaSectores ref="tablaSectores" :columnaEscuela="true" />
       <Pagination ref="pagination" :perPage="3" @cambio="fetchData" />
     </div>
+     <p v-show="!resultados"> {{ $t("message.resultados.sin_resultados") }}</p>
   </div>
 </template>
 <script>
@@ -22,6 +23,7 @@ export default {
   data() {
     return {
       texto: "",
+      resultados: false,
     };
   },
 
@@ -49,6 +51,7 @@ export default {
           }
         )
         .then((response) => {
+          this.resultados = response.data.data.totalPaginas > 0;
           this.$refs.pagination.lastPage = response.data.data.totalPaginas;
           this.$refs.tablaSectores.setItems(response.data.data.contenido);
           this.$refs.pagination.loading = false;
