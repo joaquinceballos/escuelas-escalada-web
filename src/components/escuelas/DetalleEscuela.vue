@@ -394,6 +394,11 @@ export default {
           this.marcadores.push({
             options: {
               title: sector.nombre,
+              label: {
+                text: sector.nombre,
+                color: "white",
+                className: "bg-primary rounded",
+              },
               position: {
                 lat: sector.latitud,
                 lng: sector.longitud,
