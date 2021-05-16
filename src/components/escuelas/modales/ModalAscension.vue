@@ -119,8 +119,9 @@ export default {
       this.$bvModal.hide("modal_ascension");
       this.$emit("registrar");
     },
-    mostrar(idVia) {
+    mostrar(idVia, grado) {
       this.idVia = idVia;
+      this.grado = grado;
       this.$bvModal.show("modal_ascension");
     },
     resetModalAscension() {
@@ -128,7 +129,6 @@ export default {
       this.fechaState = null;
       this.comentario = "";
       this.comentarioState = null;
-      this.grado = 1;
       this.gradoState = null;
       // voy solicitando la id del usuario...
       let usuario = Vue.getSub();

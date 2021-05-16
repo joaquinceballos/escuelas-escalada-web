@@ -476,7 +476,7 @@ export default {
       );
     },
     anadirAscension() {
-      this.$refs["modal-ascension"].mostrar(this.viaClickada.id);
+      this.$refs["modal-ascension"].mostrar(this.viaClickada.id, this.viaClickada.grado);
     },
     cargaSideBarVia(via) {
       if (!via) {
