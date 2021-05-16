@@ -1,7 +1,22 @@
 <template>
   <div class="container">
-    <h1 v-if="zona">{{ this.zona.region }}</h1>
-    <h2>{{ $t("message.zona.listado_escuelas") }}</h2>
+    <b-card
+      :img-src="zona ? zona.enlaceImagen : ''"
+      img-alt="Card Image"
+      title-tag="h1"
+      :title="zona ? zona.region : ''"
+      :sub-title="zona ? getPais(zona.pais) : ''"
+    >
+      <b-card-text> {{ zona ? zona.informacion : "" }} </b-card-text
+      ><b-button
+        v-show="admin"
+        v-b-toggle.sidebar-detalle-zona
+        size="sm"
+        variant="outline-info"
+        ><b-icon icon="info-circle" aria-hidden="true"></b-icon
+      ></b-button>
+    </b-card>
+    <h4 class="mt-5">{{ $t("message.zona.listado_escuelas") }}</h4>
     <b-button
       class="ml-auto mb-1 mt-1 float-right"
       variant="info"
@@ -13,6 +28,55 @@
     <TablaEscuela ref="tablaEscuelas" :items="escuelas" />
     <Pagination ref="pagination" :perPage="4" @cambio="fetchDataEscuelas" />
     <ModalEscuela ref="modal_escuela" @creada="fetchDataEscuelas" />
+    <ModalZona ref="modal_zona" @actualizada="zonaActualizada" />
+    <b-sidebar
+      v-show="zona != null"
+      id="sidebar-detalle-zona"
+      ref="sidebar-detalle-zona"
+      :title="tituloSidebar"
+      backdrop
+      shadow
+      right
+    >
+      <b-tabs ref="tabs-sidebar" content-class="mt-3">
+        <b-tab :title="$t('message.zona.detalle.zona.ficha')" active>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.zona.detalle.zona.pais") }}
+            </legend>
+            <p class="innerPara">
+              {{ getPais("ES", "es") }}
+            </p>
+          </fieldset>
+          <fieldset class="border">
+            <legend class="text-center">
+              {{ $t("message.zona.detalle.zona.visible.texto") }}
+            </legend>
+            <p class="innerPara">
+              {{
+                $t(
+                  "message.zona.detalle.zona.visible." +
+                    (zona && zona.visible ? "si" : "no")
+                )
+              }}
+            </p>
+          </fieldset>
+        </b-tab>
+      </b-tabs>
+      <template #footer v-if="!invitado">
+        <div class="d-flex bg-info text-light align-items-center px-3 py-2">
+          <strong class="mr-auto">{{
+            $t("message.zona.detalle.zona.editar")
+          }}</strong>
+          <b-button size="sm" @click="editar" class="mr-1"
+            ><b-icon icon="pencil" aria-hidden="true"></b-icon
+          ></b-button>
+          <b-button class="bg-danger" size="sm" @click="borrar"
+            ><b-icon icon="trash" aria-hidden="true"></b-icon
+          ></b-button>
+        </div>
+      </template>
+    </b-sidebar>
   </div>
 </template>
 <script>
@@ -20,11 +84,13 @@ import Vue from "vue";
 import Pagination from "./pagination/Pagination.vue";
 import TablaEscuela from "./tablas/TablaEscuela";
 import ModalEscuela from "./modales/ModalEscuela";
+import ModalZona from "./modales/ModalZona";
 export default {
   components: {
     TablaEscuela,
     Pagination,
     ModalEscuela,
+    ModalZona,
   },
   data() {
     return {
@@ -39,6 +105,65 @@ export default {
     },
   },
   methods: {
+    zonaActualizada() {
+      this.fetchData();
+    },
+    editar() {
+      this.$refs.modal_zona.mostrar(this.zona);
+    },
+    borrar() {
+      let texto = this.$t("message.modal.zona.borrar.texto", {
+        nombre: this.zona.region,
+      });
+      let titulo = this.$t("message.modal.zona.borrar.titulo");
+      this.$bvModal
+        .msgBoxConfirm(texto, {
+          title: titulo,
+          okVariant: "danger",
+          footerClass: "p-2",
+          hideHeaderClose: false,
+          centered: true,
+        })
+        .then((value) => {
+          if (value) {
+            const headers = Vue.getHeaders(
+              this.$i18n.t("message.idioma.codigo")
+            );
+            this.$http
+              .delete("/zonas/" + this.zona.id, {
+                headers,
+              })
+              .then(() => {
+                this.$fire({
+                  title: "Borrada!!",
+                  type: "success",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.$router.push("/zonas/");
+              })
+              .catch((error) => {
+                console.log(error);
+                let titulo = this.$i18n.t("message.modal.zona.error.borrando.header");
+                let texto = this.$i18n.t("message.modal.zona.error.borrando.texto", {
+                  msg: error.response.data.data,
+                });
+                this.$fire({
+                  title: titulo,
+                  text: texto,
+                  type: "error",
+                  showConfirmButton: true,
+                });
+              });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    getPais(codigo) {
+      return Vue.getPais(codigo, this.$t("message.idioma.codigo"));
+    },
     fetchData() {
       this.fetchDataZona();
       this.fetchDataEscuelas();
@@ -46,12 +171,10 @@ export default {
     fetchDataZona() {
       this.loading = true;
       const headers = Vue.getHeaders(this.$i18n.t("message.idioma.codigo"));
-      this.$http
-        .get("/zonas/" + this.idZona, { headers })
-        .then((response) => {
-          this.zona = response.data.data;
-          this.loading = false;
-        });
+      this.$http.get("/zonas/" + this.idZona, { headers }).then((response) => {
+        this.zona = response.data.data;
+        this.loading = false;
+      });
     },
     fetchDataEscuelas() {
       this.$refs.pagination.loading = true;
@@ -85,6 +208,12 @@ export default {
   computed: {
     invitado() {
       return Vue.rolInvitado();
+    },
+    admin() {
+      return Vue.rolAdmin();
+    },
+    tituloSidebar() {
+      return this.zona ? this.zona.region : "";
     },
   },
 };

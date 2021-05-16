@@ -183,6 +183,33 @@ const messages = {
                         header: 'Error',
                         texto: 'Error registrado el cierre de temporada: {msg}'
                     }
+                },
+                zona: {
+                    titulo_nueva: 'Crear nueva zona',
+                    titulo_actualizar: 'Actualizar zona',
+                    pais: 'País',
+                    visible: 'Visible',
+                    region: 'Región',
+                    url_imagen: 'URL imagen',
+                    informacion: 'información',
+                    borrar: {
+                        titulo: 'Confirmar borrado de zona',
+                        texto: 'Se borrará la zona "{nombre}"'
+                    },
+                    error: {
+                        grabando: {
+                            header: 'Error',
+                            texto: 'No se puede grabar la zona: {msg}'
+                        },
+                        actualizando: {
+                            header: 'Error',
+                            texto: 'No se puede actualizar la zona: {msg}'
+                        },
+                        borrando: {
+                            header: 'Error',
+                            texto: 'No se puede borrar la zona: {msg}'
+                        }
+                    },
                 }
             },
 
@@ -245,6 +272,19 @@ const messages = {
                 filtro: {
                     escuelas_si: 'Mostrar todas',
                     escuelas_no: 'Mostrar con escuelas'
+                },
+                detalle: {
+                    zona: {
+                        ficha: 'ficha',
+                        pais: 'País',
+                        numero_escuelas: 'Número de escuelas',
+                        visible: {
+                            texto: 'Visible',
+                            si: 'Sí',
+                            no: 'No'
+                        },
+                        editar: 'Modificar zona'
+                    }
                 }
             },
 

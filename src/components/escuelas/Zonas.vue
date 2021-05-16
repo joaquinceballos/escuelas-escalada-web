@@ -67,6 +67,7 @@ export default {
             (this.$refs.pagination.page - 1) +
             (this.filtroConEscuelas ? "&conEscuelas=true" : "") +
             (this.pais && this.pais.length > 0 ? "&pais=" + this.pais : "") +
+            (this.admin ? "&todas=true" : "") +
             "&sort=numeroEscuelas,desc&sort=region,asc",
           {
             headers,
@@ -83,6 +84,12 @@ export default {
   mounted() {
     this.cargaComboPaises();
     this.fetchData();
+  },
+
+  computed: {
+    admin() {
+      return Vue.rolAdmin();
+    },
   },
 };
 </script>
