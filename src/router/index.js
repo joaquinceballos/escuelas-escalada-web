@@ -1,21 +1,21 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/home.vue";
-import Perfil from "../views/perfil.vue"
-import Busqueda from "../views/busqueda.vue"
-import DetalleEscuela from "../views/DetalleEscuela.vue"
-import DetalleSector from "../views/DetalleSector.vue"
-import VistaZonas from "../views/VistaZonas.vue"
-import VistaDetalleZona from "../views/VistaDetalleZona.vue";
-import NoEncontrado from "../views/NoEncontrado";
-import Error from "../views/Error"
+import ViewHome from "../views/ViewHome.vue";
+import ViewPerfil from "../views/ViewPerfil.vue"
+import ViewBusqueda from "../views/ViewBusqueda.vue"
+import ViewDetalleEscuela from "../views/ViewDetalleEscuela.vue"
+import ViewDetalleSector from "../views/ViewDetalleSector.vue"
+import ViewZonas from "../views/ViewZonas.vue"
+import ViewDetalleZona from "../views/ViewDetalleZona.vue";
+import ViewNoEncontrado from "../views/ViewNoEncontrado";
+import ViewError from "../views/ViewError"
 
 Vue.use(VueRouter);
 
 const routes = [{
         path: "/",
         name: "home",
-        component: Home,
+        component: ViewHome,
         meta: {
             requiresAuth: true
         },
@@ -24,7 +24,7 @@ const routes = [{
     {
         path: "/perfil/:usuario",
         name: "perfil",
-        component: Perfil,
+        component: ViewPerfil,
         meta: {
             requiresAuth: true
         },
@@ -33,7 +33,7 @@ const routes = [{
     {
         path: "/busqueda/",
         name: "busqueda",
-        component: Busqueda,
+        component: ViewBusqueda,
         meta: {
             requiresAuth: true
         },
@@ -42,7 +42,7 @@ const routes = [{
     {
         path: "/escuelas/:id",
         name: "escuela",
-        component: DetalleEscuela,
+        component: ViewDetalleEscuela,
         meta: {
             requiresAuth: true
         },
@@ -51,7 +51,7 @@ const routes = [{
     {
         path: "/escuelas/:idEscuela/sectores/:idSector",
         name: "sector",
-        component: DetalleSector,
+        component: ViewDetalleSector,
         meta: {
             requiresAuth: true
         },
@@ -78,7 +78,7 @@ const routes = [{
     {
         path: "/zonas/",
         name: "zona",
-        component: VistaZonas,
+        component: ViewZonas,
         meta: {
             requiresAuth: true
         },
@@ -87,7 +87,7 @@ const routes = [{
     {
         path: "/zonas/:id",
         name: "detalleZona",
-        component: VistaDetalleZona,
+        component: ViewDetalleZona,
         meta: {
             requiresAuth: true
         },
@@ -96,13 +96,13 @@ const routes = [{
     {
         path: '/error',
         name: 'error',
-        component: Error,
+        component: ViewError,
         props: true
     },
     {
         path: '*',
         name: "noEncontrado",
-        component: NoEncontrado
+        component: ViewNoEncontrado
     }
 ];
 

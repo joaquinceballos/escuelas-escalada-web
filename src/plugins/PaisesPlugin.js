@@ -19,6 +19,10 @@ const PaisesPlugin = {
             return paises.sort((a, b) => a.text.localeCompare(b.text));
         }
 
+        Vue.getPais = function(codigo, idioma) {
+            return countries.getName(codigo, idioma, { select: 'official' });
+        }
+
     }
 
 }

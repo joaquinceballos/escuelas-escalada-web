@@ -25,9 +25,18 @@
         @change="recargaTabla"
       >
       </b-form-select>
+      <b-button
+        class="mb-2 ml-2 mr-sm-2 mb-sm-0 border rounded"
+        variant="info"
+        @click="nuevaZona"
+        v-show="admin"
+        ><b-icon icon="plus-circle" aria-hidden="true"></b-icon>
+        {{ $t("message.zonas.anadir_zona") }}</b-button
+      >
     </b-form>
     <TablaZonas ref="tablaZonas" />
     <Pagination ref="pagination" :perPage="4" @cambio="fetchData" />
+    <ModalZona ref="modal_zona" @grabada="zonaGrabada" />
   </div>
 </template>
 
@@ -35,10 +44,12 @@
 import Vue from "vue";
 import TablaZonas from "./tablas/TablaZonas";
 import Pagination from "./pagination/Pagination";
+import ModalZona from "./modales/ModalZona";
 export default {
   components: {
     TablaZonas,
     Pagination,
+    ModalZona,
   },
   data() {
     return {
@@ -48,6 +59,12 @@ export default {
     };
   },
   methods: {
+    zonaGrabada() {
+      console.log("la zona se ha grabado");
+    },
+    nuevaZona() {
+      this.$refs.modal_zona.mostrar();
+    },
     cargaComboPaises() {
       this.options = Vue.getComboPaises(this.$i18n.t("message.idioma.codigo"));
       this.pais = "ES";
@@ -67,6 +84,7 @@ export default {
             (this.$refs.pagination.page - 1) +
             (this.filtroConEscuelas ? "&conEscuelas=true" : "") +
             (this.pais && this.pais.length > 0 ? "&pais=" + this.pais : "") +
+            (this.admin ? "&todas=true" : "") +
             "&sort=numeroEscuelas,desc&sort=region,asc",
           {
             headers,
@@ -83,6 +101,12 @@ export default {
   mounted() {
     this.cargaComboPaises();
     this.fetchData();
+  },
+
+  computed: {
+    admin() {
+      return Vue.rolAdmin();
+    },
   },
 };
 </script>
