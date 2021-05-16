@@ -34,6 +34,7 @@
           :state="loginPasswordState"
           type="password"
           required
+          autocomplete="on"
         ></b-form-input>
       </b-form-group>
     </form>

@@ -57,12 +57,19 @@
       </gmaps-map>
     </div>
     <h2>{{ $t("message.escuela.detalle.sectores") }}</h2>
+    <p v-show="escuelaDto.sectores.length == 0">
+      {{ $t("message.escuela.detalle.sin_sectores") }}
+    </p>
     <b-button
       class="ml-auto mb-1 mt-1 float-right"
       variant="info"
       @click="nuevoSector"
       v-show="!invitado"
-      ><b-icon icon="plus-circle" aria-hidden="true"></b-icon>
+      ><b-icon
+        icon="plus-circle"
+        aria-hidden="true"
+        :animation="escuelaDto.sectores.length == 0 ? 'throb' : 'none'"
+      ></b-icon>
       {{ $t("message.escuela.detalle.anadir_sector") }}</b-button
     >
     <TablaSectores

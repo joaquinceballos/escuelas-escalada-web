@@ -1,10 +1,13 @@
 <template>
-  <b-table
-    hover
-    :fields="fields"
-    :items="items"
-    @row-clicked="detalleEscuela"
-  ></b-table>
+  <div>
+    <b-table
+      v-show="items && items.length > 0"
+      hover
+      :fields="fields"
+      :items="items"
+      @row-clicked="detalleEscuela"
+    ></b-table>
+  </div>
 </template>
 <script>
 export default {

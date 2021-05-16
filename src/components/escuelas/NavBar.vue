@@ -3,9 +3,18 @@
     <b-navbar id="navbar" toggleable="md" type="dark" variant="info">
       <b-navbar-brand>{{ $t("message.app.nombre") }}</b-navbar-brand>
       <b-navbar-nav>
-        <b-nav-item to="/"><b-icon icon="house" variant="light"></b-icon> {{ $t("message.navbar.inicio") }}</b-nav-item>
-        <b-nav-item to="/zonas"><b-icon icon="globe" variant="light"></b-icon> {{ $t("message.navbar.zonas") }}</b-nav-item>
-        <b-nav-item v-if="admin" to="/admin"><b-icon icon="screwdriver" variant="light"></b-icon> {{ $t("message.navbar.admin") }}</b-nav-item>
+        <b-nav-item to="/"
+          ><b-icon icon="house" variant="light"></b-icon>
+          {{ $t("message.navbar.inicio") }}</b-nav-item
+        >
+        <b-nav-item to="/zonas"
+          ><b-icon icon="globe" variant="light"></b-icon>
+          {{ $t("message.navbar.zonas") }}</b-nav-item
+        >
+        <b-nav-item v-if="admin" to="/admin"
+          ><b-icon icon="screwdriver" variant="light"></b-icon>
+          {{ $t("message.navbar.admin") }}</b-nav-item
+        >
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-form @submit.prevent="buscador">
@@ -50,11 +59,7 @@
         </b-nav-item-dropdown>
       </b-navbar-nav>
     </b-navbar>
-    <ModalLogin
-      ref="modal_login"
-      @logeado="logeado"
-      @registrar="registrar"
-    />
+    <ModalLogin ref="modal_login" @logeado="logeado" @registrar="registrar" />
     <ModalRegister
       ref="modal_register"
       @registrado="logUserIn"
@@ -108,9 +113,22 @@ export default {
       this.$refs.modal_login.mostrar();
     },
     logUserOut() {
-      Vue.borraToken();
-      this.getUserDetails();
-      this.$router.push({ path: "/", query: { t: new Date().getTime() } });
+      let user = {
+        username: process.env.VUE_APP_API_GENERIC_USER,
+        password: process.env.VUE_APP_API_GENERIC_PASSWORD,
+      };
+      this.$http
+        .post("/login", user)
+        .then((response) => {
+          Vue.guardaToken(response.data.data.token);
+          this.$router.push({
+            name: "home",
+            query: { t: new Date().getTime() },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     showPerfil() {
       this.$router.push({ name: "perfil", params: { usuario: this.user } });
@@ -139,7 +157,7 @@ export default {
     logeado() {
       this.getUserDetails();
       this.$emit("logeado");
-    }
+    },
   },
   mounted() {
     this.getUserDetails();
@@ -148,9 +166,9 @@ export default {
     invitado() {
       return Vue.rolInvitado();
     },
-    admin(){
+    admin() {
       return Vue.rolAdmin();
-    }
+    },
   },
 };
 </script>

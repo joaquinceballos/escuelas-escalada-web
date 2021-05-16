@@ -2,21 +2,22 @@
   <div id="zonas" class="container">
     <h1>{{ $t("message.zona.titulo") }}</h1>
     <b-form inline class="mb-1 ml-auto row">
+      <label class="mr-sm-2 ml-auto" for="filtro-escuelas">{{
+        $t("message.zona.filtro.escuelas")
+      }}</label>
       <b-form-checkbox
         @change="recargaTabla"
-        class="mb-2 ml-auto mr-sm-2 mb-sm-0 border rounded"
+        id="filtro-escuelas"
+        class="mb-2 mr-sm-2 mb-sm-0"
         v-model="filtroConEscuelas"
         name="check-button"
-        button
-        button-variant="info"
+        size="lg"
+        switch
       >
-        {{
-          filtroConEscuelas
-            ? $t("message.zona.filtro.escuelas_si")
-            : $t("message.zona.filtro.escuelas_no")
-        }}
       </b-form-checkbox>
-      <label class="mr-sm-2" for="select-filtro-pais">País</label>
+      <label class="mr-sm-2" for="select-filtro-pais">{{
+        $t("message.zona.filtro.pais")
+      }}</label>
       <b-form-select
         id="select-filtro-pais"
         v-model="pais"
@@ -92,6 +93,10 @@ export default {
         )
         .then((response) => {
           this.$refs.pagination.lastPage = response.data.data.totalPaginas;
+          if (this.$refs.pagination.page > response.data.data.totalPaginas) {
+            this.$refs.pagination.page = response.data.data.totalPaginas;
+            this.fetchData();
+          }
           this.$refs.tablaZonas.setItems(response.data.data.contenido);
           this.$refs.pagination.loading = false;
         });

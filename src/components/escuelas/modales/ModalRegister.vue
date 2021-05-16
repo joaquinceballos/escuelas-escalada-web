@@ -68,6 +68,7 @@
               :state="passwordState"
               type="password"
               required
+              autocomplete="on"
             ></b-form-input> </b-form-group
         ></b-col>
       </b-form-row>

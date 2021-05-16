@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <NavBar @logeado="logeado" :key="componentKey" />
-    <home />
+    <home :key="homeKey ? homeKey : 500" />
     <b-alert
       :show="dismissCountDown"
       dismissible
@@ -32,6 +32,9 @@ export default {
   props: {
     tokenCaducado: {
       type: Boolean,
+    },
+    homeKey: {
+      type: [Number, String],
     },
   },
   methods: {

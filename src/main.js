@@ -30,14 +30,14 @@ customAxios.interceptors.response.use(
             console.log('No encontrado!!', error.response.status);
             router.push({ name: "noEncontrado" });
         } else if (error.response.status === 403) {
-            // vamos a logearnos con el usuario invitado
+            // vamos a logearnos con el usuario invitado web
             let user = {
                 username: process.env.VUE_APP_API_GENERIC_USER,
                 password: process.env.VUE_APP_API_GENERIC_PASSWORD,
             };
             customAxios.post('/login', user).then((response) => {
                 Vue.guardaToken(response.data.data.token);
-                router.push({ name: "home", params: { tokenCaducado: true } });
+                router.push({ name: "home", query: { t: new Date().getTime() }, params: { tokenCaducado: true, homeKey: new Date().getTime() } });
             }).catch((error) => { console.log(error); });
 
         } else if (error.response.status === 500) {
