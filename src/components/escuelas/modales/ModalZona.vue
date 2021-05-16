@@ -205,6 +205,10 @@ export default {
           "/zonas/",
           {
             region: this.region,
+            pais: this.pais,
+            informacion: this.informacion,
+            visible: this.visible,
+            enlaceImagen: this.enlaceImagen,
           },
           { headers }
         )

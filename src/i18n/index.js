@@ -288,6 +288,10 @@ const messages = {
                 }
             },
 
+            zonas: {
+                anadir_zona: 'Añadir zona'
+            },
+
             escuela: {
                 tabla: {
                     nombre: 'Nombre',
