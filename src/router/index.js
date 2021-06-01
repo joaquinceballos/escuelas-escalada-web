@@ -58,6 +58,7 @@ const routes = [{
         props: true
     },
     {
+        name: "via",
         path: "/escuelas/:idEscuela/sectores/:idSector/vias/:idVia",
         redirect: to => {
             return { path: '/escuelas/:idEscuela/sectores/:idSector', query: { idVia: to.params.idVia } }

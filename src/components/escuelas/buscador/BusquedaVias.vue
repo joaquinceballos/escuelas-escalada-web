@@ -2,7 +2,7 @@
   <div id="datatable-vias" class="container">
     <h1 class="pb-2">{{ $t("message.resultados.vias.titulo") }}</h1>
     <div class="border border-black rounded" v-show="resultados">
-      <TablaVias ref="tablaVias" />
+      <TablaVias ref="tablaVias" @click="clickEnFila" />
       <Pagination ref="pagination" :perPage="3" @cambio="fetchData" />
     </div>
     <p v-show="!resultados">{{ $t("message.resultados.sin_resultados") }}</p>
@@ -31,6 +31,21 @@ export default {
     refrescar(texto) {
       this.texto = texto;
       this.fetchData();
+    },
+
+    clickEnFila(via) {
+      this.$router
+        .push({
+          name: "via",
+          params: {
+            idEscuela: via.sector.escuela.id,
+            idSector: via.sector.id,
+            idVia: via.id,
+          },
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     fetchData() {
