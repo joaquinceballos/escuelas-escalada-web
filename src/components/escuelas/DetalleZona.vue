@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <b-breadcrumb :items="items"></b-breadcrumb>
+    <b-breadcrumb :items="items" class="bg-white"></b-breadcrumb>
     <b-card
       :img-src="zona ? zona.enlaceImagen : ''"
       img-alt="Card Image"

@@ -1,6 +1,6 @@
 <template>
   <div id="detalle-escuela" class="container">
-    <b-breadcrumb :items="items"></b-breadcrumb>
+    <b-breadcrumb :items="items" class="bg-white"></b-breadcrumb>
     <div v-if="loading" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
