@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <b-breadcrumb :items="items"></b-breadcrumb>
     <b-card
       :img-src="zona ? zona.enlaceImagen : ''"
       img-alt="Card Image"
@@ -228,6 +229,14 @@ export default {
     },
     tituloSidebar() {
       return this.zona ? this.zona.region : "";
+    },
+    items() {
+      return [
+        {
+          text: this.zona ? this.zona.region : "",
+          active: true,
+        },
+      ];
     },
   },
 };

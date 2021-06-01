@@ -1,5 +1,6 @@
 <template>
   <div id="detalle-escuela" class="container">
+    <b-breadcrumb :items="items"></b-breadcrumb>
     <div v-if="loading" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
@@ -220,6 +221,10 @@ export default {
         informacion: "",
         cierresTemporada: [],
         sectores: [],
+        zona: {
+          id: 0,
+          region: "",
+        },
       },
       loading: false,
       marcadores: [],
@@ -448,6 +453,18 @@ export default {
   computed: {
     invitado() {
       return Vue.rolInvitado();
+    },
+    items() {
+      return [
+        {
+          text: this.escuelaDto.zona.region,
+          to: { name: "detalleZona", params: { id: this.escuelaDto.zona.id } },
+        },
+        {
+          text: this.escuelaDto.nombre,
+          active: true,
+        },
+      ];
     },
   },
 };

@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <b-breadcrumb :items="items"></b-breadcrumb>
     <div v-if="loading" class="justify-content-center">
       <icons :icon="['fas', 'spinner']" class="fa-spinner" />
     </div>
@@ -319,6 +320,22 @@ export default {
     invitado() {
       return Vue.rolInvitado();
     },
+    items() {
+      return [
+        {
+          text: this.sectorDto.escuela.zona.region,
+          to: { name: "detalleZona", params: { id: this.sectorDto.escuela.zona.id } },
+        },
+        {
+          text: this.sectorDto.escuela.nombre,
+          to: { name: "escuela", params: { id: this.sectorDto.escuela.id } },
+        },
+        {
+          text: this.sectorDto.nombre,
+          active: true,
+        },
+      ];
+    },
   },
 
   props: {
@@ -356,6 +373,10 @@ export default {
         vias: [],
         escuela: {
           nombre: "",
+          zona: {
+            id: 0,
+            region: "",
+          },
         },
       },
       carouselKey: 0,
