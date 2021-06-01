@@ -15,7 +15,7 @@
               :datetime="point.fecha"
               tooltip
             ></time-ago>
-            <router-link :to="point.path">
+            <router-link :to="point.path" v-if="point.accion != 'BORRAR'">
               <b-icon icon="box-arrow-up-right" aria-hidden="true"> </b-icon
             ></router-link>
           </div>
@@ -58,9 +58,13 @@ export default {
       return {
         id: modificacion.id,
         texto: this.getTextoModificacion(modificacion),
-        fecha: new Date(modificacion.fecha),
+        fecha: new Date(
+          new Date(modificacion.fecha).getTime() -
+            new Date(modificacion.fecha).getTimezoneOffset() * 60 * 1000
+        ),
         path: modificacion.path,
         nombre: modificacion.usuario.nombre,
+        accion: modificacion.accionLog,
       };
     },
     getTextoModificacion(modificacion) {
@@ -173,5 +177,4 @@ a:hover {
 .container {
   position: relative;
 }
-
 </style>
