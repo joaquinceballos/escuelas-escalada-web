@@ -1,7 +1,14 @@
 <template>
   <div>
     <b-navbar id="navbar" toggleable="md" type="dark" variant="info">
-      <b-navbar-brand>{{ $t("message.app.nombre") }}</b-navbar-brand>
+      <b-navbar-brand
+        ><img
+          id="logo"
+          src="https://img.icons8.com/android/30/000000/climbing-shoes.png"
+          class="d-inline-block align-middle mr-1"
+          alt="Logo"
+        />{{ $t("message.app.nombre") }}</b-navbar-brand
+      >
       <b-navbar-nav>
         <b-nav-item to="/"
           ><b-icon icon="house" variant="light"></b-icon>
