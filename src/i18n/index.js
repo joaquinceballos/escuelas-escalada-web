@@ -7,6 +7,78 @@ const messages = {
     es: {
         message: {
 
+            ayuda: {
+                header: 'Manual de usuario',
+                titulo: 'Gestor gráfico',
+                p1: 'Sección de ayuda de los aspectos básicos del editor gráfico.',
+                exportar: {
+                    titulo: 'Exportar',
+                    p1: 'Podrás exportar una imágen del estado actual del croquis a tu dispositivo desde el menú haciendo click en ',
+                    croquis: 'Croquis',
+                    exportar: 'Exportar'
+                },
+                editar: {
+                    titulo: 'Editar croquis',
+                    p1: 'Las opciones de edición de croquis están reservadas a los usuarios registrados. Si eres  un usuario registrado deberás inicar sesión para desbloquearlas,',
+                    anadir: {
+                        titulo: 'Añadir vías al croquis',
+                        p1a: 'Para dibujar el trazo de una vía del sector en el croquis, necesitas añadirla primero desde la opción ',
+                        via: 'Vía',
+                        anadir: 'Añadir',
+                        p1b: ', o haciendo click en ',
+                        p2: 'Si la vía que quieres añadir se encuentra en la lista, bastará con seleccionarla y pulsar Ok.',
+                        p3: 'En el caso de que la vía que quieres dibujar no exista aún, podrás crearla nueva clickando en la opción correspondiente.',
+                        p4: 'Una vez hayas añadido la vía al croquis, ésta estará seleccionada y ya podrás empezar a modificar el trazo para aproximarla a su ubicación en el sector.'
+                    },
+                    modificar: {
+                        titulo: 'Modificar vías',
+                        p1a: 'Editar el trazo de una vía existente en el croquis es sencillo. Primero deberás seleccionar la opción ',
+                        via: 'Vía',
+                        seleccionar: 'Seleccionar',
+                        p1b: ' o clickando en ',
+                        p1c: ', tras lo cual deberás hacer click sobre la vía que desees modificar.',
+                        p2: 'Tras seleccionar la vía, esta mostrará los puntos que la componen, podrás añadir nuevos puntos clickando con el botón izquierdo sobre la misma vía, desplazar los existes pulsando y arrastrando con el botón izquierdo o borrarlos con el click derecho.',
+                        p3a: 'Para borrar la vía deberás seleccionarla y hacer click en ',
+                        p3b: '. Es importante tener claro que una vía que se borra del croquis sigue existiendo en el sector y puede añadirse de nuevo a cualquier croquis de éste. Para borrar una vía completamente de un sector deberá hacerse fuera del editor gráfico',
+                        p4a: 'Una vez hayas terminado de editar el croquis, deberás guardar los cambios pulsando en ',
+                        croquis: 'Croquis',
+                        guardar: 'Guardar Cambios',
+                        p4b: ', o en ',
+                        p4c: '. Si cierras el editor sin guardar los cambios éstos se perderán.',
+                        p5a: 'Si deseas descartar los cambios para dejar el croquis en el estado anterior a tus modificaciones pulsa en ',
+                        edicion: 'Edición',
+                        recargar: 'Recargar',
+                        p5b: ' o en ',
+                        p5c: ', tras lo cual todos los cambios no guardados serán deshechos.',
+                    },
+                    leyenda: {
+                        titulo: 'Leyenda',
+                        p1: 'La leyenda del croquis también puede ser modificada',
+                        p2: 'Podrás escoger entre 3 tipos distintos de leyenda desde la opción ',
+                        formato: 'Formato',
+                        leyenda: 'Leyenda',
+                        caja: 'Caja',
+                        barra: 'Barra',
+                        via: 'Vía',
+                        p3: 'La opción "Vía" mostrará el nombre de la vía al inicio del trazo, las otras dos opciones, Caja y Barra, mostrarán la información completa de cada vía.',
+                        p4: 'Además del tipo de leyenda podrás modificar la orientación para ajustarla mejor a tu croquis.'
+                    }
+                },
+                zoom: {
+                    titulo: 'Zoom',
+                    p1a: 'Se puede aumentar el tamaño de la imagen del croquis desde la opcion ',
+                    ver: 'Ver',
+                    zoom: 'Zoom',
+                    p1b: ' o clickando en ',
+                    p2: 'El área de la imagen no será visible completamente en la ventana del editor, por lo que para moverte por todo el croquis deberás usar las barras de scroll vertical y horizontal dispuestas en los laterales inferior y derecho respectivamente.',
+                    p3: 'También puedes desplazarte con la rueda del ratón. Moviendo la rueda para desplazimiento vertical y presionando ALT + rueda del ratón para el desplazamiento horizontal.'
+                },
+                salir: {
+                    titulo: 'Salir',
+                    p1: 'Puedes salir del editor en cualquier momento pero recuerda, si tienes cambios pendientes de guardar deberás confirmar la acción.'
+                }
+            },
+
             app: {
                 nombre: 'Escuelas de Escalada',
                 zona: 'ha creado una nueva zona de escalada en',

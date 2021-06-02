@@ -56,6 +56,7 @@
       </p>
     </b-modal>
     <ModalVia ref="modal_via" @creada="viaCreada" />
+    <ModalAyuda v-if="dataCroquis.id && detalle" :ref="'modal_ayuda_' + dataCroquis.id" />
     <fab
       :key="dataCroquis.id"
       :actions="fabActions"
@@ -95,12 +96,14 @@ import ModalVia from "./modales/ModalVia";
 import fab from "vue-fab";
 import VueSimpleContextMenu from "vue-simple-context-menu";
 import "vue-simple-context-menu/dist/vue-simple-context-menu.css";
+import ModalAyuda from "./modales/ModalAyuda";
 export default {
   components: {
     VueFileToolbarMenu,
     ModalVia,
     fab,
     VueSimpleContextMenu,
+    ModalAyuda,
   },
 
   computed: {
@@ -493,8 +496,8 @@ export default {
         borrarViaSeleccionada: () => {
           console.error("implementación no enlazada");
         },
-        manual: (e) => {
-          console.error("implementación no enlazada", e);
+        manual: () => {
+          this.$refs["modal_ayuda_" + this.dataCroquis.id].mostrar();
         },
         acercaDe: (e) => {
           console.error("implementación no enlazada", e);

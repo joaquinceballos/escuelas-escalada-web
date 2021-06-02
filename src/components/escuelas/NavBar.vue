@@ -9,62 +9,66 @@
           alt="Logo"
         />{{ $t("message.app.nombre") }}</b-navbar-brand
       >
-      <b-navbar-nav>
-        <b-nav-item to="/"
-          ><b-icon icon="house" variant="light"></b-icon>
-          {{ $t("message.navbar.inicio") }}</b-nav-item
-        >
-        <b-nav-item to="/zonas"
-          ><b-icon icon="globe" variant="light"></b-icon>
-          {{ $t("message.navbar.zonas") }}</b-nav-item
-        >
-        <b-nav-item v-if="admin" to="/admin"
-          ><b-icon icon="screwdriver" variant="light"></b-icon>
-          {{ $t("message.navbar.admin") }}</b-nav-item
-        >
-      </b-navbar-nav>
-      <b-navbar-nav class="ml-auto">
-        <b-nav-form @submit.prevent="buscador">
-          <div class="form"></div>
-          <b-form-input
-            size="md"
-            class="mr-sm-2"
-            v-bind:placeholder="$t('message.navbar.busqueda.placeholder')"
-            id="texto"
-            v-model="busqueda.texto"
-          />
-          <b-button size="md" class="my-2 my-sm-0" type="submit">
-            <icons :icon="['fas', 'search']" class="fa-search" />
-          </b-button>
-        </b-nav-form>
-        <b-nav-item-dropdown right>
-          <template slot="button-content">
-            <icons :icon="['fas', 'language']" class="fa-language" />
-          </template>
-          <b-dropdown-item @click="cambiaIdioma('en')">en</b-dropdown-item>
-          <b-dropdown-item @click="cambiaIdioma('es')">es</b-dropdown-item>
-        </b-nav-item-dropdown>
-        <b-nav-item-dropdown right v-show="invitado">
-          <template slot="button-content">
-            <icons :icon="['fas', 'user']" class="fa-user" />
-          </template>
-          <b-dropdown-item @click="logUserIn">{{
-            $t("message.navbar.usuario.login")
-          }}</b-dropdown-item>
-        </b-nav-item-dropdown>
-        <b-nav-item-dropdown right v-show="!invitado">
-          <template slot="button-content">
-            {{ user }} <icons :icon="['fas', 'user']" class="fa-user" />
-          </template>
-          <b-dropdown-item @click="showPerfil">{{
-            $t("message.navbar.usuario.perfil")
-          }}</b-dropdown-item>
-          <b-dropdown-divider />
-          <b-dropdown-item @click="logUserOut">{{
-            $t("message.navbar.usuario.logout")
-          }}</b-dropdown-item>
-        </b-nav-item-dropdown>
-      </b-navbar-nav>
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav>
+          <b-nav-item to="/"
+            ><b-icon icon="house" variant="light"></b-icon>
+            {{ $t("message.navbar.inicio") }}</b-nav-item
+          >
+          <b-nav-item to="/zonas"
+            ><b-icon icon="globe" variant="light"></b-icon>
+            {{ $t("message.navbar.zonas") }}</b-nav-item
+          >
+          <b-nav-item v-if="admin" to="/admin"
+            ><b-icon icon="screwdriver" variant="light"></b-icon>
+            {{ $t("message.navbar.admin") }}</b-nav-item
+          >
+        </b-navbar-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-form @submit.prevent="buscador">
+            <div class="form"></div>
+            <b-form-input
+              size="md"
+              class="mr-sm-2"
+              v-bind:placeholder="$t('message.navbar.busqueda.placeholder')"
+              id="texto"
+              v-model="busqueda.texto"
+            />
+            <b-button size="md" class="my-2 my-sm-0" type="submit">
+              <icons :icon="['fas', 'search']" class="fa-search" />
+            </b-button>
+          </b-nav-form>
+          <b-nav-item-dropdown right>
+            <template slot="button-content">
+              <icons :icon="['fas', 'language']" class="fa-language" />
+            </template>
+            <b-dropdown-item @click="cambiaIdioma('en')">en</b-dropdown-item>
+            <b-dropdown-item @click="cambiaIdioma('es')">es</b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item-dropdown right v-show="invitado">
+            <template slot="button-content">
+              <icons :icon="['fas', 'user']" class="fa-user" />
+            </template>
+            <b-dropdown-item @click="logUserIn">{{
+              $t("message.navbar.usuario.login")
+            }}</b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item-dropdown right v-show="!invitado">
+            <template slot="button-content">
+              {{ user }} <icons :icon="['fas', 'user']" class="fa-user" />
+            </template>
+            <b-dropdown-item @click="showPerfil">{{
+              $t("message.navbar.usuario.perfil")
+            }}</b-dropdown-item>
+            <b-dropdown-divider />
+            <b-dropdown-item @click="logUserOut">{{
+              $t("message.navbar.usuario.logout")
+            }}</b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+      </b-collapse>
     </b-navbar>
     <ModalLogin ref="modal_login" @logeado="logeado" @registrar="registrar" />
     <ModalRegister
