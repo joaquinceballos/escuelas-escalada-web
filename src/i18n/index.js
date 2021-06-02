@@ -136,6 +136,11 @@ const messages = {
             },
 
             modal: {
+                acercade: {
+                    header: 'Escuelas de escalada',
+                    titulo: 'Editor gráfico',
+                    p1: 'Este editor forma parte del proyecto "Gestor Gráfico de Escuelas de Escalada" realizado por Joaquín Ceballos Gómez como TFG (Ingeniería Informática del Software).'
+                },
                 error: 'Error',
                 registrado: {
                     titulo: 'Usuario registrado',

@@ -2,7 +2,7 @@
   <b-modal
     id="modal_ayuda"
     ref="modal_ayuda"
-    size="xl"
+    size="lg"
     ok-only
     v-bind:title="$t('message.ayuda.header')"
   >

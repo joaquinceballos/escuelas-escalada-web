@@ -56,7 +56,22 @@
       </p>
     </b-modal>
     <ModalVia ref="modal_via" @creada="viaCreada" />
-    <ModalAyuda v-if="dataCroquis.id && detalle" :ref="'modal_ayuda_' + dataCroquis.id" />
+    <ModalAyuda
+      v-if="dataCroquis.id && detalle"
+      :ref="'modal_ayuda_' + dataCroquis.id"
+    />
+    <b-modal
+      hide-footer
+      v-if="dataCroquis.id && detalle"
+      :id="'modal_acercade_' + dataCroquis.id"
+      :ref="'modal_acercade_' + dataCroquis.id"
+      v-bind:title="$t('message.modal.acercade.header')"
+    >
+      <h3>{{ $t("message.modal.acercade.titulo") }}</h3>
+      <p class="mt-3 mb-0">
+        <small>{{ $t("message.modal.acercade.p1") }}</small>
+      </p>
+    </b-modal>
     <fab
       :key="dataCroquis.id"
       :actions="fabActions"
@@ -499,8 +514,8 @@ export default {
         manual: () => {
           this.$refs["modal_ayuda_" + this.dataCroquis.id].mostrar();
         },
-        acercaDe: (e) => {
-          console.error("implementación no enlazada", e);
+        acercaDe: () => {
+          this.$bvModal.show("modal_acercade_" + this.dataCroquis.id);
         },
         salir: () => {
           if (this.hayCambios) {
