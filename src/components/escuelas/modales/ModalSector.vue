@@ -4,7 +4,7 @@
       id="modal_sector"
       size="xl"
       ref="modal_sector"
-      v-bind:title="$t('message.modal.sector.titulo')"
+      v-bind:title="titulo"
       @show="resetModalSector"
       @hidden="resetModalSector"
       @ok="handleFormularioOk"
@@ -122,6 +122,7 @@ export default {
       keyMapa: 0,
       inicio: "",
       fin: "",
+      titulo: "",
     };
   },
 
@@ -276,6 +277,7 @@ export default {
           this.inicio = "";
           this.fin = "";
         }
+        this.titulo = this.$t('message.modal.sector.titulo_modificar');
       } else {
         this.nombre = "";
         this.informacion = "";
@@ -283,6 +285,7 @@ export default {
         this.posicionMarcador.lng = -5.851258521118082;
         this.inicio = "";
         this.fin = "";
+        this.titulo = this.$t('message.modal.sector.titulo_crear');
       }
       this.centrarMapaAMarcador();
       this.keyMapa += 1;

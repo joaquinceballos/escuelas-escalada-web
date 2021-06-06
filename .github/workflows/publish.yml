@@ -37,7 +37,7 @@ jobs:
           echo nos bajamos la última versión de la imagen
           sudo docker pull docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image:latest
           echo arrancamos el contenedor de producción
-          sudo docker run -p 443:443 -v /home/ubuntu/app/server.conf:/etc/nginx/conf.d/server.conf -v /home/ubuntu/app/certs:/certs --name contenedor-web-escuelas -d docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image
+          sudo docker run -p 443:443 -p 80:80 -v /home/ubuntu/app/server.conf:/etc/nginx/conf.d/server.conf -v /home/ubuntu/app/certs:/certs --name contenedor-web-escuelas -d docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image
           echo fin
         host: ${{ secrets.WEB_HOST }}
         user: ${{ secrets.SSH_USER }}

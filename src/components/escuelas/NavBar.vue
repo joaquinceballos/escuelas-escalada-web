@@ -40,9 +40,14 @@
               <icons :icon="['fas', 'search']" class="fa-search" />
             </b-button>
           </b-nav-form>
-          <b-nav-item-dropdown right>
+          <b-nav-item-dropdown right class="ml-2">
             <template slot="button-content">
-              <icons :icon="['fas', 'language']" class="fa-language" />
+              {{ $t("message.navbar.idioma")
+              }} <icons
+                :icon="['fas', 'language']"
+                class="fa-language"
+                size="lg"
+              />
             </template>
             <b-dropdown-item @click="cambiaIdioma('en')">en</b-dropdown-item>
             <b-dropdown-item @click="cambiaIdioma('es')">es</b-dropdown-item>
@@ -132,6 +137,7 @@ export default {
         .post("/login", user)
         .then((response) => {
           Vue.guardaToken(response.data.data.token);
+          this.$emit("logeado", response.data.data.token);
           this.$router.push({
             name: "home",
             query: { t: new Date().getTime() },
