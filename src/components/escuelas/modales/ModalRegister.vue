@@ -196,11 +196,24 @@ export default {
     checkRegisterFormValidity() {
       this.nombreState = this.nombre != null && this.nombre.length > 0;
       this.apellidoState = this.apellido != null && this.apellido.length > 0;
-      this.usernameState = this.username != null && this.username.length > 0;
+      this.usernameState =
+        this.username != null &&
+        this.username.length > 0 &&
+        this.username.match(/^[0-9a-zA-Z]+$/) &&
+        this.username.length >= 4 &&
+        this.username.length < 20;
       this.passwordState = this.password != null && this.password.length > 0;
       this.emailState = this.email != null && this.email.length > 0;
       this.paisState = this.pais != null && this.pais.length > 0;
-      return this.$refs.form.checkValidity();
+      return (
+        this.nombreState &&
+        this.apellidoState &&
+        this.usernameState &&
+        this.passwordState &&
+        this.emailState &&
+        this.paisState &&
+        this.$refs.form.checkValidity()
+      );
     },
     mostrar() {
       this.$bvModal.show("modal_register");
