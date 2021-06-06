@@ -310,7 +310,8 @@ const messages = {
                     perfil: 'Perfil',
                     logout: 'logout',
                     login: 'login'
-                }
+                },
+                idioma: 'Idioma'
             },
 
             resultados: {
