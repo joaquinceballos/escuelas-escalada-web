@@ -147,7 +147,8 @@ const messages = {
                     texto: 'Nuevo usuario creado correctamente, por favor haga login'
                 },
                 escuela: {
-                    titulo: 'Crear nueva escuela',
+                    titulo_crear: 'Crear nueva escuela',
+                    titulo_modificar: 'Modificar escuela',
                     nombre: 'Nombre de Escuela',
                     informacion: 'información',
                     zona: 'Zona de escalada',
@@ -165,7 +166,8 @@ const messages = {
                     }
                 },
                 sector: {
-                    titulo: 'Crear nuevo Sector',
+                    titulo_crear: 'Crear nuevo sector',
+                    titulo_modificar: 'Modificar sector',
                     nombre: 'Nombre',
                     informacion: 'Información',
                     creado: 'Sector creado con éxito',

@@ -3,7 +3,7 @@
     <b-modal
       id="modal_escuela"
       ref="modal_escuela"
-      v-bind:title="$t('message.modal.escuela.titulo')"
+      v-bind:title="titulo"
       @show="resetModalEscuela"
       @hidden="resetModalEscuela"
       @ok="handleFormularioOk"
@@ -73,6 +73,7 @@ export default {
       idZona: null,
       paises: [],
       regiones: [],
+      titulo:'',
     };
   },
 
@@ -193,9 +194,11 @@ export default {
       if (this.escuela) {
         this.nombre = this.escuela.nombre;
         this.informacion = this.escuela.informacion;
+        this.titulo = this.$t('message.modal.escuela.titulo_modificar');
       } else {
         this.nombre = "";
         this.informacion = "";
+        this.titulo = this.$t('message.modal.escuela.titulo_crear');
       }
       this.nombreState = null;
       this.informacionState = null;
