@@ -132,6 +132,7 @@ export default {
         .post("/login", user)
         .then((response) => {
           Vue.guardaToken(response.data.data.token);
+          this.$emit("logeado", response.data.data.token);
           this.$router.push({
             name: "home",
             query: { t: new Date().getTime() },
