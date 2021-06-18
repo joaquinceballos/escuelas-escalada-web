@@ -51,44 +51,43 @@
             </gmaps-map>
           </div>
         </b-form-group>
-        <label for="horas-de-sol">{{
-          $t("message.modal.sector.horas_de_sol")
-        }}</label>
-        <b-form-row id="horas-de-sol">
-          <b-col>
-            <b-form-group
-              v-bind:label="$t('message.modal.sector.inicio')"
-              label-for="hora-inicio"
-              v-bind:invalid-feedback="
-                $t('message.formulario.campo_obligatorio')
-              "
-              :state="nombreState"
-            >
-              <b-form-timepicker
-                id="hora-inicio"
-                v-model="inicio"
-                :locale="locale"
-                minutes-step="15"
-              ></b-form-timepicker></b-form-group
-          ></b-col>
-          <b-col>
-            <b-form-group
-              v-bind:label="$t('message.modal.sector.fin')"
-              label-for="hora-fin"
-              v-bind:invalid-feedback="
-                $t('message.formulario.campo_obligatorio')
-              "
-              :state="nombreState"
-            >
-              <b-form-timepicker
-                id="hora-fin"
-                v-model="fin"
-                :locale="locale"
-                minutes-step="15"
-              ></b-form-timepicker
-            ></b-form-group>
-          </b-col>
-        </b-form-row>
+        <b-form-group v-bind:label="$t('message.modal.sector.horas_de_sol')">
+          <b-form-row id="horas-de-sol">
+            <b-col>
+              <b-form-group
+                v-bind:label="$t('message.modal.sector.inicio')"
+                label-for="hora-inicio"
+                v-bind:invalid-feedback="
+                  $t('message.formulario.campo_obligatorio')
+                "
+                :state="nombreState"
+              >
+                <b-form-timepicker
+                  id="hora-inicio"
+                  v-model="inicio"
+                  :locale="locale"
+                  minutes-step="15"
+                ></b-form-timepicker></b-form-group
+            ></b-col>
+            <b-col>
+              <b-form-group
+                v-bind:label="$t('message.modal.sector.fin')"
+                label-for="hora-fin"
+                v-bind:invalid-feedback="
+                  $t('message.formulario.campo_obligatorio')
+                "
+                :state="nombreState"
+              >
+                <b-form-timepicker
+                  id="hora-fin"
+                  v-model="fin"
+                  :locale="locale"
+                  minutes-step="15"
+                ></b-form-timepicker
+              ></b-form-group>
+            </b-col>
+          </b-form-row>
+        </b-form-group>
       </form>
     </b-modal>
   </div>
@@ -277,7 +276,7 @@ export default {
           this.inicio = "";
           this.fin = "";
         }
-        this.titulo = this.$t('message.modal.sector.titulo_modificar');
+        this.titulo = this.$t("message.modal.sector.titulo_modificar");
       } else {
         this.nombre = "";
         this.informacion = "";
@@ -285,7 +284,7 @@ export default {
         this.posicionMarcador.lng = -5.851258521118082;
         this.inicio = "";
         this.fin = "";
-        this.titulo = this.$t('message.modal.sector.titulo_crear');
+        this.titulo = this.$t("message.modal.sector.titulo_crear");
       }
       this.centrarMapaAMarcador();
       this.keyMapa += 1;
