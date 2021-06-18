@@ -2,32 +2,44 @@
   <div id="zonas" class="container">
     <h1>{{ $t("message.zona.titulo") }}</h1>
     <b-form inline class="mb-1 ml-auto row">
-      <label class="mr-sm-2 ml-auto" for="filtro-escuelas">{{
-        $t("message.zona.filtro.escuelas")
-      }}</label>
-      <b-form-checkbox
-        @change="recargaTabla"
-        id="filtro-escuelas"
-        class="mb-2 mr-sm-2 mb-sm-0"
-        v-model="filtroConEscuelas"
-        name="check-button"
-        size="lg"
-        switch
+      <b-form-group
+        class="mr-2 ml-auto"
+        v-bind:label="$t('message.zona.filtro.escuelas')"
+        v-slot="{ ariaDescribedby }"
+        label-for="filtro-escuelas"
+        label-align="right"
       >
-      </b-form-checkbox>
-      <label class="mr-sm-2" for="select-filtro-pais">{{
-        $t("message.zona.filtro.pais")
-      }}</label>
-      <b-form-select
-        id="select-filtro-pais"
-        v-model="pais"
-        :options="options"
-        class="mb-2 mb-sm-0 col-2"
-        @change="recargaTabla"
+        <b-form-checkbox
+          @change="recargaTabla"
+          id="filtro-escuelas"
+          v-model="filtroConEscuelas"
+          name="check-button"
+          size="lg"
+          class="ml-1"
+          :aria-describedby="ariaDescribedby"
+          switch
+        >
+        </b-form-checkbox
+      ></b-form-group>
+      
+      <b-form-group class="mr-2"
+        v-bind:label="$t('message.zona.filtro.pais')"
+        v-slot="{ ariaDescribedby }"
+        label-for="select-filtro-pais"
+        label-align="right"
       >
-      </b-form-select>
+        <b-form-select
+          id="select-filtro-pais"
+          class="ml-1"
+          v-model="pais"
+          :options="options"
+          @change="recargaTabla"
+          :aria-describedby="ariaDescribedby"
+        >
+        </b-form-select>
+      </b-form-group>
       <b-button
-        class="mb-2 ml-2 mr-sm-2 mb-sm-0 border rounded"
+        class="mb-2 ml-1 mr-sm-2 mb-sm-0 border rounded"
         variant="info"
         @click="nuevaZona"
         v-show="admin"
