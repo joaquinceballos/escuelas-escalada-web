@@ -45,6 +45,7 @@
         "babel-eslint": "^10.1.0",
         "eslint": "^6.7.2",
         "eslint-plugin-vue": "^6.2.2",
+        "eslint-plugin-vuejs-accessibility": "^0.6.2",
         "node-sass": "^5.0.0",
         "style-loader": "^2.0.0",
         "vue-template-compiler": "^2.6.11"
@@ -56,12 +57,16 @@
         },
         "extends": [
             "plugin:vue/essential",
-            "eslint:recommended"
+            "eslint:recommended",
+            "plugin:vuejs-accessibility/recommended"
         ],
         "parserOptions": {
             "parser": "babel-eslint"
         },
-        "rules": {}
+        "rules": {},
+        "plugins": [
+            "vuejs-accessibility"
+        ]
     },
     "browserslist": [
         "> 1%",

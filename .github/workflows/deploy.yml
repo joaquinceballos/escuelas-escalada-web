@@ -1,7 +1,5 @@
 name: Create and publish a package
 on:
-  push:
-    branches: [ feature-entornos ]
   pull_request:
     branches: [ develop ]
 jobs:
