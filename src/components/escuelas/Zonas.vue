@@ -21,8 +21,9 @@
         >
         </b-form-checkbox
       ></b-form-group>
-      
-      <b-form-group class="mr-2"
+
+      <b-form-group
+        class="mr-2"
         v-bind:label="$t('message.zona.filtro.pais')"
         v-slot="{ ariaDescribedby }"
         label-for="select-filtro-pais"
@@ -67,7 +68,6 @@ export default {
   data() {
     return {
       pais: null,
-      options: [],
       filtroConEscuelas: false,
     };
   },
@@ -79,7 +79,6 @@ export default {
       this.$refs.modal_zona.mostrar();
     },
     cargaComboPaises() {
-      this.options = Vue.getComboPaises(this.$i18n.t("message.idioma.codigo"));
       this.pais = "ES";
     },
     recargaTabla() {
@@ -123,6 +122,9 @@ export default {
   computed: {
     admin() {
       return Vue.rolAdmin();
+    },
+    options() {
+      return Vue.getComboPaises(this.$i18n.t("message.idioma.codigo"));
     },
   },
 };
