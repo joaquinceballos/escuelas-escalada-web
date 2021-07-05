@@ -44,7 +44,7 @@
           <b-form-group
             v-bind:label="$t('message.register.username')"
             label-for="username-input"
-            v-bind:invalid-feedback="$t('message.register.obligatorio')"
+            v-bind:invalid-feedback="$t('message.register.error.username')"
             :state="usernameState"
           >
             <b-form-input
@@ -199,9 +199,15 @@ export default {
       this.usernameState =
         this.username != null &&
         this.username.length > 0 &&
-        this.username.match(/^[0-9a-zA-Z]+$/) &&
+        this.username.match(/^[0-9a-zA-Z]+$/) != null &&
         this.username.length >= 4 &&
         this.username.length < 20;
+      console.log(this.username != null);
+      console.log(this.username.length > 0);
+      console.log(this.username.match("/^[0-9a-zA-Z]+$/"));
+      console.log(this.username.length >= 4);
+      console.log(this.username.length < 20);
+      console.log(this.usernameState);
       this.passwordState = this.password != null && this.password.length > 0;
       this.emailState = this.email != null && this.email.length > 0;
       this.paisState = this.pais != null && this.pais.length > 0;
