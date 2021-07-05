@@ -16,7 +16,8 @@
             <p>
               {{ $t("message.ayuda.exportar.p1") }}
               <b> {{ $t("message.ayuda.exportar.croquis") }}</b> /
-              <b> {{ $t("message.ayuda.exportar.exportar") }}</b>
+              <b> {{ $t("message.ayuda.exportar.exportar") }}</b
+              >.
             </p>
           </section>
           <section id="editar-croquis">
@@ -29,6 +30,10 @@
                 <b>{{ $t("message.ayuda.editar.anadir.via") }}</b> /
                 <b>{{ $t("message.ayuda.editar.anadir.anadir") }}</b>
                 {{ $t("message.ayuda.editar.anadir.p1b") }}
+                <img
+                  :src="imagenes.anadir_via.url"
+                  :alt="imagenes.anadir_via.alt"
+                />.
               </p>
               <p>{{ $t("message.ayuda.editar.anadir.p2") }}</p>
               <p>{{ $t("message.ayuda.editar.anadir.p3") }}</p>
@@ -41,11 +46,22 @@
                 <b>{{ $t("message.ayuda.editar.modificar.via") }}</b> /
                 <b>{{ $t("message.ayuda.editar.modificar.seleccionar") }}</b>
                 {{ $t("message.ayuda.editar.modificar.p1b") }}
+                <img
+                  :src="imagenes.seleccionar_via.url"
+                  :alt="imagenes.seleccionar_via.alt"
+                />
                 {{ $t("message.ayuda.editar.modificar.p1c") }}
               </p>
               <p>{{ $t("message.ayuda.editar.modificar.p2") }}</p>
+              <div class="text-center mb-2">
+                <img
+                  :src="imagenes.borrar_punto.url"
+                  :alt="imagenes.borrar_punto.alt"
+                />
+              </div>
               <p>
                 {{ $t("message.ayuda.editar.modificar.p3a") }}
+                <img :src="imagenes.borrar.url" :alt="imagenes.borrar.alt" />
                 {{ $t("message.ayuda.editar.modificar.p3b") }}
               </p>
               <p>
@@ -53,6 +69,7 @@
                 <b>{{ $t("message.ayuda.editar.modificar.croquis") }} </b> /
                 <b>{{ $t("message.ayuda.editar.modificar.guardar") }} </b>
                 {{ $t("message.ayuda.editar.modificar.p4b") }}
+                <img :src="imagenes.guardar.url" :alt="imagenes.guardar.alt" />
                 {{ $t("message.ayuda.editar.modificar.p4c") }}
               </p>
               <p>
@@ -60,11 +77,18 @@
                 <b> {{ $t("message.ayuda.editar.modificar.edicion") }}</b> /
                 <b>{{ $t("message.ayuda.editar.modificar.recargar") }}</b>
                 {{ $t("message.ayuda.editar.modificar.p5b") }}
+                <img
+                  :src="imagenes.recargar.url"
+                  :alt="imagenes.recargar.alt"
+                />
                 {{ $t("message.ayuda.editar.modificar.p5c") }}
               </p>
             </section>
             <section id="leyenda">
               <h3>{{ $t("message.ayuda.editar.leyenda.titulo") }}</h3>
+              <div class="text-center mb-2">
+                <img :src="imagenes.leyenda.url" :alt="imagenes.leyenda.alt" />
+              </div>
               <p>{{ $t("message.ayuda.editar.leyenda.p1") }}</p>
               <p>
                 {{ $t("message.ayuda.editar.leyenda.p2") }}
@@ -88,6 +112,7 @@
               <b>{{ $t("message.ayuda.zoom.ver") }} </b> /
               <b>{{ $t("message.ayuda.zoom.zoom") }}</b>
               {{ $t("message.ayuda.zoom.p1b") }}
+              <img :src="imagenes.zoom.url" :alt="imagenes.zoom.alt" />
             </p>
             <p>{{ $t("message.ayuda.zoom.p2") }}</p>
             <p>{{ $t("message.ayuda.zoom.p3") }}</p>
@@ -139,7 +164,42 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      imagenes: {
+        anadir_via: {
+          url: require("../../../assets/img/manual/anadir_via.png"),
+          alt: this.$t("message.ayuda.imagenes.alt.anadir_via"),
+        },
+        seleccionar_via: {
+          url: require("../../../assets/img/manual/seleccionar_via.png"),
+          alt: this.$t("message.ayuda.imagenes.alt.seleccionar_via"),
+        },
+        borrar_punto: {
+          url: require("../../../assets/img/manual/borrar_punto.png"),
+          alt: this.$t("message.ayuda.imagenes.alt.borrar_punto"),
+        },
+        borrar: {
+          url: require("../../../assets/img/manual/borrar.png"),
+          alt: this.$t("message.ayuda.imagenes.alt.borrar"),
+        },
+        guardar: {
+          url: require("../../../assets/img/manual/guardar.png"),
+          alt: this.$t("message.ayuda.imagenes.alt.guardar"),
+        },
+        recargar: {
+          url: require("../../../assets/img/manual/recargar.png"),
+          alt: this.$t("message.ayuda.imagenes.alt.recargar"),
+        },
+        zoom: {
+          url: require("../../../assets/img/manual/zoom.png"),
+          alt: this.$t("message.ayuda.imagenes.alt.zoom"),
+        },
+        leyenda: {
+          url: require("../../../assets/img/manual/leyenda.png"),
+          alt: this.$t("message.ayuda.imagenes.alt.leyenda"),
+        },
+      },
+    };
   },
   methods: {
     mostrar() {

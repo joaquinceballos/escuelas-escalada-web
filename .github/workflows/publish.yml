@@ -1,7 +1,7 @@
 name: Create and publish a package
 on:
-  pull_request:
-    branches: [ main ]
+  release:
+    types: [published]
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -14,7 +14,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
-        repository: ${{ github.repository }}/web-image
+        repository: ${{ github.repository }}/web-escuelas
         tags: latest
         tag_with_ref: true
   docker-build:
@@ -31,13 +31,13 @@ jobs:
           echo eliminamos el contenedor
           sudo docker container rm contenedor-web-escuelas
           echo borramos la imagen actual
-          sudo docker image rm docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image
+          sudo docker image rm docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-escuelas
           echo docker login
           sudo docker login https://docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
           echo nos bajamos la última versión de la imagen
-          sudo docker pull docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image:latest
+          sudo docker pull docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-escuelas:latest
           echo arrancamos el contenedor de producción
-          sudo docker run -p 443:443 -p 80:80 -v /home/ubuntu/app/server.conf:/etc/nginx/conf.d/server.conf -v /home/ubuntu/app/certs:/certs --name contenedor-web-escuelas -d docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-image
+          sudo docker run -p 443:443 -p 80:80 -v /home/ubuntu/app/server.conf:/etc/nginx/conf.d/server.conf -v /home/ubuntu/app/certs:/certs --name contenedor-web-escuelas -d docker.pkg.github.com/joaquinceballos/escuelas-escalada-web/web-escuelas
           echo fin
         host: ${{ secrets.WEB_HOST }}
         user: ${{ secrets.SSH_USER }}
