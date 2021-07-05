@@ -131,7 +131,8 @@ const messages = {
                 obligatorio: 'Campo obligatorio',
                 error: {
                     header: 'Error',
-                    texto: 'No se puedo crear el nuevo usuario: {msg}'
+                    texto: 'No se puedo crear el nuevo usuario: {msg}',
+                    username: 'Alfanumérico entre 4 y 20 caracteres'
                 }
             },
 
@@ -688,7 +689,8 @@ const messages = {
                 obligatorio: 'Mandatory field',
                 error: {
                     header: 'Error',
-                    texto: 'Can\'t create new user: {msg}'
+                    texto: 'Can\'t create new user: {msg}',
+                    username: 'Alphanumeric string'
                 }
             },
 
@@ -1103,11 +1105,11 @@ const messages = {
 
                 borrar: {
                     zona: '{nombre} has deleted the climbing zone of "{region}"',
-                    escuela: '{nombre} ha borrado la escuela de "{escuela}"',
-                    sector: '{nombre} ha borrado el sector de "{sector}"',
-                    croquis: '{nombre} ha borrado un croquis en el sector "{sector}" de la escuela "{escuela}"',
-                    via: '{nombre} ha borrado la vía "{via}"',
-                    trazo_via: '{nombre} ha borrado un trazo de la vía "{via}"'
+                    escuela: '{nombre} has deleted the climbing area "{escuela}"',
+                    sector: '{nombre} has deleted the sector "{sector}"',
+                    croquis: '{nombre} has deleted a sketch from sector "{sector}" of the climbing area "{escuela}"',
+                    via: '{nombre} has deleted the route "{via}"',
+                    trazo_via: '{nombre} has deleted the sketched route "{via}"'
 
                 }
             },
